@@ -4,7 +4,11 @@ import '../../../core/database/app_database.dart';
 
 part 'customers_dao.g.dart';
 
-@DriftAccessor(tables: [Customers])
+class CustomerHasMeasurementsException implements Exception {
+  const CustomerHasMeasurementsException();
+}
+
+@DriftAccessor(tables: [Customers, MeasurementProfiles, Orders])
 class CustomersDao extends DatabaseAccessor<AppDatabase>
     with _$CustomersDaoMixin {
   CustomersDao(super.attachedDatabase);
@@ -27,6 +31,25 @@ class CustomersDao extends DatabaseAccessor<AppDatabase>
     return (select(
       customers,
     )..where((customer) => customer.id.equals(id))).getSingleOrNull();
+  }
+
+  Future<bool> hasMeasurementProfiles(int customerId) async {
+    final profile =
+        await (select(measurementProfiles)
+              ..where((row) => row.customerId.equals(customerId))
+              ..limit(1))
+            .getSingleOrNull();
+    return profile != null;
+  }
+
+  Future<bool> hasProtectedRecords(int customerId) async {
+    if (await hasMeasurementProfiles(customerId)) return true;
+    final order =
+        await (select(orders)
+              ..where((row) => row.customerId.equals(customerId))
+              ..limit(1))
+            .getSingleOrNull();
+    return order != null;
   }
 
   Future<int> createCustomer({
@@ -69,8 +92,26 @@ class CustomersDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<int> deleteCustomer(int id) {
-    return (delete(
-      customers,
-    )..where((customer) => customer.id.equals(id))).go();
+    return transaction(() async {
+      final linkedProfile =
+          await (select(measurementProfiles)
+                ..where((profile) => profile.customerId.equals(id))
+                ..limit(1))
+              .getSingleOrNull();
+      if (linkedProfile != null) {
+        throw const CustomerHasMeasurementsException();
+      }
+      final linkedOrder =
+          await (select(orders)
+                ..where((order) => order.customerId.equals(id))
+                ..limit(1))
+              .getSingleOrNull();
+      if (linkedOrder != null) {
+        throw const CustomerHasMeasurementsException();
+      }
+      return (delete(
+        customers,
+      )..where((customer) => customer.id.equals(id))).go();
+    });
   }
 }

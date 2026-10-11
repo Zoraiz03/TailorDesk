@@ -60,48 +60,51 @@ void main() {
     });
   });
 
-  test('migrates the v1 AppSettings schema to v2 without data loss', () async {
-    final directory = await Directory.systemTemp.createTemp(
-      'tailor_migration_test_',
-    );
-    addTearDown(() => directory.delete(recursive: true));
-    final file = File('${directory.path}/tailor.sqlite');
-    final database = AppDatabase(
-      NativeDatabase(
-        file,
-        setup: (rawDatabase) {
-          rawDatabase.execute('''
+  test(
+    'migrates the v1 AppSettings schema to current without data loss',
+    () async {
+      final directory = await Directory.systemTemp.createTemp(
+        'tailor_migration_test_',
+      );
+      addTearDown(() => directory.delete(recursive: true));
+      final file = File('${directory.path}/tailor.sqlite');
+      final database = AppDatabase(
+        NativeDatabase(
+          file,
+          setup: (rawDatabase) {
+            rawDatabase.execute('''
             CREATE TABLE app_settings (
               id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
               key TEXT NOT NULL UNIQUE CHECK (length(key) BETWEEN 1 AND 100),
               value TEXT NOT NULL DEFAULT ''
             )
           ''');
-          rawDatabase.execute(
-            "INSERT INTO app_settings (key, value) VALUES ('shop_name', 'Legacy Shop')",
-          );
-          rawDatabase.execute('PRAGMA user_version = 1');
-        },
-      ),
-    );
-    addTearDown(database.close);
+            rawDatabase.execute(
+              "INSERT INTO app_settings (key, value) VALUES ('shop_name', 'Legacy Shop')",
+            );
+            rawDatabase.execute('PRAGMA user_version = 1');
+          },
+        ),
+      );
+      addTearDown(database.close);
 
-    final setting = await database.select(database.appSettings).getSingle();
-    final customerId = await CustomersDao(
-      database,
-    ).createCustomer(name: 'Migrated Customer', phone: '03001234567');
+      final setting = await database.select(database.appSettings).getSingle();
+      final customerId = await CustomersDao(
+        database,
+      ).createCustomer(name: 'Migrated Customer', phone: '03001234567');
 
-    expect(setting.key, 'shop_name');
-    expect(setting.value, 'Legacy Shop');
-    expect(customerId, 1);
-    expect(
-      await database
-          .customSelect('PRAGMA user_version')
-          .getSingle()
-          .then((row) => row.read<int>('user_version')),
-      2,
-    );
-  });
+      expect(setting.key, 'shop_name');
+      expect(setting.value, 'Legacy Shop');
+      expect(customerId, 1);
+      expect(
+        await database
+            .customSelect('PRAGMA user_version')
+            .getSingle()
+            .then((row) => row.read<int>('user_version')),
+        5,
+      );
+    },
+  );
 
   test('customers persist after the database is closed and reopened', () async {
     final directory = await Directory.systemTemp.createTemp(

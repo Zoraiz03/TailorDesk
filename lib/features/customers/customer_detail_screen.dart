@@ -7,6 +7,15 @@ import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
 import 'customer_form_screen.dart';
 import 'customer_providers.dart';
+import '../measurements/customer_measurements_screen.dart';
+import '../measurements/measurement_detail_screen.dart';
+import '../measurements/measurement_form_screen.dart';
+import '../measurements/measurement_profile_card.dart';
+import '../measurements/measurement_providers.dart';
+import '../orders/new_order_screen.dart';
+import '../orders/order_detail_screen.dart';
+import '../orders/order_formatters.dart';
+import '../orders/order_providers.dart';
 
 class CustomerDetailScreen extends ConsumerWidget {
   const CustomerDetailScreen({super.key, required this.customerId});
@@ -14,6 +23,26 @@ class CustomerDetailScreen extends ConsumerWidget {
   final int customerId;
 
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
+    if (await ref.read(customersDaoProvider).hasProtectedRecords(customerId)) {
+      if (!context.mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Customer has saved history'),
+          content: const Text(
+            'This customer cannot be deleted because measurements or order history must be preserved.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    if (!context.mounted) return;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -87,14 +116,32 @@ class CustomerDetailScreen extends ConsumerWidget {
   }
 }
 
-class _CustomerDetails extends StatelessWidget {
+class _CustomerDetails extends ConsumerWidget {
   const _CustomerDetails({required this.customer, required this.onDelete});
 
   final Customer customer;
   final VoidCallback onDelete;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final measurements = ref.watch(
+      customerMeasurementProfilesProvider(customer.id),
+    );
+    final orders = ref.watch(customerOrdersProvider(customer.id));
+
+    Future<void> addMeasurements() async {
+      final saved = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (_) => MeasurementFormScreen(customer: customer),
+        ),
+      );
+      if (saved == true && context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Measurements saved.')));
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Customer Details'),
@@ -188,6 +235,132 @@ class _CustomerDetails extends StatelessWidget {
                 ),
               ),
             ),
+          const SizedBox(height: AppSpacing.xxl),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Orders',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => NewOrderScreen(initialCustomer: customer),
+                  ),
+                ),
+                icon: const Icon(Icons.add),
+                label: const Text('New Order'),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          orders.when(
+            loading: () => const LinearProgressIndicator(),
+            error: (_, __) => const Text('Could not load order history.'),
+            data: (records) => records.isEmpty
+                ? const Card(
+                    child: Padding(
+                      padding: AppSpacing.cardPadding,
+                      child: Text('No orders for this customer yet.'),
+                    ),
+                  )
+                : Column(
+                    children: records
+                        .take(3)
+                        .map(
+                          (record) => Card(
+                            child: ListTile(
+                              title: Text(record.order.orderNumber),
+                              subtitle: Text(
+                                '${record.progress.label} · Balance ${formatPaisa(record.balancePaisa)}',
+                              ),
+                              trailing: const Icon(Icons.chevron_right),
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => OrderDetailScreen(
+                                    orderId: record.order.id,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+          ),
+          const SizedBox(height: AppSpacing.xxl),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Measurements',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CustomerMeasurementsScreen(
+                      customer: customer,
+                      historyMode: true,
+                    ),
+                  ),
+                ),
+                child: const Text('View History'),
+              ),
+            ],
+          ),
+          measurements.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, _) => const Card(
+              child: Padding(
+                padding: AppSpacing.cardPadding,
+                child: Text('Could not load measurement profiles.'),
+              ),
+            ),
+            data: (records) => records.isEmpty
+                ? Card(
+                    child: Padding(
+                      padding: AppSpacing.cardPadding,
+                      child: Text(
+                        'No measurement profiles yet.',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  )
+                : Column(
+                    children: records
+                        .map(
+                          (record) => Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSpacing.sm,
+                            ),
+                            child: MeasurementProfileCard(
+                              record: record,
+                              onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => MeasurementDetailScreen(
+                                    customer: customer,
+                                    profileId: record.profile.id,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          FilledButton.icon(
+            onPressed: addMeasurements,
+            icon: const Icon(Icons.add),
+            label: const Text('Add Measurements'),
+          ),
           const SizedBox(height: AppSpacing.xxl),
           OutlinedButton.icon(
             onPressed: () => Navigator.of(context).push(
