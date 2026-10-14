@@ -183,6 +183,11 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
     ).watchSingle().asyncMap((_) => _getAssignments(orderItemId: orderItemId));
   }
 
+  Future<List<AssignmentRecord>> getAssignments({
+    int? karigarId,
+    int? orderItemId,
+  }) => _getAssignments(karigarId: karigarId, orderItemId: orderItemId);
+
   Future<List<AssignmentRecord>> _getAssignments({
     int? karigarId,
     int? orderItemId,

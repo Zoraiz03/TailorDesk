@@ -130,6 +130,9 @@ class OrdersDao extends DatabaseAccessor<AppDatabase> with _$OrdersDaoMixin {
     ).watchSingle().asyncMap((_) => _getRecords(customerId: customerId));
   }
 
+  Future<List<OrderRecord>> getAllOrders({int? customerId}) =>
+      _getRecords(customerId: customerId);
+
   Future<List<OrderRecord>> _getRecords({int? customerId}) async {
     final query = select(
       orders,

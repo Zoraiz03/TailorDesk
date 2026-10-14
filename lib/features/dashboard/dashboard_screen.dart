@@ -14,6 +14,7 @@ import '../orders/new_order_screen.dart';
 import '../orders/order_detail_screen.dart';
 import '../orders/order_formatters.dart';
 import '../orders/order_providers.dart';
+import '../reports/reports_screen.dart';
 import '../settings/shop_settings_providers.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -125,6 +126,13 @@ class DashboardScreen extends ConsumerWidget {
                         icon: Icons.today,
                         iconColor: AppColors.info,
                         iconBackgroundColor: AppColors.infoBg,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const ReportsScreen(initialTabIndex: 0),
+                          ),
+                        ),
                       ),
                       SummaryCard(
                         title: 'Overdue',
@@ -132,6 +140,13 @@ class DashboardScreen extends ConsumerWidget {
                         icon: Icons.warning_amber_rounded,
                         iconColor: AppColors.error,
                         iconBackgroundColor: AppColors.errorBg,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const ReportsScreen(initialTabIndex: 0),
+                          ),
+                        ),
                       ),
                       SummaryCard(
                         title: 'Outstanding',
@@ -139,6 +154,13 @@ class DashboardScreen extends ConsumerWidget {
                         icon: Icons.account_balance_wallet_outlined,
                         iconColor: AppColors.gold,
                         iconBackgroundColor: AppColors.goldLight,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const ReportsScreen(initialTabIndex: 1),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -169,6 +191,13 @@ class DashboardScreen extends ConsumerWidget {
                       icon: Icons.assignment_ind_outlined,
                       iconColor: AppColors.warning,
                       iconBackgroundColor: AppColors.warningBg,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const ReportsScreen(initialTabIndex: 3),
+                        ),
+                      ),
                     ),
                     SummaryCard(
                       title: 'Karigar Overdue',
@@ -176,6 +205,13 @@ class DashboardScreen extends ConsumerWidget {
                       icon: Icons.engineering_outlined,
                       iconColor: AppColors.error,
                       iconBackgroundColor: AppColors.errorBg,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const ReportsScreen(initialTabIndex: 3),
+                        ),
+                      ),
                     ),
                   ],
                 ),
