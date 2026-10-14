@@ -1115,6 +1115,1009 @@ class MeasurementProfilesCompanion extends UpdateCompanion<MeasurementProfile> {
   }
 }
 
+class $GarmentCatalogEntriesTable extends GarmentCatalogEntries
+    with TableInfo<$GarmentCatalogEntriesTable, GarmentCatalogEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GarmentCatalogEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _garmentIdMeta = const VerificationMeta(
+    'garmentId',
+  );
+  @override
+  late final GeneratedColumn<String> garmentId = GeneratedColumn<String>(
+    'garment_id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayNameMeta = const VerificationMeta(
+    'displayName',
+  );
+  @override
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
+    'display_name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayNameUrduMeta = const VerificationMeta(
+    'displayNameUrdu',
+  );
+  @override
+  late final GeneratedColumn<String> displayNameUrdu = GeneratedColumn<String>(
+    'display_name_urdu',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _enabledMeta = const VerificationMeta(
+    'enabled',
+  );
+  @override
+  late final GeneratedColumn<bool> enabled = GeneratedColumn<bool>(
+    'enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _displayOrderMeta = const VerificationMeta(
+    'displayOrder',
+  );
+  @override
+  late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
+    'display_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _defaultStitchingPricePaisaMeta =
+      const VerificationMeta('defaultStitchingPricePaisa');
+  @override
+  late final GeneratedColumn<int> defaultStitchingPricePaisa =
+      GeneratedColumn<int>(
+        'default_stitching_price_paisa',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
+  static const VerificationMeta _isCustomMeta = const VerificationMeta(
+    'isCustom',
+  );
+  @override
+  late final GeneratedColumn<bool> isCustom = GeneratedColumn<bool>(
+    'is_custom',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_custom" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    clientDefault: DateTime.now,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    clientDefault: DateTime.now,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    garmentId,
+    displayName,
+    displayNameUrdu,
+    enabled,
+    displayOrder,
+    defaultStitchingPricePaisa,
+    isCustom,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'garment_catalog_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GarmentCatalogEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('garment_id')) {
+      context.handle(
+        _garmentIdMeta,
+        garmentId.isAcceptableOrUnknown(data['garment_id']!, _garmentIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_garmentIdMeta);
+    }
+    if (data.containsKey('display_name')) {
+      context.handle(
+        _displayNameMeta,
+        displayName.isAcceptableOrUnknown(
+          data['display_name']!,
+          _displayNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayNameMeta);
+    }
+    if (data.containsKey('display_name_urdu')) {
+      context.handle(
+        _displayNameUrduMeta,
+        displayNameUrdu.isAcceptableOrUnknown(
+          data['display_name_urdu']!,
+          _displayNameUrduMeta,
+        ),
+      );
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(
+        _enabledMeta,
+        enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta),
+      );
+    }
+    if (data.containsKey('display_order')) {
+      context.handle(
+        _displayOrderMeta,
+        displayOrder.isAcceptableOrUnknown(
+          data['display_order']!,
+          _displayOrderMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayOrderMeta);
+    }
+    if (data.containsKey('default_stitching_price_paisa')) {
+      context.handle(
+        _defaultStitchingPricePaisaMeta,
+        defaultStitchingPricePaisa.isAcceptableOrUnknown(
+          data['default_stitching_price_paisa']!,
+          _defaultStitchingPricePaisaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_custom')) {
+      context.handle(
+        _isCustomMeta,
+        isCustom.isAcceptableOrUnknown(data['is_custom']!, _isCustomMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {garmentId};
+  @override
+  GarmentCatalogEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GarmentCatalogEntry(
+      garmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}garment_id'],
+      )!,
+      displayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name'],
+      )!,
+      displayNameUrdu: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name_urdu'],
+      ),
+      enabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enabled'],
+      )!,
+      displayOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_order'],
+      )!,
+      defaultStitchingPricePaisa: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}default_stitching_price_paisa'],
+      )!,
+      isCustom: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_custom'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $GarmentCatalogEntriesTable createAlias(String alias) {
+    return $GarmentCatalogEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class GarmentCatalogEntry extends DataClass
+    implements Insertable<GarmentCatalogEntry> {
+  final String garmentId;
+  final String displayName;
+  final String? displayNameUrdu;
+  final bool enabled;
+  final int displayOrder;
+  final int defaultStitchingPricePaisa;
+  final bool isCustom;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const GarmentCatalogEntry({
+    required this.garmentId,
+    required this.displayName,
+    this.displayNameUrdu,
+    required this.enabled,
+    required this.displayOrder,
+    required this.defaultStitchingPricePaisa,
+    required this.isCustom,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['garment_id'] = Variable<String>(garmentId);
+    map['display_name'] = Variable<String>(displayName);
+    if (!nullToAbsent || displayNameUrdu != null) {
+      map['display_name_urdu'] = Variable<String>(displayNameUrdu);
+    }
+    map['enabled'] = Variable<bool>(enabled);
+    map['display_order'] = Variable<int>(displayOrder);
+    map['default_stitching_price_paisa'] = Variable<int>(
+      defaultStitchingPricePaisa,
+    );
+    map['is_custom'] = Variable<bool>(isCustom);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  GarmentCatalogEntriesCompanion toCompanion(bool nullToAbsent) {
+    return GarmentCatalogEntriesCompanion(
+      garmentId: Value(garmentId),
+      displayName: Value(displayName),
+      displayNameUrdu: displayNameUrdu == null && nullToAbsent
+          ? const Value.absent()
+          : Value(displayNameUrdu),
+      enabled: Value(enabled),
+      displayOrder: Value(displayOrder),
+      defaultStitchingPricePaisa: Value(defaultStitchingPricePaisa),
+      isCustom: Value(isCustom),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory GarmentCatalogEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GarmentCatalogEntry(
+      garmentId: serializer.fromJson<String>(json['garmentId']),
+      displayName: serializer.fromJson<String>(json['displayName']),
+      displayNameUrdu: serializer.fromJson<String?>(json['displayNameUrdu']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
+      displayOrder: serializer.fromJson<int>(json['displayOrder']),
+      defaultStitchingPricePaisa: serializer.fromJson<int>(
+        json['defaultStitchingPricePaisa'],
+      ),
+      isCustom: serializer.fromJson<bool>(json['isCustom']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'garmentId': serializer.toJson<String>(garmentId),
+      'displayName': serializer.toJson<String>(displayName),
+      'displayNameUrdu': serializer.toJson<String?>(displayNameUrdu),
+      'enabled': serializer.toJson<bool>(enabled),
+      'displayOrder': serializer.toJson<int>(displayOrder),
+      'defaultStitchingPricePaisa': serializer.toJson<int>(
+        defaultStitchingPricePaisa,
+      ),
+      'isCustom': serializer.toJson<bool>(isCustom),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  GarmentCatalogEntry copyWith({
+    String? garmentId,
+    String? displayName,
+    Value<String?> displayNameUrdu = const Value.absent(),
+    bool? enabled,
+    int? displayOrder,
+    int? defaultStitchingPricePaisa,
+    bool? isCustom,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => GarmentCatalogEntry(
+    garmentId: garmentId ?? this.garmentId,
+    displayName: displayName ?? this.displayName,
+    displayNameUrdu: displayNameUrdu.present
+        ? displayNameUrdu.value
+        : this.displayNameUrdu,
+    enabled: enabled ?? this.enabled,
+    displayOrder: displayOrder ?? this.displayOrder,
+    defaultStitchingPricePaisa:
+        defaultStitchingPricePaisa ?? this.defaultStitchingPricePaisa,
+    isCustom: isCustom ?? this.isCustom,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  GarmentCatalogEntry copyWithCompanion(GarmentCatalogEntriesCompanion data) {
+    return GarmentCatalogEntry(
+      garmentId: data.garmentId.present ? data.garmentId.value : this.garmentId,
+      displayName: data.displayName.present
+          ? data.displayName.value
+          : this.displayName,
+      displayNameUrdu: data.displayNameUrdu.present
+          ? data.displayNameUrdu.value
+          : this.displayNameUrdu,
+      enabled: data.enabled.present ? data.enabled.value : this.enabled,
+      displayOrder: data.displayOrder.present
+          ? data.displayOrder.value
+          : this.displayOrder,
+      defaultStitchingPricePaisa: data.defaultStitchingPricePaisa.present
+          ? data.defaultStitchingPricePaisa.value
+          : this.defaultStitchingPricePaisa,
+      isCustom: data.isCustom.present ? data.isCustom.value : this.isCustom,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GarmentCatalogEntry(')
+          ..write('garmentId: $garmentId, ')
+          ..write('displayName: $displayName, ')
+          ..write('displayNameUrdu: $displayNameUrdu, ')
+          ..write('enabled: $enabled, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('defaultStitchingPricePaisa: $defaultStitchingPricePaisa, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    garmentId,
+    displayName,
+    displayNameUrdu,
+    enabled,
+    displayOrder,
+    defaultStitchingPricePaisa,
+    isCustom,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GarmentCatalogEntry &&
+          other.garmentId == this.garmentId &&
+          other.displayName == this.displayName &&
+          other.displayNameUrdu == this.displayNameUrdu &&
+          other.enabled == this.enabled &&
+          other.displayOrder == this.displayOrder &&
+          other.defaultStitchingPricePaisa == this.defaultStitchingPricePaisa &&
+          other.isCustom == this.isCustom &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class GarmentCatalogEntriesCompanion
+    extends UpdateCompanion<GarmentCatalogEntry> {
+  final Value<String> garmentId;
+  final Value<String> displayName;
+  final Value<String?> displayNameUrdu;
+  final Value<bool> enabled;
+  final Value<int> displayOrder;
+  final Value<int> defaultStitchingPricePaisa;
+  final Value<bool> isCustom;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const GarmentCatalogEntriesCompanion({
+    this.garmentId = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.displayNameUrdu = const Value.absent(),
+    this.enabled = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+    this.defaultStitchingPricePaisa = const Value.absent(),
+    this.isCustom = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  GarmentCatalogEntriesCompanion.insert({
+    required String garmentId,
+    required String displayName,
+    this.displayNameUrdu = const Value.absent(),
+    this.enabled = const Value.absent(),
+    required int displayOrder,
+    this.defaultStitchingPricePaisa = const Value.absent(),
+    this.isCustom = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : garmentId = Value(garmentId),
+       displayName = Value(displayName),
+       displayOrder = Value(displayOrder);
+  static Insertable<GarmentCatalogEntry> custom({
+    Expression<String>? garmentId,
+    Expression<String>? displayName,
+    Expression<String>? displayNameUrdu,
+    Expression<bool>? enabled,
+    Expression<int>? displayOrder,
+    Expression<int>? defaultStitchingPricePaisa,
+    Expression<bool>? isCustom,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (garmentId != null) 'garment_id': garmentId,
+      if (displayName != null) 'display_name': displayName,
+      if (displayNameUrdu != null) 'display_name_urdu': displayNameUrdu,
+      if (enabled != null) 'enabled': enabled,
+      if (displayOrder != null) 'display_order': displayOrder,
+      if (defaultStitchingPricePaisa != null)
+        'default_stitching_price_paisa': defaultStitchingPricePaisa,
+      if (isCustom != null) 'is_custom': isCustom,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  GarmentCatalogEntriesCompanion copyWith({
+    Value<String>? garmentId,
+    Value<String>? displayName,
+    Value<String?>? displayNameUrdu,
+    Value<bool>? enabled,
+    Value<int>? displayOrder,
+    Value<int>? defaultStitchingPricePaisa,
+    Value<bool>? isCustom,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return GarmentCatalogEntriesCompanion(
+      garmentId: garmentId ?? this.garmentId,
+      displayName: displayName ?? this.displayName,
+      displayNameUrdu: displayNameUrdu ?? this.displayNameUrdu,
+      enabled: enabled ?? this.enabled,
+      displayOrder: displayOrder ?? this.displayOrder,
+      defaultStitchingPricePaisa:
+          defaultStitchingPricePaisa ?? this.defaultStitchingPricePaisa,
+      isCustom: isCustom ?? this.isCustom,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (garmentId.present) {
+      map['garment_id'] = Variable<String>(garmentId.value);
+    }
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (displayNameUrdu.present) {
+      map['display_name_urdu'] = Variable<String>(displayNameUrdu.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
+    }
+    if (displayOrder.present) {
+      map['display_order'] = Variable<int>(displayOrder.value);
+    }
+    if (defaultStitchingPricePaisa.present) {
+      map['default_stitching_price_paisa'] = Variable<int>(
+        defaultStitchingPricePaisa.value,
+      );
+    }
+    if (isCustom.present) {
+      map['is_custom'] = Variable<bool>(isCustom.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GarmentCatalogEntriesCompanion(')
+          ..write('garmentId: $garmentId, ')
+          ..write('displayName: $displayName, ')
+          ..write('displayNameUrdu: $displayNameUrdu, ')
+          ..write('enabled: $enabled, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('defaultStitchingPricePaisa: $defaultStitchingPricePaisa, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MeasurementTemplateVersionsTable extends MeasurementTemplateVersions
+    with
+        TableInfo<
+          $MeasurementTemplateVersionsTable,
+          MeasurementTemplateVersion
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MeasurementTemplateVersionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _garmentIdMeta = const VerificationMeta(
+    'garmentId',
+  );
+  @override
+  late final GeneratedColumn<String> garmentId = GeneratedColumn<String>(
+    'garment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES garment_catalog_entries (garment_id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _versionNumberMeta = const VerificationMeta(
+    'versionNumber',
+  );
+  @override
+  late final GeneratedColumn<int> versionNumber = GeneratedColumn<int>(
+    'version_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _measurementConventionMeta =
+      const VerificationMeta('measurementConvention');
+  @override
+  late final GeneratedColumn<String> measurementConvention =
+      GeneratedColumn<String>(
+        'measurement_convention',
+        aliasedName,
+        false,
+        additionalChecks: GeneratedColumn.checkTextLength(
+          minTextLength: 1,
+          maxTextLength: 30,
+        ),
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    clientDefault: DateTime.now,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    garmentId,
+    versionNumber,
+    measurementConvention,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'measurement_template_versions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MeasurementTemplateVersion> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('garment_id')) {
+      context.handle(
+        _garmentIdMeta,
+        garmentId.isAcceptableOrUnknown(data['garment_id']!, _garmentIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_garmentIdMeta);
+    }
+    if (data.containsKey('version_number')) {
+      context.handle(
+        _versionNumberMeta,
+        versionNumber.isAcceptableOrUnknown(
+          data['version_number']!,
+          _versionNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_versionNumberMeta);
+    }
+    if (data.containsKey('measurement_convention')) {
+      context.handle(
+        _measurementConventionMeta,
+        measurementConvention.isAcceptableOrUnknown(
+          data['measurement_convention']!,
+          _measurementConventionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_measurementConventionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {garmentId, versionNumber},
+  ];
+  @override
+  MeasurementTemplateVersion map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MeasurementTemplateVersion(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      garmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}garment_id'],
+      )!,
+      versionNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version_number'],
+      )!,
+      measurementConvention: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}measurement_convention'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MeasurementTemplateVersionsTable createAlias(String alias) {
+    return $MeasurementTemplateVersionsTable(attachedDatabase, alias);
+  }
+}
+
+class MeasurementTemplateVersion extends DataClass
+    implements Insertable<MeasurementTemplateVersion> {
+  final int id;
+  final String garmentId;
+  final int versionNumber;
+  final String measurementConvention;
+  final DateTime createdAt;
+  const MeasurementTemplateVersion({
+    required this.id,
+    required this.garmentId,
+    required this.versionNumber,
+    required this.measurementConvention,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['garment_id'] = Variable<String>(garmentId);
+    map['version_number'] = Variable<int>(versionNumber);
+    map['measurement_convention'] = Variable<String>(measurementConvention);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  MeasurementTemplateVersionsCompanion toCompanion(bool nullToAbsent) {
+    return MeasurementTemplateVersionsCompanion(
+      id: Value(id),
+      garmentId: Value(garmentId),
+      versionNumber: Value(versionNumber),
+      measurementConvention: Value(measurementConvention),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory MeasurementTemplateVersion.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MeasurementTemplateVersion(
+      id: serializer.fromJson<int>(json['id']),
+      garmentId: serializer.fromJson<String>(json['garmentId']),
+      versionNumber: serializer.fromJson<int>(json['versionNumber']),
+      measurementConvention: serializer.fromJson<String>(
+        json['measurementConvention'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'garmentId': serializer.toJson<String>(garmentId),
+      'versionNumber': serializer.toJson<int>(versionNumber),
+      'measurementConvention': serializer.toJson<String>(measurementConvention),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  MeasurementTemplateVersion copyWith({
+    int? id,
+    String? garmentId,
+    int? versionNumber,
+    String? measurementConvention,
+    DateTime? createdAt,
+  }) => MeasurementTemplateVersion(
+    id: id ?? this.id,
+    garmentId: garmentId ?? this.garmentId,
+    versionNumber: versionNumber ?? this.versionNumber,
+    measurementConvention: measurementConvention ?? this.measurementConvention,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  MeasurementTemplateVersion copyWithCompanion(
+    MeasurementTemplateVersionsCompanion data,
+  ) {
+    return MeasurementTemplateVersion(
+      id: data.id.present ? data.id.value : this.id,
+      garmentId: data.garmentId.present ? data.garmentId.value : this.garmentId,
+      versionNumber: data.versionNumber.present
+          ? data.versionNumber.value
+          : this.versionNumber,
+      measurementConvention: data.measurementConvention.present
+          ? data.measurementConvention.value
+          : this.measurementConvention,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MeasurementTemplateVersion(')
+          ..write('id: $id, ')
+          ..write('garmentId: $garmentId, ')
+          ..write('versionNumber: $versionNumber, ')
+          ..write('measurementConvention: $measurementConvention, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    garmentId,
+    versionNumber,
+    measurementConvention,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MeasurementTemplateVersion &&
+          other.id == this.id &&
+          other.garmentId == this.garmentId &&
+          other.versionNumber == this.versionNumber &&
+          other.measurementConvention == this.measurementConvention &&
+          other.createdAt == this.createdAt);
+}
+
+class MeasurementTemplateVersionsCompanion
+    extends UpdateCompanion<MeasurementTemplateVersion> {
+  final Value<int> id;
+  final Value<String> garmentId;
+  final Value<int> versionNumber;
+  final Value<String> measurementConvention;
+  final Value<DateTime> createdAt;
+  const MeasurementTemplateVersionsCompanion({
+    this.id = const Value.absent(),
+    this.garmentId = const Value.absent(),
+    this.versionNumber = const Value.absent(),
+    this.measurementConvention = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  MeasurementTemplateVersionsCompanion.insert({
+    this.id = const Value.absent(),
+    required String garmentId,
+    required int versionNumber,
+    required String measurementConvention,
+    this.createdAt = const Value.absent(),
+  }) : garmentId = Value(garmentId),
+       versionNumber = Value(versionNumber),
+       measurementConvention = Value(measurementConvention);
+  static Insertable<MeasurementTemplateVersion> custom({
+    Expression<int>? id,
+    Expression<String>? garmentId,
+    Expression<int>? versionNumber,
+    Expression<String>? measurementConvention,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (garmentId != null) 'garment_id': garmentId,
+      if (versionNumber != null) 'version_number': versionNumber,
+      if (measurementConvention != null)
+        'measurement_convention': measurementConvention,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  MeasurementTemplateVersionsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? garmentId,
+    Value<int>? versionNumber,
+    Value<String>? measurementConvention,
+    Value<DateTime>? createdAt,
+  }) {
+    return MeasurementTemplateVersionsCompanion(
+      id: id ?? this.id,
+      garmentId: garmentId ?? this.garmentId,
+      versionNumber: versionNumber ?? this.versionNumber,
+      measurementConvention:
+          measurementConvention ?? this.measurementConvention,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (garmentId.present) {
+      map['garment_id'] = Variable<String>(garmentId.value);
+    }
+    if (versionNumber.present) {
+      map['version_number'] = Variable<int>(versionNumber.value);
+    }
+    if (measurementConvention.present) {
+      map['measurement_convention'] = Variable<String>(
+        measurementConvention.value,
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MeasurementTemplateVersionsCompanion(')
+          ..write('id: $id, ')
+          ..write('garmentId: $garmentId, ')
+          ..write('versionNumber: $versionNumber, ')
+          ..write('measurementConvention: $measurementConvention, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $MeasurementRevisionsTable extends MeasurementRevisions
     with TableInfo<$MeasurementRevisionsTable, MeasurementRevision> {
   @override
@@ -1174,6 +2177,30 @@ class $MeasurementRevisionsTable extends MeasurementRevisions
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _garmentLabelEnglishMeta =
+      const VerificationMeta('garmentLabelEnglish');
+  @override
+  late final GeneratedColumn<String> garmentLabelEnglish =
+      GeneratedColumn<String>(
+        'garment_label_english',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _garmentLabelUrduMeta = const VerificationMeta(
+    'garmentLabelUrdu',
+  );
+  @override
+  late final GeneratedColumn<String> garmentLabelUrdu = GeneratedColumn<String>(
+    'garment_label_urdu',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   static const VerificationMeta _profileNameMeta = const VerificationMeta(
     'profileName',
   );
@@ -1228,6 +2255,32 @@ class $MeasurementRevisionsTable extends MeasurementRevisions
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _templateVersionIdMeta = const VerificationMeta(
+    'templateVersionId',
+  );
+  @override
+  late final GeneratedColumn<int> templateVersionId = GeneratedColumn<int>(
+    'template_version_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES measurement_template_versions (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _fieldDefinitionsJsonMeta =
+      const VerificationMeta('fieldDefinitionsJson');
+  @override
+  late final GeneratedColumn<String> fieldDefinitionsJson =
+      GeneratedColumn<String>(
+        'field_definitions_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
   static const VerificationMeta _fitPreferenceMeta = const VerificationMeta(
     'fitPreference',
   );
@@ -1284,10 +2337,14 @@ class $MeasurementRevisionsTable extends MeasurementRevisions
     profileId,
     revisionNumber,
     garmentType,
+    garmentLabelEnglish,
+    garmentLabelUrdu,
     profileName,
     unit,
     measurementBasis,
     valuesJson,
+    templateVersionId,
+    fieldDefinitionsJson,
     fitPreference,
     styleInstructions,
     notes,
@@ -1338,6 +2395,24 @@ class $MeasurementRevisionsTable extends MeasurementRevisions
     } else if (isInserting) {
       context.missing(_garmentTypeMeta);
     }
+    if (data.containsKey('garment_label_english')) {
+      context.handle(
+        _garmentLabelEnglishMeta,
+        garmentLabelEnglish.isAcceptableOrUnknown(
+          data['garment_label_english']!,
+          _garmentLabelEnglishMeta,
+        ),
+      );
+    }
+    if (data.containsKey('garment_label_urdu')) {
+      context.handle(
+        _garmentLabelUrduMeta,
+        garmentLabelUrdu.isAcceptableOrUnknown(
+          data['garment_label_urdu']!,
+          _garmentLabelUrduMeta,
+        ),
+      );
+    }
     if (data.containsKey('profile_name')) {
       context.handle(
         _profileNameMeta,
@@ -1375,6 +2450,24 @@ class $MeasurementRevisionsTable extends MeasurementRevisions
       );
     } else if (isInserting) {
       context.missing(_valuesJsonMeta);
+    }
+    if (data.containsKey('template_version_id')) {
+      context.handle(
+        _templateVersionIdMeta,
+        templateVersionId.isAcceptableOrUnknown(
+          data['template_version_id']!,
+          _templateVersionIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('field_definitions_json')) {
+      context.handle(
+        _fieldDefinitionsJsonMeta,
+        fieldDefinitionsJson.isAcceptableOrUnknown(
+          data['field_definitions_json']!,
+          _fieldDefinitionsJsonMeta,
+        ),
+      );
     }
     if (data.containsKey('fit_preference')) {
       context.handle(
@@ -1437,6 +2530,14 @@ class $MeasurementRevisionsTable extends MeasurementRevisions
         DriftSqlType.string,
         data['${effectivePrefix}garment_type'],
       )!,
+      garmentLabelEnglish: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}garment_label_english'],
+      )!,
+      garmentLabelUrdu: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}garment_label_urdu'],
+      )!,
       profileName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}profile_name'],
@@ -1452,6 +2553,14 @@ class $MeasurementRevisionsTable extends MeasurementRevisions
       valuesJson: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}values_json'],
+      )!,
+      templateVersionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}template_version_id'],
+      ),
+      fieldDefinitionsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}field_definitions_json'],
       )!,
       fitPreference: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -1484,10 +2593,14 @@ class MeasurementRevision extends DataClass
   final int profileId;
   final int revisionNumber;
   final String garmentType;
+  final String garmentLabelEnglish;
+  final String garmentLabelUrdu;
   final String profileName;
   final String unit;
   final String measurementBasis;
   final String valuesJson;
+  final int? templateVersionId;
+  final String fieldDefinitionsJson;
   final String fitPreference;
   final String styleInstructions;
   final String notes;
@@ -1497,10 +2610,14 @@ class MeasurementRevision extends DataClass
     required this.profileId,
     required this.revisionNumber,
     required this.garmentType,
+    required this.garmentLabelEnglish,
+    required this.garmentLabelUrdu,
     required this.profileName,
     required this.unit,
     required this.measurementBasis,
     required this.valuesJson,
+    this.templateVersionId,
+    required this.fieldDefinitionsJson,
     required this.fitPreference,
     required this.styleInstructions,
     required this.notes,
@@ -1513,10 +2630,16 @@ class MeasurementRevision extends DataClass
     map['profile_id'] = Variable<int>(profileId);
     map['revision_number'] = Variable<int>(revisionNumber);
     map['garment_type'] = Variable<String>(garmentType);
+    map['garment_label_english'] = Variable<String>(garmentLabelEnglish);
+    map['garment_label_urdu'] = Variable<String>(garmentLabelUrdu);
     map['profile_name'] = Variable<String>(profileName);
     map['unit'] = Variable<String>(unit);
     map['measurement_basis'] = Variable<String>(measurementBasis);
     map['values_json'] = Variable<String>(valuesJson);
+    if (!nullToAbsent || templateVersionId != null) {
+      map['template_version_id'] = Variable<int>(templateVersionId);
+    }
+    map['field_definitions_json'] = Variable<String>(fieldDefinitionsJson);
     map['fit_preference'] = Variable<String>(fitPreference);
     map['style_instructions'] = Variable<String>(styleInstructions);
     map['notes'] = Variable<String>(notes);
@@ -1530,10 +2653,16 @@ class MeasurementRevision extends DataClass
       profileId: Value(profileId),
       revisionNumber: Value(revisionNumber),
       garmentType: Value(garmentType),
+      garmentLabelEnglish: Value(garmentLabelEnglish),
+      garmentLabelUrdu: Value(garmentLabelUrdu),
       profileName: Value(profileName),
       unit: Value(unit),
       measurementBasis: Value(measurementBasis),
       valuesJson: Value(valuesJson),
+      templateVersionId: templateVersionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(templateVersionId),
+      fieldDefinitionsJson: Value(fieldDefinitionsJson),
       fitPreference: Value(fitPreference),
       styleInstructions: Value(styleInstructions),
       notes: Value(notes),
@@ -1551,10 +2680,18 @@ class MeasurementRevision extends DataClass
       profileId: serializer.fromJson<int>(json['profileId']),
       revisionNumber: serializer.fromJson<int>(json['revisionNumber']),
       garmentType: serializer.fromJson<String>(json['garmentType']),
+      garmentLabelEnglish: serializer.fromJson<String>(
+        json['garmentLabelEnglish'],
+      ),
+      garmentLabelUrdu: serializer.fromJson<String>(json['garmentLabelUrdu']),
       profileName: serializer.fromJson<String>(json['profileName']),
       unit: serializer.fromJson<String>(json['unit']),
       measurementBasis: serializer.fromJson<String>(json['measurementBasis']),
       valuesJson: serializer.fromJson<String>(json['valuesJson']),
+      templateVersionId: serializer.fromJson<int?>(json['templateVersionId']),
+      fieldDefinitionsJson: serializer.fromJson<String>(
+        json['fieldDefinitionsJson'],
+      ),
       fitPreference: serializer.fromJson<String>(json['fitPreference']),
       styleInstructions: serializer.fromJson<String>(json['styleInstructions']),
       notes: serializer.fromJson<String>(json['notes']),
@@ -1569,10 +2706,14 @@ class MeasurementRevision extends DataClass
       'profileId': serializer.toJson<int>(profileId),
       'revisionNumber': serializer.toJson<int>(revisionNumber),
       'garmentType': serializer.toJson<String>(garmentType),
+      'garmentLabelEnglish': serializer.toJson<String>(garmentLabelEnglish),
+      'garmentLabelUrdu': serializer.toJson<String>(garmentLabelUrdu),
       'profileName': serializer.toJson<String>(profileName),
       'unit': serializer.toJson<String>(unit),
       'measurementBasis': serializer.toJson<String>(measurementBasis),
       'valuesJson': serializer.toJson<String>(valuesJson),
+      'templateVersionId': serializer.toJson<int?>(templateVersionId),
+      'fieldDefinitionsJson': serializer.toJson<String>(fieldDefinitionsJson),
       'fitPreference': serializer.toJson<String>(fitPreference),
       'styleInstructions': serializer.toJson<String>(styleInstructions),
       'notes': serializer.toJson<String>(notes),
@@ -1585,10 +2726,14 @@ class MeasurementRevision extends DataClass
     int? profileId,
     int? revisionNumber,
     String? garmentType,
+    String? garmentLabelEnglish,
+    String? garmentLabelUrdu,
     String? profileName,
     String? unit,
     String? measurementBasis,
     String? valuesJson,
+    Value<int?> templateVersionId = const Value.absent(),
+    String? fieldDefinitionsJson,
     String? fitPreference,
     String? styleInstructions,
     String? notes,
@@ -1598,10 +2743,16 @@ class MeasurementRevision extends DataClass
     profileId: profileId ?? this.profileId,
     revisionNumber: revisionNumber ?? this.revisionNumber,
     garmentType: garmentType ?? this.garmentType,
+    garmentLabelEnglish: garmentLabelEnglish ?? this.garmentLabelEnglish,
+    garmentLabelUrdu: garmentLabelUrdu ?? this.garmentLabelUrdu,
     profileName: profileName ?? this.profileName,
     unit: unit ?? this.unit,
     measurementBasis: measurementBasis ?? this.measurementBasis,
     valuesJson: valuesJson ?? this.valuesJson,
+    templateVersionId: templateVersionId.present
+        ? templateVersionId.value
+        : this.templateVersionId,
+    fieldDefinitionsJson: fieldDefinitionsJson ?? this.fieldDefinitionsJson,
     fitPreference: fitPreference ?? this.fitPreference,
     styleInstructions: styleInstructions ?? this.styleInstructions,
     notes: notes ?? this.notes,
@@ -1617,6 +2768,12 @@ class MeasurementRevision extends DataClass
       garmentType: data.garmentType.present
           ? data.garmentType.value
           : this.garmentType,
+      garmentLabelEnglish: data.garmentLabelEnglish.present
+          ? data.garmentLabelEnglish.value
+          : this.garmentLabelEnglish,
+      garmentLabelUrdu: data.garmentLabelUrdu.present
+          ? data.garmentLabelUrdu.value
+          : this.garmentLabelUrdu,
       profileName: data.profileName.present
           ? data.profileName.value
           : this.profileName,
@@ -1627,6 +2784,12 @@ class MeasurementRevision extends DataClass
       valuesJson: data.valuesJson.present
           ? data.valuesJson.value
           : this.valuesJson,
+      templateVersionId: data.templateVersionId.present
+          ? data.templateVersionId.value
+          : this.templateVersionId,
+      fieldDefinitionsJson: data.fieldDefinitionsJson.present
+          ? data.fieldDefinitionsJson.value
+          : this.fieldDefinitionsJson,
       fitPreference: data.fitPreference.present
           ? data.fitPreference.value
           : this.fitPreference,
@@ -1645,10 +2808,14 @@ class MeasurementRevision extends DataClass
           ..write('profileId: $profileId, ')
           ..write('revisionNumber: $revisionNumber, ')
           ..write('garmentType: $garmentType, ')
+          ..write('garmentLabelEnglish: $garmentLabelEnglish, ')
+          ..write('garmentLabelUrdu: $garmentLabelUrdu, ')
           ..write('profileName: $profileName, ')
           ..write('unit: $unit, ')
           ..write('measurementBasis: $measurementBasis, ')
           ..write('valuesJson: $valuesJson, ')
+          ..write('templateVersionId: $templateVersionId, ')
+          ..write('fieldDefinitionsJson: $fieldDefinitionsJson, ')
           ..write('fitPreference: $fitPreference, ')
           ..write('styleInstructions: $styleInstructions, ')
           ..write('notes: $notes, ')
@@ -1663,10 +2830,14 @@ class MeasurementRevision extends DataClass
     profileId,
     revisionNumber,
     garmentType,
+    garmentLabelEnglish,
+    garmentLabelUrdu,
     profileName,
     unit,
     measurementBasis,
     valuesJson,
+    templateVersionId,
+    fieldDefinitionsJson,
     fitPreference,
     styleInstructions,
     notes,
@@ -1680,10 +2851,14 @@ class MeasurementRevision extends DataClass
           other.profileId == this.profileId &&
           other.revisionNumber == this.revisionNumber &&
           other.garmentType == this.garmentType &&
+          other.garmentLabelEnglish == this.garmentLabelEnglish &&
+          other.garmentLabelUrdu == this.garmentLabelUrdu &&
           other.profileName == this.profileName &&
           other.unit == this.unit &&
           other.measurementBasis == this.measurementBasis &&
           other.valuesJson == this.valuesJson &&
+          other.templateVersionId == this.templateVersionId &&
+          other.fieldDefinitionsJson == this.fieldDefinitionsJson &&
           other.fitPreference == this.fitPreference &&
           other.styleInstructions == this.styleInstructions &&
           other.notes == this.notes &&
@@ -1696,10 +2871,14 @@ class MeasurementRevisionsCompanion
   final Value<int> profileId;
   final Value<int> revisionNumber;
   final Value<String> garmentType;
+  final Value<String> garmentLabelEnglish;
+  final Value<String> garmentLabelUrdu;
   final Value<String> profileName;
   final Value<String> unit;
   final Value<String> measurementBasis;
   final Value<String> valuesJson;
+  final Value<int?> templateVersionId;
+  final Value<String> fieldDefinitionsJson;
   final Value<String> fitPreference;
   final Value<String> styleInstructions;
   final Value<String> notes;
@@ -1709,10 +2888,14 @@ class MeasurementRevisionsCompanion
     this.profileId = const Value.absent(),
     this.revisionNumber = const Value.absent(),
     this.garmentType = const Value.absent(),
+    this.garmentLabelEnglish = const Value.absent(),
+    this.garmentLabelUrdu = const Value.absent(),
     this.profileName = const Value.absent(),
     this.unit = const Value.absent(),
     this.measurementBasis = const Value.absent(),
     this.valuesJson = const Value.absent(),
+    this.templateVersionId = const Value.absent(),
+    this.fieldDefinitionsJson = const Value.absent(),
     this.fitPreference = const Value.absent(),
     this.styleInstructions = const Value.absent(),
     this.notes = const Value.absent(),
@@ -1723,10 +2906,14 @@ class MeasurementRevisionsCompanion
     required int profileId,
     required int revisionNumber,
     required String garmentType,
+    this.garmentLabelEnglish = const Value.absent(),
+    this.garmentLabelUrdu = const Value.absent(),
     required String profileName,
     required String unit,
     required String measurementBasis,
     required String valuesJson,
+    this.templateVersionId = const Value.absent(),
+    this.fieldDefinitionsJson = const Value.absent(),
     required String fitPreference,
     this.styleInstructions = const Value.absent(),
     this.notes = const Value.absent(),
@@ -1744,10 +2931,14 @@ class MeasurementRevisionsCompanion
     Expression<int>? profileId,
     Expression<int>? revisionNumber,
     Expression<String>? garmentType,
+    Expression<String>? garmentLabelEnglish,
+    Expression<String>? garmentLabelUrdu,
     Expression<String>? profileName,
     Expression<String>? unit,
     Expression<String>? measurementBasis,
     Expression<String>? valuesJson,
+    Expression<int>? templateVersionId,
+    Expression<String>? fieldDefinitionsJson,
     Expression<String>? fitPreference,
     Expression<String>? styleInstructions,
     Expression<String>? notes,
@@ -1758,10 +2949,16 @@ class MeasurementRevisionsCompanion
       if (profileId != null) 'profile_id': profileId,
       if (revisionNumber != null) 'revision_number': revisionNumber,
       if (garmentType != null) 'garment_type': garmentType,
+      if (garmentLabelEnglish != null)
+        'garment_label_english': garmentLabelEnglish,
+      if (garmentLabelUrdu != null) 'garment_label_urdu': garmentLabelUrdu,
       if (profileName != null) 'profile_name': profileName,
       if (unit != null) 'unit': unit,
       if (measurementBasis != null) 'measurement_basis': measurementBasis,
       if (valuesJson != null) 'values_json': valuesJson,
+      if (templateVersionId != null) 'template_version_id': templateVersionId,
+      if (fieldDefinitionsJson != null)
+        'field_definitions_json': fieldDefinitionsJson,
       if (fitPreference != null) 'fit_preference': fitPreference,
       if (styleInstructions != null) 'style_instructions': styleInstructions,
       if (notes != null) 'notes': notes,
@@ -1774,10 +2971,14 @@ class MeasurementRevisionsCompanion
     Value<int>? profileId,
     Value<int>? revisionNumber,
     Value<String>? garmentType,
+    Value<String>? garmentLabelEnglish,
+    Value<String>? garmentLabelUrdu,
     Value<String>? profileName,
     Value<String>? unit,
     Value<String>? measurementBasis,
     Value<String>? valuesJson,
+    Value<int?>? templateVersionId,
+    Value<String>? fieldDefinitionsJson,
     Value<String>? fitPreference,
     Value<String>? styleInstructions,
     Value<String>? notes,
@@ -1788,10 +2989,14 @@ class MeasurementRevisionsCompanion
       profileId: profileId ?? this.profileId,
       revisionNumber: revisionNumber ?? this.revisionNumber,
       garmentType: garmentType ?? this.garmentType,
+      garmentLabelEnglish: garmentLabelEnglish ?? this.garmentLabelEnglish,
+      garmentLabelUrdu: garmentLabelUrdu ?? this.garmentLabelUrdu,
       profileName: profileName ?? this.profileName,
       unit: unit ?? this.unit,
       measurementBasis: measurementBasis ?? this.measurementBasis,
       valuesJson: valuesJson ?? this.valuesJson,
+      templateVersionId: templateVersionId ?? this.templateVersionId,
+      fieldDefinitionsJson: fieldDefinitionsJson ?? this.fieldDefinitionsJson,
       fitPreference: fitPreference ?? this.fitPreference,
       styleInstructions: styleInstructions ?? this.styleInstructions,
       notes: notes ?? this.notes,
@@ -1814,6 +3019,14 @@ class MeasurementRevisionsCompanion
     if (garmentType.present) {
       map['garment_type'] = Variable<String>(garmentType.value);
     }
+    if (garmentLabelEnglish.present) {
+      map['garment_label_english'] = Variable<String>(
+        garmentLabelEnglish.value,
+      );
+    }
+    if (garmentLabelUrdu.present) {
+      map['garment_label_urdu'] = Variable<String>(garmentLabelUrdu.value);
+    }
     if (profileName.present) {
       map['profile_name'] = Variable<String>(profileName.value);
     }
@@ -1825,6 +3038,14 @@ class MeasurementRevisionsCompanion
     }
     if (valuesJson.present) {
       map['values_json'] = Variable<String>(valuesJson.value);
+    }
+    if (templateVersionId.present) {
+      map['template_version_id'] = Variable<int>(templateVersionId.value);
+    }
+    if (fieldDefinitionsJson.present) {
+      map['field_definitions_json'] = Variable<String>(
+        fieldDefinitionsJson.value,
+      );
     }
     if (fitPreference.present) {
       map['fit_preference'] = Variable<String>(fitPreference.value);
@@ -1848,10 +3069,14 @@ class MeasurementRevisionsCompanion
           ..write('profileId: $profileId, ')
           ..write('revisionNumber: $revisionNumber, ')
           ..write('garmentType: $garmentType, ')
+          ..write('garmentLabelEnglish: $garmentLabelEnglish, ')
+          ..write('garmentLabelUrdu: $garmentLabelUrdu, ')
           ..write('profileName: $profileName, ')
           ..write('unit: $unit, ')
           ..write('measurementBasis: $measurementBasis, ')
           ..write('valuesJson: $valuesJson, ')
+          ..write('templateVersionId: $templateVersionId, ')
+          ..write('fieldDefinitionsJson: $fieldDefinitionsJson, ')
           ..write('fitPreference: $fitPreference, ')
           ..write('styleInstructions: $styleInstructions, ')
           ..write('notes: $notes, ')
@@ -2552,6 +3777,30 @@ class $OrderItemsTable extends OrderItems
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _garmentLabelEnglishMeta =
+      const VerificationMeta('garmentLabelEnglish');
+  @override
+  late final GeneratedColumn<String> garmentLabelEnglish =
+      GeneratedColumn<String>(
+        'garment_label_english',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _garmentLabelUrduMeta = const VerificationMeta(
+    'garmentLabelUrdu',
+  );
+  @override
+  late final GeneratedColumn<String> garmentLabelUrdu = GeneratedColumn<String>(
+    'garment_label_urdu',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   static const VerificationMeta _quantityMeta = const VerificationMeta(
     'quantity',
   );
@@ -2618,6 +3867,18 @@ class $OrderItemsTable extends OrderItems
         false,
         type: DriftSqlType.string,
         requiredDuringInsert: true,
+      );
+  static const VerificationMeta _measurementFieldDefinitionsJsonMeta =
+      const VerificationMeta('measurementFieldDefinitionsJson');
+  @override
+  late final GeneratedColumn<String> measurementFieldDefinitionsJson =
+      GeneratedColumn<String>(
+        'measurement_field_definitions_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
       );
   static const VerificationMeta _fitPreferenceMeta = const VerificationMeta(
     'fitPreference',
@@ -2748,11 +4009,14 @@ class $OrderItemsTable extends OrderItems
     orderId,
     measurementRevisionId,
     garmentType,
+    garmentLabelEnglish,
+    garmentLabelUrdu,
     quantity,
     measurementProfileName,
     measurementUnit,
     measurementBasis,
     measurementValuesJson,
+    measurementFieldDefinitionsJson,
     fitPreference,
     measurementNotes,
     styleInstructions,
@@ -2809,6 +4073,24 @@ class $OrderItemsTable extends OrderItems
     } else if (isInserting) {
       context.missing(_garmentTypeMeta);
     }
+    if (data.containsKey('garment_label_english')) {
+      context.handle(
+        _garmentLabelEnglishMeta,
+        garmentLabelEnglish.isAcceptableOrUnknown(
+          data['garment_label_english']!,
+          _garmentLabelEnglishMeta,
+        ),
+      );
+    }
+    if (data.containsKey('garment_label_urdu')) {
+      context.handle(
+        _garmentLabelUrduMeta,
+        garmentLabelUrdu.isAcceptableOrUnknown(
+          data['garment_label_urdu']!,
+          _garmentLabelUrduMeta,
+        ),
+      );
+    }
     if (data.containsKey('quantity')) {
       context.handle(
         _quantityMeta,
@@ -2860,6 +4142,15 @@ class $OrderItemsTable extends OrderItems
       );
     } else if (isInserting) {
       context.missing(_measurementValuesJsonMeta);
+    }
+    if (data.containsKey('measurement_field_definitions_json')) {
+      context.handle(
+        _measurementFieldDefinitionsJsonMeta,
+        measurementFieldDefinitionsJson.isAcceptableOrUnknown(
+          data['measurement_field_definitions_json']!,
+          _measurementFieldDefinitionsJsonMeta,
+        ),
+      );
     }
     if (data.containsKey('fit_preference')) {
       context.handle(
@@ -2971,6 +4262,14 @@ class $OrderItemsTable extends OrderItems
         DriftSqlType.string,
         data['${effectivePrefix}garment_type'],
       )!,
+      garmentLabelEnglish: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}garment_label_english'],
+      )!,
+      garmentLabelUrdu: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}garment_label_urdu'],
+      )!,
       quantity: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}quantity'],
@@ -2990,6 +4289,10 @@ class $OrderItemsTable extends OrderItems
       measurementValuesJson: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}measurement_values_json'],
+      )!,
+      measurementFieldDefinitionsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}measurement_field_definitions_json'],
       )!,
       fitPreference: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -3045,11 +4348,14 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
   final int orderId;
   final int measurementRevisionId;
   final String garmentType;
+  final String garmentLabelEnglish;
+  final String garmentLabelUrdu;
   final int quantity;
   final String measurementProfileName;
   final String measurementUnit;
   final String measurementBasis;
   final String measurementValuesJson;
+  final String measurementFieldDefinitionsJson;
   final String fitPreference;
   final String measurementNotes;
   final String styleInstructions;
@@ -3065,11 +4371,14 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     required this.orderId,
     required this.measurementRevisionId,
     required this.garmentType,
+    required this.garmentLabelEnglish,
+    required this.garmentLabelUrdu,
     required this.quantity,
     required this.measurementProfileName,
     required this.measurementUnit,
     required this.measurementBasis,
     required this.measurementValuesJson,
+    required this.measurementFieldDefinitionsJson,
     required this.fitPreference,
     required this.measurementNotes,
     required this.styleInstructions,
@@ -3088,11 +4397,16 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     map['order_id'] = Variable<int>(orderId);
     map['measurement_revision_id'] = Variable<int>(measurementRevisionId);
     map['garment_type'] = Variable<String>(garmentType);
+    map['garment_label_english'] = Variable<String>(garmentLabelEnglish);
+    map['garment_label_urdu'] = Variable<String>(garmentLabelUrdu);
     map['quantity'] = Variable<int>(quantity);
     map['measurement_profile_name'] = Variable<String>(measurementProfileName);
     map['measurement_unit'] = Variable<String>(measurementUnit);
     map['measurement_basis'] = Variable<String>(measurementBasis);
     map['measurement_values_json'] = Variable<String>(measurementValuesJson);
+    map['measurement_field_definitions_json'] = Variable<String>(
+      measurementFieldDefinitionsJson,
+    );
     map['fit_preference'] = Variable<String>(fitPreference);
     map['measurement_notes'] = Variable<String>(measurementNotes);
     map['style_instructions'] = Variable<String>(styleInstructions);
@@ -3114,11 +4428,14 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       orderId: Value(orderId),
       measurementRevisionId: Value(measurementRevisionId),
       garmentType: Value(garmentType),
+      garmentLabelEnglish: Value(garmentLabelEnglish),
+      garmentLabelUrdu: Value(garmentLabelUrdu),
       quantity: Value(quantity),
       measurementProfileName: Value(measurementProfileName),
       measurementUnit: Value(measurementUnit),
       measurementBasis: Value(measurementBasis),
       measurementValuesJson: Value(measurementValuesJson),
+      measurementFieldDefinitionsJson: Value(measurementFieldDefinitionsJson),
       fitPreference: Value(fitPreference),
       measurementNotes: Value(measurementNotes),
       styleInstructions: Value(styleInstructions),
@@ -3144,6 +4461,10 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
         json['measurementRevisionId'],
       ),
       garmentType: serializer.fromJson<String>(json['garmentType']),
+      garmentLabelEnglish: serializer.fromJson<String>(
+        json['garmentLabelEnglish'],
+      ),
+      garmentLabelUrdu: serializer.fromJson<String>(json['garmentLabelUrdu']),
       quantity: serializer.fromJson<int>(json['quantity']),
       measurementProfileName: serializer.fromJson<String>(
         json['measurementProfileName'],
@@ -3152,6 +4473,9 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       measurementBasis: serializer.fromJson<String>(json['measurementBasis']),
       measurementValuesJson: serializer.fromJson<String>(
         json['measurementValuesJson'],
+      ),
+      measurementFieldDefinitionsJson: serializer.fromJson<String>(
+        json['measurementFieldDefinitionsJson'],
       ),
       fitPreference: serializer.fromJson<String>(json['fitPreference']),
       measurementNotes: serializer.fromJson<String>(json['measurementNotes']),
@@ -3179,6 +4503,8 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       'orderId': serializer.toJson<int>(orderId),
       'measurementRevisionId': serializer.toJson<int>(measurementRevisionId),
       'garmentType': serializer.toJson<String>(garmentType),
+      'garmentLabelEnglish': serializer.toJson<String>(garmentLabelEnglish),
+      'garmentLabelUrdu': serializer.toJson<String>(garmentLabelUrdu),
       'quantity': serializer.toJson<int>(quantity),
       'measurementProfileName': serializer.toJson<String>(
         measurementProfileName,
@@ -3186,6 +4512,9 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       'measurementUnit': serializer.toJson<String>(measurementUnit),
       'measurementBasis': serializer.toJson<String>(measurementBasis),
       'measurementValuesJson': serializer.toJson<String>(measurementValuesJson),
+      'measurementFieldDefinitionsJson': serializer.toJson<String>(
+        measurementFieldDefinitionsJson,
+      ),
       'fitPreference': serializer.toJson<String>(fitPreference),
       'measurementNotes': serializer.toJson<String>(measurementNotes),
       'styleInstructions': serializer.toJson<String>(styleInstructions),
@@ -3206,11 +4535,14 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     int? orderId,
     int? measurementRevisionId,
     String? garmentType,
+    String? garmentLabelEnglish,
+    String? garmentLabelUrdu,
     int? quantity,
     String? measurementProfileName,
     String? measurementUnit,
     String? measurementBasis,
     String? measurementValuesJson,
+    String? measurementFieldDefinitionsJson,
     String? fitPreference,
     String? measurementNotes,
     String? styleInstructions,
@@ -3226,12 +4558,16 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     orderId: orderId ?? this.orderId,
     measurementRevisionId: measurementRevisionId ?? this.measurementRevisionId,
     garmentType: garmentType ?? this.garmentType,
+    garmentLabelEnglish: garmentLabelEnglish ?? this.garmentLabelEnglish,
+    garmentLabelUrdu: garmentLabelUrdu ?? this.garmentLabelUrdu,
     quantity: quantity ?? this.quantity,
     measurementProfileName:
         measurementProfileName ?? this.measurementProfileName,
     measurementUnit: measurementUnit ?? this.measurementUnit,
     measurementBasis: measurementBasis ?? this.measurementBasis,
     measurementValuesJson: measurementValuesJson ?? this.measurementValuesJson,
+    measurementFieldDefinitionsJson:
+        measurementFieldDefinitionsJson ?? this.measurementFieldDefinitionsJson,
     fitPreference: fitPreference ?? this.fitPreference,
     measurementNotes: measurementNotes ?? this.measurementNotes,
     styleInstructions: styleInstructions ?? this.styleInstructions,
@@ -3254,6 +4590,12 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       garmentType: data.garmentType.present
           ? data.garmentType.value
           : this.garmentType,
+      garmentLabelEnglish: data.garmentLabelEnglish.present
+          ? data.garmentLabelEnglish.value
+          : this.garmentLabelEnglish,
+      garmentLabelUrdu: data.garmentLabelUrdu.present
+          ? data.garmentLabelUrdu.value
+          : this.garmentLabelUrdu,
       quantity: data.quantity.present ? data.quantity.value : this.quantity,
       measurementProfileName: data.measurementProfileName.present
           ? data.measurementProfileName.value
@@ -3267,6 +4609,10 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       measurementValuesJson: data.measurementValuesJson.present
           ? data.measurementValuesJson.value
           : this.measurementValuesJson,
+      measurementFieldDefinitionsJson:
+          data.measurementFieldDefinitionsJson.present
+          ? data.measurementFieldDefinitionsJson.value
+          : this.measurementFieldDefinitionsJson,
       fitPreference: data.fitPreference.present
           ? data.fitPreference.value
           : this.fitPreference,
@@ -3301,11 +4647,16 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
           ..write('orderId: $orderId, ')
           ..write('measurementRevisionId: $measurementRevisionId, ')
           ..write('garmentType: $garmentType, ')
+          ..write('garmentLabelEnglish: $garmentLabelEnglish, ')
+          ..write('garmentLabelUrdu: $garmentLabelUrdu, ')
           ..write('quantity: $quantity, ')
           ..write('measurementProfileName: $measurementProfileName, ')
           ..write('measurementUnit: $measurementUnit, ')
           ..write('measurementBasis: $measurementBasis, ')
           ..write('measurementValuesJson: $measurementValuesJson, ')
+          ..write(
+            'measurementFieldDefinitionsJson: $measurementFieldDefinitionsJson, ',
+          )
           ..write('fitPreference: $fitPreference, ')
           ..write('measurementNotes: $measurementNotes, ')
           ..write('styleInstructions: $styleInstructions, ')
@@ -3321,16 +4672,19 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     orderId,
     measurementRevisionId,
     garmentType,
+    garmentLabelEnglish,
+    garmentLabelUrdu,
     quantity,
     measurementProfileName,
     measurementUnit,
     measurementBasis,
     measurementValuesJson,
+    measurementFieldDefinitionsJson,
     fitPreference,
     measurementNotes,
     styleInstructions,
@@ -3341,7 +4695,7 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     status,
     createdAt,
     updatedAt,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3350,11 +4704,15 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
           other.orderId == this.orderId &&
           other.measurementRevisionId == this.measurementRevisionId &&
           other.garmentType == this.garmentType &&
+          other.garmentLabelEnglish == this.garmentLabelEnglish &&
+          other.garmentLabelUrdu == this.garmentLabelUrdu &&
           other.quantity == this.quantity &&
           other.measurementProfileName == this.measurementProfileName &&
           other.measurementUnit == this.measurementUnit &&
           other.measurementBasis == this.measurementBasis &&
           other.measurementValuesJson == this.measurementValuesJson &&
+          other.measurementFieldDefinitionsJson ==
+              this.measurementFieldDefinitionsJson &&
           other.fitPreference == this.fitPreference &&
           other.measurementNotes == this.measurementNotes &&
           other.styleInstructions == this.styleInstructions &&
@@ -3373,11 +4731,14 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
   final Value<int> orderId;
   final Value<int> measurementRevisionId;
   final Value<String> garmentType;
+  final Value<String> garmentLabelEnglish;
+  final Value<String> garmentLabelUrdu;
   final Value<int> quantity;
   final Value<String> measurementProfileName;
   final Value<String> measurementUnit;
   final Value<String> measurementBasis;
   final Value<String> measurementValuesJson;
+  final Value<String> measurementFieldDefinitionsJson;
   final Value<String> fitPreference;
   final Value<String> measurementNotes;
   final Value<String> styleInstructions;
@@ -3393,11 +4754,14 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
     this.orderId = const Value.absent(),
     this.measurementRevisionId = const Value.absent(),
     this.garmentType = const Value.absent(),
+    this.garmentLabelEnglish = const Value.absent(),
+    this.garmentLabelUrdu = const Value.absent(),
     this.quantity = const Value.absent(),
     this.measurementProfileName = const Value.absent(),
     this.measurementUnit = const Value.absent(),
     this.measurementBasis = const Value.absent(),
     this.measurementValuesJson = const Value.absent(),
+    this.measurementFieldDefinitionsJson = const Value.absent(),
     this.fitPreference = const Value.absent(),
     this.measurementNotes = const Value.absent(),
     this.styleInstructions = const Value.absent(),
@@ -3414,11 +4778,14 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
     required int orderId,
     required int measurementRevisionId,
     required String garmentType,
+    this.garmentLabelEnglish = const Value.absent(),
+    this.garmentLabelUrdu = const Value.absent(),
     required int quantity,
     required String measurementProfileName,
     required String measurementUnit,
     required String measurementBasis,
     required String measurementValuesJson,
+    this.measurementFieldDefinitionsJson = const Value.absent(),
     required String fitPreference,
     this.measurementNotes = const Value.absent(),
     this.styleInstructions = const Value.absent(),
@@ -3444,11 +4811,14 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
     Expression<int>? orderId,
     Expression<int>? measurementRevisionId,
     Expression<String>? garmentType,
+    Expression<String>? garmentLabelEnglish,
+    Expression<String>? garmentLabelUrdu,
     Expression<int>? quantity,
     Expression<String>? measurementProfileName,
     Expression<String>? measurementUnit,
     Expression<String>? measurementBasis,
     Expression<String>? measurementValuesJson,
+    Expression<String>? measurementFieldDefinitionsJson,
     Expression<String>? fitPreference,
     Expression<String>? measurementNotes,
     Expression<String>? styleInstructions,
@@ -3466,6 +4836,9 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
       if (measurementRevisionId != null)
         'measurement_revision_id': measurementRevisionId,
       if (garmentType != null) 'garment_type': garmentType,
+      if (garmentLabelEnglish != null)
+        'garment_label_english': garmentLabelEnglish,
+      if (garmentLabelUrdu != null) 'garment_label_urdu': garmentLabelUrdu,
       if (quantity != null) 'quantity': quantity,
       if (measurementProfileName != null)
         'measurement_profile_name': measurementProfileName,
@@ -3473,6 +4846,8 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
       if (measurementBasis != null) 'measurement_basis': measurementBasis,
       if (measurementValuesJson != null)
         'measurement_values_json': measurementValuesJson,
+      if (measurementFieldDefinitionsJson != null)
+        'measurement_field_definitions_json': measurementFieldDefinitionsJson,
       if (fitPreference != null) 'fit_preference': fitPreference,
       if (measurementNotes != null) 'measurement_notes': measurementNotes,
       if (styleInstructions != null) 'style_instructions': styleInstructions,
@@ -3494,11 +4869,14 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
     Value<int>? orderId,
     Value<int>? measurementRevisionId,
     Value<String>? garmentType,
+    Value<String>? garmentLabelEnglish,
+    Value<String>? garmentLabelUrdu,
     Value<int>? quantity,
     Value<String>? measurementProfileName,
     Value<String>? measurementUnit,
     Value<String>? measurementBasis,
     Value<String>? measurementValuesJson,
+    Value<String>? measurementFieldDefinitionsJson,
     Value<String>? fitPreference,
     Value<String>? measurementNotes,
     Value<String>? styleInstructions,
@@ -3516,6 +4894,8 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
       measurementRevisionId:
           measurementRevisionId ?? this.measurementRevisionId,
       garmentType: garmentType ?? this.garmentType,
+      garmentLabelEnglish: garmentLabelEnglish ?? this.garmentLabelEnglish,
+      garmentLabelUrdu: garmentLabelUrdu ?? this.garmentLabelUrdu,
       quantity: quantity ?? this.quantity,
       measurementProfileName:
           measurementProfileName ?? this.measurementProfileName,
@@ -3523,6 +4903,9 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
       measurementBasis: measurementBasis ?? this.measurementBasis,
       measurementValuesJson:
           measurementValuesJson ?? this.measurementValuesJson,
+      measurementFieldDefinitionsJson:
+          measurementFieldDefinitionsJson ??
+          this.measurementFieldDefinitionsJson,
       fitPreference: fitPreference ?? this.fitPreference,
       measurementNotes: measurementNotes ?? this.measurementNotes,
       styleInstructions: styleInstructions ?? this.styleInstructions,
@@ -3555,6 +4938,14 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
     if (garmentType.present) {
       map['garment_type'] = Variable<String>(garmentType.value);
     }
+    if (garmentLabelEnglish.present) {
+      map['garment_label_english'] = Variable<String>(
+        garmentLabelEnglish.value,
+      );
+    }
+    if (garmentLabelUrdu.present) {
+      map['garment_label_urdu'] = Variable<String>(garmentLabelUrdu.value);
+    }
     if (quantity.present) {
       map['quantity'] = Variable<int>(quantity.value);
     }
@@ -3572,6 +4963,11 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
     if (measurementValuesJson.present) {
       map['measurement_values_json'] = Variable<String>(
         measurementValuesJson.value,
+      );
+    }
+    if (measurementFieldDefinitionsJson.present) {
+      map['measurement_field_definitions_json'] = Variable<String>(
+        measurementFieldDefinitionsJson.value,
       );
     }
     if (fitPreference.present) {
@@ -3618,11 +5014,16 @@ class OrderItemsCompanion extends UpdateCompanion<OrderItem> {
           ..write('orderId: $orderId, ')
           ..write('measurementRevisionId: $measurementRevisionId, ')
           ..write('garmentType: $garmentType, ')
+          ..write('garmentLabelEnglish: $garmentLabelEnglish, ')
+          ..write('garmentLabelUrdu: $garmentLabelUrdu, ')
           ..write('quantity: $quantity, ')
           ..write('measurementProfileName: $measurementProfileName, ')
           ..write('measurementUnit: $measurementUnit, ')
           ..write('measurementBasis: $measurementBasis, ')
           ..write('measurementValuesJson: $measurementValuesJson, ')
+          ..write(
+            'measurementFieldDefinitionsJson: $measurementFieldDefinitionsJson, ',
+          )
           ..write('fitPreference: $fitPreference, ')
           ..write('measurementNotes: $measurementNotes, ')
           ..write('styleInstructions: $styleInstructions, ')
@@ -5379,6 +6780,565 @@ class KarigarAssignmentsCompanion extends UpdateCompanion<KarigarAssignment> {
   }
 }
 
+class $MeasurementTemplateFieldsTable extends MeasurementTemplateFields
+    with TableInfo<$MeasurementTemplateFieldsTable, MeasurementTemplateField> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MeasurementTemplateFieldsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _templateVersionIdMeta = const VerificationMeta(
+    'templateVersionId',
+  );
+  @override
+  late final GeneratedColumn<int> templateVersionId = GeneratedColumn<int>(
+    'template_version_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES measurement_template_versions (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _fieldIdMeta = const VerificationMeta(
+    'fieldId',
+  );
+  @override
+  late final GeneratedColumn<String> fieldId = GeneratedColumn<String>(
+    'field_id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayLabelMeta = const VerificationMeta(
+    'displayLabel',
+  );
+  @override
+  late final GeneratedColumn<String> displayLabel = GeneratedColumn<String>(
+    'display_label',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayLabelUrduMeta = const VerificationMeta(
+    'displayLabelUrdu',
+  );
+  @override
+  late final GeneratedColumn<String> displayLabelUrdu = GeneratedColumn<String>(
+    'display_label_urdu',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _displayOrderMeta = const VerificationMeta(
+    'displayOrder',
+  );
+  @override
+  late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
+    'display_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isRequiredMeta = const VerificationMeta(
+    'isRequired',
+  );
+  @override
+  late final GeneratedColumn<bool> isRequired = GeneratedColumn<bool>(
+    'is_required',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_required" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _isArchivedMeta = const VerificationMeta(
+    'isArchived',
+  );
+  @override
+  late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>(
+    'is_archived',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_archived" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    templateVersionId,
+    fieldId,
+    displayLabel,
+    displayLabelUrdu,
+    displayOrder,
+    isRequired,
+    isArchived,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'measurement_template_fields';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MeasurementTemplateField> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('template_version_id')) {
+      context.handle(
+        _templateVersionIdMeta,
+        templateVersionId.isAcceptableOrUnknown(
+          data['template_version_id']!,
+          _templateVersionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_templateVersionIdMeta);
+    }
+    if (data.containsKey('field_id')) {
+      context.handle(
+        _fieldIdMeta,
+        fieldId.isAcceptableOrUnknown(data['field_id']!, _fieldIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fieldIdMeta);
+    }
+    if (data.containsKey('display_label')) {
+      context.handle(
+        _displayLabelMeta,
+        displayLabel.isAcceptableOrUnknown(
+          data['display_label']!,
+          _displayLabelMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayLabelMeta);
+    }
+    if (data.containsKey('display_label_urdu')) {
+      context.handle(
+        _displayLabelUrduMeta,
+        displayLabelUrdu.isAcceptableOrUnknown(
+          data['display_label_urdu']!,
+          _displayLabelUrduMeta,
+        ),
+      );
+    }
+    if (data.containsKey('display_order')) {
+      context.handle(
+        _displayOrderMeta,
+        displayOrder.isAcceptableOrUnknown(
+          data['display_order']!,
+          _displayOrderMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayOrderMeta);
+    }
+    if (data.containsKey('is_required')) {
+      context.handle(
+        _isRequiredMeta,
+        isRequired.isAcceptableOrUnknown(data['is_required']!, _isRequiredMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isRequiredMeta);
+    }
+    if (data.containsKey('is_archived')) {
+      context.handle(
+        _isArchivedMeta,
+        isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {templateVersionId, fieldId},
+  ];
+  @override
+  MeasurementTemplateField map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MeasurementTemplateField(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      templateVersionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}template_version_id'],
+      )!,
+      fieldId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}field_id'],
+      )!,
+      displayLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_label'],
+      )!,
+      displayLabelUrdu: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_label_urdu'],
+      ),
+      displayOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_order'],
+      )!,
+      isRequired: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_required'],
+      )!,
+      isArchived: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_archived'],
+      )!,
+    );
+  }
+
+  @override
+  $MeasurementTemplateFieldsTable createAlias(String alias) {
+    return $MeasurementTemplateFieldsTable(attachedDatabase, alias);
+  }
+}
+
+class MeasurementTemplateField extends DataClass
+    implements Insertable<MeasurementTemplateField> {
+  final int id;
+  final int templateVersionId;
+  final String fieldId;
+  final String displayLabel;
+  final String? displayLabelUrdu;
+  final int displayOrder;
+  final bool isRequired;
+  final bool isArchived;
+  const MeasurementTemplateField({
+    required this.id,
+    required this.templateVersionId,
+    required this.fieldId,
+    required this.displayLabel,
+    this.displayLabelUrdu,
+    required this.displayOrder,
+    required this.isRequired,
+    required this.isArchived,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['template_version_id'] = Variable<int>(templateVersionId);
+    map['field_id'] = Variable<String>(fieldId);
+    map['display_label'] = Variable<String>(displayLabel);
+    if (!nullToAbsent || displayLabelUrdu != null) {
+      map['display_label_urdu'] = Variable<String>(displayLabelUrdu);
+    }
+    map['display_order'] = Variable<int>(displayOrder);
+    map['is_required'] = Variable<bool>(isRequired);
+    map['is_archived'] = Variable<bool>(isArchived);
+    return map;
+  }
+
+  MeasurementTemplateFieldsCompanion toCompanion(bool nullToAbsent) {
+    return MeasurementTemplateFieldsCompanion(
+      id: Value(id),
+      templateVersionId: Value(templateVersionId),
+      fieldId: Value(fieldId),
+      displayLabel: Value(displayLabel),
+      displayLabelUrdu: displayLabelUrdu == null && nullToAbsent
+          ? const Value.absent()
+          : Value(displayLabelUrdu),
+      displayOrder: Value(displayOrder),
+      isRequired: Value(isRequired),
+      isArchived: Value(isArchived),
+    );
+  }
+
+  factory MeasurementTemplateField.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MeasurementTemplateField(
+      id: serializer.fromJson<int>(json['id']),
+      templateVersionId: serializer.fromJson<int>(json['templateVersionId']),
+      fieldId: serializer.fromJson<String>(json['fieldId']),
+      displayLabel: serializer.fromJson<String>(json['displayLabel']),
+      displayLabelUrdu: serializer.fromJson<String?>(json['displayLabelUrdu']),
+      displayOrder: serializer.fromJson<int>(json['displayOrder']),
+      isRequired: serializer.fromJson<bool>(json['isRequired']),
+      isArchived: serializer.fromJson<bool>(json['isArchived']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'templateVersionId': serializer.toJson<int>(templateVersionId),
+      'fieldId': serializer.toJson<String>(fieldId),
+      'displayLabel': serializer.toJson<String>(displayLabel),
+      'displayLabelUrdu': serializer.toJson<String?>(displayLabelUrdu),
+      'displayOrder': serializer.toJson<int>(displayOrder),
+      'isRequired': serializer.toJson<bool>(isRequired),
+      'isArchived': serializer.toJson<bool>(isArchived),
+    };
+  }
+
+  MeasurementTemplateField copyWith({
+    int? id,
+    int? templateVersionId,
+    String? fieldId,
+    String? displayLabel,
+    Value<String?> displayLabelUrdu = const Value.absent(),
+    int? displayOrder,
+    bool? isRequired,
+    bool? isArchived,
+  }) => MeasurementTemplateField(
+    id: id ?? this.id,
+    templateVersionId: templateVersionId ?? this.templateVersionId,
+    fieldId: fieldId ?? this.fieldId,
+    displayLabel: displayLabel ?? this.displayLabel,
+    displayLabelUrdu: displayLabelUrdu.present
+        ? displayLabelUrdu.value
+        : this.displayLabelUrdu,
+    displayOrder: displayOrder ?? this.displayOrder,
+    isRequired: isRequired ?? this.isRequired,
+    isArchived: isArchived ?? this.isArchived,
+  );
+  MeasurementTemplateField copyWithCompanion(
+    MeasurementTemplateFieldsCompanion data,
+  ) {
+    return MeasurementTemplateField(
+      id: data.id.present ? data.id.value : this.id,
+      templateVersionId: data.templateVersionId.present
+          ? data.templateVersionId.value
+          : this.templateVersionId,
+      fieldId: data.fieldId.present ? data.fieldId.value : this.fieldId,
+      displayLabel: data.displayLabel.present
+          ? data.displayLabel.value
+          : this.displayLabel,
+      displayLabelUrdu: data.displayLabelUrdu.present
+          ? data.displayLabelUrdu.value
+          : this.displayLabelUrdu,
+      displayOrder: data.displayOrder.present
+          ? data.displayOrder.value
+          : this.displayOrder,
+      isRequired: data.isRequired.present
+          ? data.isRequired.value
+          : this.isRequired,
+      isArchived: data.isArchived.present
+          ? data.isArchived.value
+          : this.isArchived,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MeasurementTemplateField(')
+          ..write('id: $id, ')
+          ..write('templateVersionId: $templateVersionId, ')
+          ..write('fieldId: $fieldId, ')
+          ..write('displayLabel: $displayLabel, ')
+          ..write('displayLabelUrdu: $displayLabelUrdu, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('isRequired: $isRequired, ')
+          ..write('isArchived: $isArchived')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    templateVersionId,
+    fieldId,
+    displayLabel,
+    displayLabelUrdu,
+    displayOrder,
+    isRequired,
+    isArchived,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MeasurementTemplateField &&
+          other.id == this.id &&
+          other.templateVersionId == this.templateVersionId &&
+          other.fieldId == this.fieldId &&
+          other.displayLabel == this.displayLabel &&
+          other.displayLabelUrdu == this.displayLabelUrdu &&
+          other.displayOrder == this.displayOrder &&
+          other.isRequired == this.isRequired &&
+          other.isArchived == this.isArchived);
+}
+
+class MeasurementTemplateFieldsCompanion
+    extends UpdateCompanion<MeasurementTemplateField> {
+  final Value<int> id;
+  final Value<int> templateVersionId;
+  final Value<String> fieldId;
+  final Value<String> displayLabel;
+  final Value<String?> displayLabelUrdu;
+  final Value<int> displayOrder;
+  final Value<bool> isRequired;
+  final Value<bool> isArchived;
+  const MeasurementTemplateFieldsCompanion({
+    this.id = const Value.absent(),
+    this.templateVersionId = const Value.absent(),
+    this.fieldId = const Value.absent(),
+    this.displayLabel = const Value.absent(),
+    this.displayLabelUrdu = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+    this.isRequired = const Value.absent(),
+    this.isArchived = const Value.absent(),
+  });
+  MeasurementTemplateFieldsCompanion.insert({
+    this.id = const Value.absent(),
+    required int templateVersionId,
+    required String fieldId,
+    required String displayLabel,
+    this.displayLabelUrdu = const Value.absent(),
+    required int displayOrder,
+    required bool isRequired,
+    this.isArchived = const Value.absent(),
+  }) : templateVersionId = Value(templateVersionId),
+       fieldId = Value(fieldId),
+       displayLabel = Value(displayLabel),
+       displayOrder = Value(displayOrder),
+       isRequired = Value(isRequired);
+  static Insertable<MeasurementTemplateField> custom({
+    Expression<int>? id,
+    Expression<int>? templateVersionId,
+    Expression<String>? fieldId,
+    Expression<String>? displayLabel,
+    Expression<String>? displayLabelUrdu,
+    Expression<int>? displayOrder,
+    Expression<bool>? isRequired,
+    Expression<bool>? isArchived,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (templateVersionId != null) 'template_version_id': templateVersionId,
+      if (fieldId != null) 'field_id': fieldId,
+      if (displayLabel != null) 'display_label': displayLabel,
+      if (displayLabelUrdu != null) 'display_label_urdu': displayLabelUrdu,
+      if (displayOrder != null) 'display_order': displayOrder,
+      if (isRequired != null) 'is_required': isRequired,
+      if (isArchived != null) 'is_archived': isArchived,
+    });
+  }
+
+  MeasurementTemplateFieldsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? templateVersionId,
+    Value<String>? fieldId,
+    Value<String>? displayLabel,
+    Value<String?>? displayLabelUrdu,
+    Value<int>? displayOrder,
+    Value<bool>? isRequired,
+    Value<bool>? isArchived,
+  }) {
+    return MeasurementTemplateFieldsCompanion(
+      id: id ?? this.id,
+      templateVersionId: templateVersionId ?? this.templateVersionId,
+      fieldId: fieldId ?? this.fieldId,
+      displayLabel: displayLabel ?? this.displayLabel,
+      displayLabelUrdu: displayLabelUrdu ?? this.displayLabelUrdu,
+      displayOrder: displayOrder ?? this.displayOrder,
+      isRequired: isRequired ?? this.isRequired,
+      isArchived: isArchived ?? this.isArchived,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (templateVersionId.present) {
+      map['template_version_id'] = Variable<int>(templateVersionId.value);
+    }
+    if (fieldId.present) {
+      map['field_id'] = Variable<String>(fieldId.value);
+    }
+    if (displayLabel.present) {
+      map['display_label'] = Variable<String>(displayLabel.value);
+    }
+    if (displayLabelUrdu.present) {
+      map['display_label_urdu'] = Variable<String>(displayLabelUrdu.value);
+    }
+    if (displayOrder.present) {
+      map['display_order'] = Variable<int>(displayOrder.value);
+    }
+    if (isRequired.present) {
+      map['is_required'] = Variable<bool>(isRequired.value);
+    }
+    if (isArchived.present) {
+      map['is_archived'] = Variable<bool>(isArchived.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MeasurementTemplateFieldsCompanion(')
+          ..write('id: $id, ')
+          ..write('templateVersionId: $templateVersionId, ')
+          ..write('fieldId: $fieldId, ')
+          ..write('displayLabel: $displayLabel, ')
+          ..write('displayLabelUrdu: $displayLabelUrdu, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('isRequired: $isRequired, ')
+          ..write('isArchived: $isArchived')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5386,6 +7346,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CustomersTable customers = $CustomersTable(this);
   late final $MeasurementProfilesTable measurementProfiles =
       $MeasurementProfilesTable(this);
+  late final $GarmentCatalogEntriesTable garmentCatalogEntries =
+      $GarmentCatalogEntriesTable(this);
+  late final $MeasurementTemplateVersionsTable measurementTemplateVersions =
+      $MeasurementTemplateVersionsTable(this);
   late final $MeasurementRevisionsTable measurementRevisions =
       $MeasurementRevisionsTable(this);
   late final $OrdersTable orders = $OrdersTable(this);
@@ -5394,6 +7358,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $KarigarsTable karigars = $KarigarsTable(this);
   late final $KarigarAssignmentsTable karigarAssignments =
       $KarigarAssignmentsTable(this);
+  late final $MeasurementTemplateFieldsTable measurementTemplateFields =
+      $MeasurementTemplateFieldsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5402,12 +7368,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     appSettings,
     customers,
     measurementProfiles,
+    garmentCatalogEntries,
+    measurementTemplateVersions,
     measurementRevisions,
     orders,
     orderItems,
     payments,
     karigars,
     karigarAssignments,
+    measurementTemplateFields,
   ];
 }
 
@@ -6467,16 +8436,1027 @@ typedef $$MeasurementProfilesTableProcessedTableManager =
       MeasurementProfile,
       PrefetchHooks Function({bool customerId, bool measurementRevisionsRefs})
     >;
+typedef $$GarmentCatalogEntriesTableCreateCompanionBuilder =
+    GarmentCatalogEntriesCompanion Function({
+      required String garmentId,
+      required String displayName,
+      Value<String?> displayNameUrdu,
+      Value<bool> enabled,
+      required int displayOrder,
+      Value<int> defaultStitchingPricePaisa,
+      Value<bool> isCustom,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$GarmentCatalogEntriesTableUpdateCompanionBuilder =
+    GarmentCatalogEntriesCompanion Function({
+      Value<String> garmentId,
+      Value<String> displayName,
+      Value<String?> displayNameUrdu,
+      Value<bool> enabled,
+      Value<int> displayOrder,
+      Value<int> defaultStitchingPricePaisa,
+      Value<bool> isCustom,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$GarmentCatalogEntriesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $GarmentCatalogEntriesTable,
+          GarmentCatalogEntry
+        > {
+  $$GarmentCatalogEntriesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<
+    $MeasurementTemplateVersionsTable,
+    List<MeasurementTemplateVersion>
+  >
+  _measurementTemplateVersionsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.measurementTemplateVersions,
+    aliasName:
+        'garment_catalog_entries__garment_id__measurement_template_versions__garment_id',
+  );
+
+  $$MeasurementTemplateVersionsTableProcessedTableManager
+  get measurementTemplateVersionsRefs {
+    final manager =
+        $$MeasurementTemplateVersionsTableTableManager(
+          $_db,
+          $_db.measurementTemplateVersions,
+        ).filter(
+          (f) => f.garmentId.garmentId.sqlEquals(
+            $_itemColumn<String>('garment_id')!,
+          ),
+        );
+
+    final cache = $_typedResult.readTableOrNull(
+      _measurementTemplateVersionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$GarmentCatalogEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $GarmentCatalogEntriesTable> {
+  $$GarmentCatalogEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get garmentId => $composableBuilder(
+    column: $table.garmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayNameUrdu => $composableBuilder(
+    column: $table.displayNameUrdu,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get defaultStitchingPricePaisa => $composableBuilder(
+    column: $table.defaultStitchingPricePaisa,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCustom => $composableBuilder(
+    column: $table.isCustom,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> measurementTemplateVersionsRefs(
+    Expression<bool> Function(
+      $$MeasurementTemplateVersionsTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$MeasurementTemplateVersionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.garmentId,
+          referencedTable: $db.measurementTemplateVersions,
+          getReferencedColumn: (t) => t.garmentId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateVersionsTableFilterComposer(
+                $db: $db,
+                $table: $db.measurementTemplateVersions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$GarmentCatalogEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $GarmentCatalogEntriesTable> {
+  $$GarmentCatalogEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get garmentId => $composableBuilder(
+    column: $table.garmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayNameUrdu => $composableBuilder(
+    column: $table.displayNameUrdu,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get defaultStitchingPricePaisa => $composableBuilder(
+    column: $table.defaultStitchingPricePaisa,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCustom => $composableBuilder(
+    column: $table.isCustom,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$GarmentCatalogEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $GarmentCatalogEntriesTable> {
+  $$GarmentCatalogEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get garmentId =>
+      $composableBuilder(column: $table.garmentId, builder: (column) => column);
+
+  GeneratedColumn<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get displayNameUrdu => $composableBuilder(
+    column: $table.displayNameUrdu,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get enabled =>
+      $composableBuilder(column: $table.enabled, builder: (column) => column);
+
+  GeneratedColumn<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get defaultStitchingPricePaisa => $composableBuilder(
+    column: $table.defaultStitchingPricePaisa,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isCustom =>
+      $composableBuilder(column: $table.isCustom, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> measurementTemplateVersionsRefs<T extends Object>(
+    Expression<T> Function(
+      $$MeasurementTemplateVersionsTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$MeasurementTemplateVersionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.garmentId,
+          referencedTable: $db.measurementTemplateVersions,
+          getReferencedColumn: (t) => t.garmentId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateVersionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.measurementTemplateVersions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$GarmentCatalogEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $GarmentCatalogEntriesTable,
+          GarmentCatalogEntry,
+          $$GarmentCatalogEntriesTableFilterComposer,
+          $$GarmentCatalogEntriesTableOrderingComposer,
+          $$GarmentCatalogEntriesTableAnnotationComposer,
+          $$GarmentCatalogEntriesTableCreateCompanionBuilder,
+          $$GarmentCatalogEntriesTableUpdateCompanionBuilder,
+          (GarmentCatalogEntry, $$GarmentCatalogEntriesTableReferences),
+          GarmentCatalogEntry,
+          PrefetchHooks Function({bool measurementTemplateVersionsRefs})
+        > {
+  $$GarmentCatalogEntriesTableTableManager(
+    _$AppDatabase db,
+    $GarmentCatalogEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GarmentCatalogEntriesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$GarmentCatalogEntriesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$GarmentCatalogEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> garmentId = const Value.absent(),
+                Value<String> displayName = const Value.absent(),
+                Value<String?> displayNameUrdu = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+                Value<int> defaultStitchingPricePaisa = const Value.absent(),
+                Value<bool> isCustom = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => GarmentCatalogEntriesCompanion(
+                garmentId: garmentId,
+                displayName: displayName,
+                displayNameUrdu: displayNameUrdu,
+                enabled: enabled,
+                displayOrder: displayOrder,
+                defaultStitchingPricePaisa: defaultStitchingPricePaisa,
+                isCustom: isCustom,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String garmentId,
+                required String displayName,
+                Value<String?> displayNameUrdu = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+                required int displayOrder,
+                Value<int> defaultStitchingPricePaisa = const Value.absent(),
+                Value<bool> isCustom = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => GarmentCatalogEntriesCompanion.insert(
+                garmentId: garmentId,
+                displayName: displayName,
+                displayNameUrdu: displayNameUrdu,
+                enabled: enabled,
+                displayOrder: displayOrder,
+                defaultStitchingPricePaisa: defaultStitchingPricePaisa,
+                isCustom: isCustom,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$GarmentCatalogEntriesTable, GarmentCatalogEntry>(
+                    table,
+                  ),
+                  $$GarmentCatalogEntriesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({measurementTemplateVersionsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (measurementTemplateVersionsRefs)
+                  db.measurementTemplateVersions,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (measurementTemplateVersionsRefs)
+                    await $_getPrefetchedData<
+                      GarmentCatalogEntry,
+                      $GarmentCatalogEntriesTable,
+                      MeasurementTemplateVersion
+                    >(
+                      currentTable: table,
+                      referencedTable: $$GarmentCatalogEntriesTableReferences
+                          ._measurementTemplateVersionsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$GarmentCatalogEntriesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).measurementTemplateVersionsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where(
+                            (e) => e.garmentId == item.garmentId,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$GarmentCatalogEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $GarmentCatalogEntriesTable,
+      GarmentCatalogEntry,
+      $$GarmentCatalogEntriesTableFilterComposer,
+      $$GarmentCatalogEntriesTableOrderingComposer,
+      $$GarmentCatalogEntriesTableAnnotationComposer,
+      $$GarmentCatalogEntriesTableCreateCompanionBuilder,
+      $$GarmentCatalogEntriesTableUpdateCompanionBuilder,
+      (GarmentCatalogEntry, $$GarmentCatalogEntriesTableReferences),
+      GarmentCatalogEntry,
+      PrefetchHooks Function({bool measurementTemplateVersionsRefs})
+    >;
+typedef $$MeasurementTemplateVersionsTableCreateCompanionBuilder =
+    MeasurementTemplateVersionsCompanion Function({
+      Value<int> id,
+      required String garmentId,
+      required int versionNumber,
+      required String measurementConvention,
+      Value<DateTime> createdAt,
+    });
+typedef $$MeasurementTemplateVersionsTableUpdateCompanionBuilder =
+    MeasurementTemplateVersionsCompanion Function({
+      Value<int> id,
+      Value<String> garmentId,
+      Value<int> versionNumber,
+      Value<String> measurementConvention,
+      Value<DateTime> createdAt,
+    });
+
+final class $$MeasurementTemplateVersionsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $MeasurementTemplateVersionsTable,
+          MeasurementTemplateVersion
+        > {
+  $$MeasurementTemplateVersionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $GarmentCatalogEntriesTable _garmentIdTable(
+    _$AppDatabase db,
+  ) => db.garmentCatalogEntries.createAlias(
+    'measurement_template_versions__garment_id__garment_catalog_entries__garment_id',
+  );
+
+  $$GarmentCatalogEntriesTableProcessedTableManager get garmentId {
+    final $_column = $_itemColumn<String>('garment_id')!;
+
+    final manager = $$GarmentCatalogEntriesTableTableManager(
+      $_db,
+      $_db.garmentCatalogEntries,
+    ).filter((f) => f.garmentId.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_garmentIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $MeasurementRevisionsTable,
+    List<MeasurementRevision>
+  >
+  _measurementRevisionsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.measurementRevisions,
+    aliasName:
+        'measurement_template_versions__id__measurement_revisions__template_version_id',
+  );
+
+  $$MeasurementRevisionsTableProcessedTableManager
+  get measurementRevisionsRefs {
+    final manager = $$MeasurementRevisionsTableTableManager(
+      $_db,
+      $_db.measurementRevisions,
+    ).filter((f) => f.templateVersionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _measurementRevisionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $MeasurementTemplateFieldsTable,
+    List<MeasurementTemplateField>
+  >
+  _measurementTemplateFieldsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.measurementTemplateFields,
+    aliasName:
+        'measurement_template_versions__id__measurement_template_fields__template_version_id',
+  );
+
+  $$MeasurementTemplateFieldsTableProcessedTableManager
+  get measurementTemplateFieldsRefs {
+    final manager = $$MeasurementTemplateFieldsTableTableManager(
+      $_db,
+      $_db.measurementTemplateFields,
+    ).filter((f) => f.templateVersionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _measurementTemplateFieldsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$MeasurementTemplateVersionsTableFilterComposer
+    extends Composer<_$AppDatabase, $MeasurementTemplateVersionsTable> {
+  $$MeasurementTemplateVersionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get versionNumber => $composableBuilder(
+    column: $table.versionNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get measurementConvention => $composableBuilder(
+    column: $table.measurementConvention,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$GarmentCatalogEntriesTableFilterComposer get garmentId {
+    final $$GarmentCatalogEntriesTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.garmentId,
+          referencedTable: $db.garmentCatalogEntries,
+          getReferencedColumn: (t) => t.garmentId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$GarmentCatalogEntriesTableFilterComposer(
+                $db: $db,
+                $table: $db.garmentCatalogEntries,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  Expression<bool> measurementRevisionsRefs(
+    Expression<bool> Function($$MeasurementRevisionsTableFilterComposer f) f,
+  ) {
+    final $$MeasurementRevisionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.measurementRevisions,
+      getReferencedColumn: (t) => t.templateVersionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MeasurementRevisionsTableFilterComposer(
+            $db: $db,
+            $table: $db.measurementRevisions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> measurementTemplateFieldsRefs(
+    Expression<bool> Function($$MeasurementTemplateFieldsTableFilterComposer f)
+    f,
+  ) {
+    final $$MeasurementTemplateFieldsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.measurementTemplateFields,
+          getReferencedColumn: (t) => t.templateVersionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateFieldsTableFilterComposer(
+                $db: $db,
+                $table: $db.measurementTemplateFields,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$MeasurementTemplateVersionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MeasurementTemplateVersionsTable> {
+  $$MeasurementTemplateVersionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get versionNumber => $composableBuilder(
+    column: $table.versionNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get measurementConvention => $composableBuilder(
+    column: $table.measurementConvention,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$GarmentCatalogEntriesTableOrderingComposer get garmentId {
+    final $$GarmentCatalogEntriesTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.garmentId,
+          referencedTable: $db.garmentCatalogEntries,
+          getReferencedColumn: (t) => t.garmentId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$GarmentCatalogEntriesTableOrderingComposer(
+                $db: $db,
+                $table: $db.garmentCatalogEntries,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$MeasurementTemplateVersionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MeasurementTemplateVersionsTable> {
+  $$MeasurementTemplateVersionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get versionNumber => $composableBuilder(
+    column: $table.versionNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get measurementConvention => $composableBuilder(
+    column: $table.measurementConvention,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$GarmentCatalogEntriesTableAnnotationComposer get garmentId {
+    final $$GarmentCatalogEntriesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.garmentId,
+          referencedTable: $db.garmentCatalogEntries,
+          getReferencedColumn: (t) => t.garmentId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$GarmentCatalogEntriesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.garmentCatalogEntries,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  Expression<T> measurementRevisionsRefs<T extends Object>(
+    Expression<T> Function($$MeasurementRevisionsTableAnnotationComposer a) f,
+  ) {
+    final $$MeasurementRevisionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.measurementRevisions,
+          getReferencedColumn: (t) => t.templateVersionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementRevisionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.measurementRevisions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> measurementTemplateFieldsRefs<T extends Object>(
+    Expression<T> Function($$MeasurementTemplateFieldsTableAnnotationComposer a)
+    f,
+  ) {
+    final $$MeasurementTemplateFieldsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.measurementTemplateFields,
+          getReferencedColumn: (t) => t.templateVersionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateFieldsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.measurementTemplateFields,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$MeasurementTemplateVersionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MeasurementTemplateVersionsTable,
+          MeasurementTemplateVersion,
+          $$MeasurementTemplateVersionsTableFilterComposer,
+          $$MeasurementTemplateVersionsTableOrderingComposer,
+          $$MeasurementTemplateVersionsTableAnnotationComposer,
+          $$MeasurementTemplateVersionsTableCreateCompanionBuilder,
+          $$MeasurementTemplateVersionsTableUpdateCompanionBuilder,
+          (
+            MeasurementTemplateVersion,
+            $$MeasurementTemplateVersionsTableReferences,
+          ),
+          MeasurementTemplateVersion,
+          PrefetchHooks Function({
+            bool garmentId,
+            bool measurementRevisionsRefs,
+            bool measurementTemplateFieldsRefs,
+          })
+        > {
+  $$MeasurementTemplateVersionsTableTableManager(
+    _$AppDatabase db,
+    $MeasurementTemplateVersionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MeasurementTemplateVersionsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$MeasurementTemplateVersionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$MeasurementTemplateVersionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> garmentId = const Value.absent(),
+                Value<int> versionNumber = const Value.absent(),
+                Value<String> measurementConvention = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => MeasurementTemplateVersionsCompanion(
+                id: id,
+                garmentId: garmentId,
+                versionNumber: versionNumber,
+                measurementConvention: measurementConvention,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String garmentId,
+                required int versionNumber,
+                required String measurementConvention,
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => MeasurementTemplateVersionsCompanion.insert(
+                id: id,
+                garmentId: garmentId,
+                versionNumber: versionNumber,
+                measurementConvention: measurementConvention,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $MeasurementTemplateVersionsTable,
+                    MeasurementTemplateVersion
+                  >(table),
+                  $$MeasurementTemplateVersionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                garmentId = false,
+                measurementRevisionsRefs = false,
+                measurementTemplateFieldsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (measurementRevisionsRefs) db.measurementRevisions,
+                    if (measurementTemplateFieldsRefs)
+                      db.measurementTemplateFields,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (garmentId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.garmentId,
+                                    referencedTable:
+                                        $$MeasurementTemplateVersionsTableReferences
+                                            ._garmentIdTable(db),
+                                    referencedColumn:
+                                        $$MeasurementTemplateVersionsTableReferences
+                                            ._garmentIdTable(db)
+                                            .garmentId,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (measurementRevisionsRefs)
+                        await $_getPrefetchedData<
+                          MeasurementTemplateVersion,
+                          $MeasurementTemplateVersionsTable,
+                          MeasurementRevision
+                        >(
+                          currentTable: table,
+                          referencedTable:
+                              $$MeasurementTemplateVersionsTableReferences
+                                  ._measurementRevisionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MeasurementTemplateVersionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).measurementRevisionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.templateVersionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (measurementTemplateFieldsRefs)
+                        await $_getPrefetchedData<
+                          MeasurementTemplateVersion,
+                          $MeasurementTemplateVersionsTable,
+                          MeasurementTemplateField
+                        >(
+                          currentTable: table,
+                          referencedTable:
+                              $$MeasurementTemplateVersionsTableReferences
+                                  ._measurementTemplateFieldsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MeasurementTemplateVersionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).measurementTemplateFieldsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.templateVersionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$MeasurementTemplateVersionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MeasurementTemplateVersionsTable,
+      MeasurementTemplateVersion,
+      $$MeasurementTemplateVersionsTableFilterComposer,
+      $$MeasurementTemplateVersionsTableOrderingComposer,
+      $$MeasurementTemplateVersionsTableAnnotationComposer,
+      $$MeasurementTemplateVersionsTableCreateCompanionBuilder,
+      $$MeasurementTemplateVersionsTableUpdateCompanionBuilder,
+      (
+        MeasurementTemplateVersion,
+        $$MeasurementTemplateVersionsTableReferences,
+      ),
+      MeasurementTemplateVersion,
+      PrefetchHooks Function({
+        bool garmentId,
+        bool measurementRevisionsRefs,
+        bool measurementTemplateFieldsRefs,
+      })
+    >;
 typedef $$MeasurementRevisionsTableCreateCompanionBuilder =
     MeasurementRevisionsCompanion Function({
       Value<int> id,
       required int profileId,
       required int revisionNumber,
       required String garmentType,
+      Value<String> garmentLabelEnglish,
+      Value<String> garmentLabelUrdu,
       required String profileName,
       required String unit,
       required String measurementBasis,
       required String valuesJson,
+      Value<int?> templateVersionId,
+      Value<String> fieldDefinitionsJson,
       required String fitPreference,
       Value<String> styleInstructions,
       Value<String> notes,
@@ -6488,10 +9468,14 @@ typedef $$MeasurementRevisionsTableUpdateCompanionBuilder =
       Value<int> profileId,
       Value<int> revisionNumber,
       Value<String> garmentType,
+      Value<String> garmentLabelEnglish,
+      Value<String> garmentLabelUrdu,
       Value<String> profileName,
       Value<String> unit,
       Value<String> measurementBasis,
       Value<String> valuesJson,
+      Value<int?> templateVersionId,
+      Value<String> fieldDefinitionsJson,
       Value<String> fitPreference,
       Value<String> styleInstructions,
       Value<String> notes,
@@ -6524,6 +9508,27 @@ final class $$MeasurementRevisionsTableReferences
       $_db.measurementProfiles,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $MeasurementTemplateVersionsTable _templateVersionIdTable(
+    _$AppDatabase db,
+  ) => db.measurementTemplateVersions.createAlias(
+    'measurement_revisions__template_version_id__measurement_template_versions__id',
+  );
+
+  $$MeasurementTemplateVersionsTableProcessedTableManager?
+  get templateVersionId {
+    final $_column = $_itemColumn<int>('template_version_id');
+    if ($_column == null) return null;
+    final manager = $$MeasurementTemplateVersionsTableTableManager(
+      $_db,
+      $_db.measurementTemplateVersions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_templateVersionIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -6573,6 +9578,16 @@ class $$MeasurementRevisionsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get garmentLabelEnglish => $composableBuilder(
+    column: $table.garmentLabelEnglish,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get garmentLabelUrdu => $composableBuilder(
+    column: $table.garmentLabelUrdu,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get profileName => $composableBuilder(
     column: $table.profileName,
     builder: (column) => ColumnFilters(column),
@@ -6590,6 +9605,11 @@ class $$MeasurementRevisionsTableFilterComposer
 
   ColumnFilters<String> get valuesJson => $composableBuilder(
     column: $table.valuesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fieldDefinitionsJson => $composableBuilder(
+    column: $table.fieldDefinitionsJson,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6633,6 +9653,30 @@ class $$MeasurementRevisionsTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return composer;
+  }
+
+  $$MeasurementTemplateVersionsTableFilterComposer get templateVersionId {
+    final $$MeasurementTemplateVersionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.templateVersionId,
+          referencedTable: $db.measurementTemplateVersions,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateVersionsTableFilterComposer(
+                $db: $db,
+                $table: $db.measurementTemplateVersions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return composer;
   }
 
@@ -6686,6 +9730,16 @@ class $$MeasurementRevisionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get garmentLabelEnglish => $composableBuilder(
+    column: $table.garmentLabelEnglish,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get garmentLabelUrdu => $composableBuilder(
+    column: $table.garmentLabelUrdu,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get profileName => $composableBuilder(
     column: $table.profileName,
     builder: (column) => ColumnOrderings(column),
@@ -6703,6 +9757,11 @@ class $$MeasurementRevisionsTableOrderingComposer
 
   ColumnOrderings<String> get valuesJson => $composableBuilder(
     column: $table.valuesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fieldDefinitionsJson => $composableBuilder(
+    column: $table.fieldDefinitionsJson,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -6749,6 +9808,30 @@ class $$MeasurementRevisionsTableOrderingComposer
         );
     return composer;
   }
+
+  $$MeasurementTemplateVersionsTableOrderingComposer get templateVersionId {
+    final $$MeasurementTemplateVersionsTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.templateVersionId,
+          referencedTable: $db.measurementTemplateVersions,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateVersionsTableOrderingComposer(
+                $db: $db,
+                $table: $db.measurementTemplateVersions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
 }
 
 class $$MeasurementRevisionsTableAnnotationComposer
@@ -6773,6 +9856,16 @@ class $$MeasurementRevisionsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get garmentLabelEnglish => $composableBuilder(
+    column: $table.garmentLabelEnglish,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get garmentLabelUrdu => $composableBuilder(
+    column: $table.garmentLabelUrdu,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get profileName => $composableBuilder(
     column: $table.profileName,
     builder: (column) => column,
@@ -6788,6 +9881,11 @@ class $$MeasurementRevisionsTableAnnotationComposer
 
   GeneratedColumn<String> get valuesJson => $composableBuilder(
     column: $table.valuesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fieldDefinitionsJson => $composableBuilder(
+    column: $table.fieldDefinitionsJson,
     builder: (column) => column,
   );
 
@@ -6822,6 +9920,30 @@ class $$MeasurementRevisionsTableAnnotationComposer
               }) => $$MeasurementProfilesTableAnnotationComposer(
                 $db: $db,
                 $table: $db.measurementProfiles,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$MeasurementTemplateVersionsTableAnnotationComposer get templateVersionId {
+    final $$MeasurementTemplateVersionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.templateVersionId,
+          referencedTable: $db.measurementTemplateVersions,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateVersionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.measurementTemplateVersions,
                 $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                 joinBuilder: joinBuilder,
                 $removeJoinBuilderFromRootComposer:
@@ -6870,7 +9992,11 @@ class $$MeasurementRevisionsTableTableManager
           $$MeasurementRevisionsTableUpdateCompanionBuilder,
           (MeasurementRevision, $$MeasurementRevisionsTableReferences),
           MeasurementRevision,
-          PrefetchHooks Function({bool profileId, bool orderItemsRefs})
+          PrefetchHooks Function({
+            bool profileId,
+            bool templateVersionId,
+            bool orderItemsRefs,
+          })
         > {
   $$MeasurementRevisionsTableTableManager(
     _$AppDatabase db,
@@ -6897,10 +10023,14 @@ class $$MeasurementRevisionsTableTableManager
                 Value<int> profileId = const Value.absent(),
                 Value<int> revisionNumber = const Value.absent(),
                 Value<String> garmentType = const Value.absent(),
+                Value<String> garmentLabelEnglish = const Value.absent(),
+                Value<String> garmentLabelUrdu = const Value.absent(),
                 Value<String> profileName = const Value.absent(),
                 Value<String> unit = const Value.absent(),
                 Value<String> measurementBasis = const Value.absent(),
                 Value<String> valuesJson = const Value.absent(),
+                Value<int?> templateVersionId = const Value.absent(),
+                Value<String> fieldDefinitionsJson = const Value.absent(),
                 Value<String> fitPreference = const Value.absent(),
                 Value<String> styleInstructions = const Value.absent(),
                 Value<String> notes = const Value.absent(),
@@ -6910,10 +10040,14 @@ class $$MeasurementRevisionsTableTableManager
                 profileId: profileId,
                 revisionNumber: revisionNumber,
                 garmentType: garmentType,
+                garmentLabelEnglish: garmentLabelEnglish,
+                garmentLabelUrdu: garmentLabelUrdu,
                 profileName: profileName,
                 unit: unit,
                 measurementBasis: measurementBasis,
                 valuesJson: valuesJson,
+                templateVersionId: templateVersionId,
+                fieldDefinitionsJson: fieldDefinitionsJson,
                 fitPreference: fitPreference,
                 styleInstructions: styleInstructions,
                 notes: notes,
@@ -6925,10 +10059,14 @@ class $$MeasurementRevisionsTableTableManager
                 required int profileId,
                 required int revisionNumber,
                 required String garmentType,
+                Value<String> garmentLabelEnglish = const Value.absent(),
+                Value<String> garmentLabelUrdu = const Value.absent(),
                 required String profileName,
                 required String unit,
                 required String measurementBasis,
                 required String valuesJson,
+                Value<int?> templateVersionId = const Value.absent(),
+                Value<String> fieldDefinitionsJson = const Value.absent(),
                 required String fitPreference,
                 Value<String> styleInstructions = const Value.absent(),
                 Value<String> notes = const Value.absent(),
@@ -6938,10 +10076,14 @@ class $$MeasurementRevisionsTableTableManager
                 profileId: profileId,
                 revisionNumber: revisionNumber,
                 garmentType: garmentType,
+                garmentLabelEnglish: garmentLabelEnglish,
+                garmentLabelUrdu: garmentLabelUrdu,
                 profileName: profileName,
                 unit: unit,
                 measurementBasis: measurementBasis,
                 valuesJson: valuesJson,
+                templateVersionId: templateVersionId,
+                fieldDefinitionsJson: fieldDefinitionsJson,
                 fitPreference: fitPreference,
                 styleInstructions: styleInstructions,
                 notes: notes,
@@ -6957,71 +10099,91 @@ class $$MeasurementRevisionsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({profileId = false, orderItemsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (orderItemsRefs) db.orderItems],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (profileId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.profileId,
-                                referencedTable:
-                                    $$MeasurementRevisionsTableReferences
-                                        ._profileIdTable(db),
-                                referencedColumn:
-                                    $$MeasurementRevisionsTableReferences
-                                        ._profileIdTable(db)
-                                        .id,
-                              )
-                              as T;
-                    }
+          prefetchHooksCallback:
+              ({
+                profileId = false,
+                templateVersionId = false,
+                orderItemsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [if (orderItemsRefs) db.orderItems],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (profileId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.profileId,
+                                    referencedTable:
+                                        $$MeasurementRevisionsTableReferences
+                                            ._profileIdTable(db),
+                                    referencedColumn:
+                                        $$MeasurementRevisionsTableReferences
+                                            ._profileIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (templateVersionId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.templateVersionId,
+                                    referencedTable:
+                                        $$MeasurementRevisionsTableReferences
+                                            ._templateVersionIdTable(db),
+                                    referencedColumn:
+                                        $$MeasurementRevisionsTableReferences
+                                            ._templateVersionIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
 
-                    return state;
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (orderItemsRefs)
+                        await $_getPrefetchedData<
+                          MeasurementRevision,
+                          $MeasurementRevisionsTable,
+                          OrderItem
+                        >(
+                          currentTable: table,
+                          referencedTable: $$MeasurementRevisionsTableReferences
+                              ._orderItemsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MeasurementRevisionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).orderItemsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.measurementRevisionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
                   },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (orderItemsRefs)
-                    await $_getPrefetchedData<
-                      MeasurementRevision,
-                      $MeasurementRevisionsTable,
-                      OrderItem
-                    >(
-                      currentTable: table,
-                      referencedTable: $$MeasurementRevisionsTableReferences
-                          ._orderItemsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$MeasurementRevisionsTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).orderItemsRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.measurementRevisionId == item.id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -7038,7 +10200,11 @@ typedef $$MeasurementRevisionsTableProcessedTableManager =
       $$MeasurementRevisionsTableUpdateCompanionBuilder,
       (MeasurementRevision, $$MeasurementRevisionsTableReferences),
       MeasurementRevision,
-      PrefetchHooks Function({bool profileId, bool orderItemsRefs})
+      PrefetchHooks Function({
+        bool profileId,
+        bool templateVersionId,
+        bool orderItemsRefs,
+      })
     >;
 typedef $$OrdersTableCreateCompanionBuilder =
     OrdersCompanion Function({
@@ -7654,11 +10820,14 @@ typedef $$OrderItemsTableCreateCompanionBuilder =
       required int orderId,
       required int measurementRevisionId,
       required String garmentType,
+      Value<String> garmentLabelEnglish,
+      Value<String> garmentLabelUrdu,
       required int quantity,
       required String measurementProfileName,
       required String measurementUnit,
       required String measurementBasis,
       required String measurementValuesJson,
+      Value<String> measurementFieldDefinitionsJson,
       required String fitPreference,
       Value<String> measurementNotes,
       Value<String> styleInstructions,
@@ -7676,11 +10845,14 @@ typedef $$OrderItemsTableUpdateCompanionBuilder =
       Value<int> orderId,
       Value<int> measurementRevisionId,
       Value<String> garmentType,
+      Value<String> garmentLabelEnglish,
+      Value<String> garmentLabelUrdu,
       Value<int> quantity,
       Value<String> measurementProfileName,
       Value<String> measurementUnit,
       Value<String> measurementBasis,
       Value<String> measurementValuesJson,
+      Value<String> measurementFieldDefinitionsJson,
       Value<String> fitPreference,
       Value<String> measurementNotes,
       Value<String> styleInstructions,
@@ -7777,6 +10949,16 @@ class $$OrderItemsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get garmentLabelEnglish => $composableBuilder(
+    column: $table.garmentLabelEnglish,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get garmentLabelUrdu => $composableBuilder(
+    column: $table.garmentLabelUrdu,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get quantity => $composableBuilder(
     column: $table.quantity,
     builder: (column) => ColumnFilters(column),
@@ -7801,6 +10983,12 @@ class $$OrderItemsTableFilterComposer
     column: $table.measurementValuesJson,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get measurementFieldDefinitionsJson =>
+      $composableBuilder(
+        column: $table.measurementFieldDefinitionsJson,
+        builder: (column) => ColumnFilters(column),
+      );
 
   ColumnFilters<String> get fitPreference => $composableBuilder(
     column: $table.fitPreference,
@@ -7943,6 +11131,16 @@ class $$OrderItemsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get garmentLabelEnglish => $composableBuilder(
+    column: $table.garmentLabelEnglish,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get garmentLabelUrdu => $composableBuilder(
+    column: $table.garmentLabelUrdu,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get quantity => $composableBuilder(
     column: $table.quantity,
     builder: (column) => ColumnOrderings(column),
@@ -7967,6 +11165,12 @@ class $$OrderItemsTableOrderingComposer
     column: $table.measurementValuesJson,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get measurementFieldDefinitionsJson =>
+      $composableBuilder(
+        column: $table.measurementFieldDefinitionsJson,
+        builder: (column) => ColumnOrderings(column),
+      );
 
   ColumnOrderings<String> get fitPreference => $composableBuilder(
     column: $table.fitPreference,
@@ -8083,6 +11287,16 @@ class $$OrderItemsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get garmentLabelEnglish => $composableBuilder(
+    column: $table.garmentLabelEnglish,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get garmentLabelUrdu => $composableBuilder(
+    column: $table.garmentLabelUrdu,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<int> get quantity =>
       $composableBuilder(column: $table.quantity, builder: (column) => column);
 
@@ -8105,6 +11319,12 @@ class $$OrderItemsTableAnnotationComposer
     column: $table.measurementValuesJson,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get measurementFieldDefinitionsJson =>
+      $composableBuilder(
+        column: $table.measurementFieldDefinitionsJson,
+        builder: (column) => column,
+      );
 
   GeneratedColumn<String> get fitPreference => $composableBuilder(
     column: $table.fitPreference,
@@ -8260,11 +11480,15 @@ class $$OrderItemsTableTableManager
                 Value<int> orderId = const Value.absent(),
                 Value<int> measurementRevisionId = const Value.absent(),
                 Value<String> garmentType = const Value.absent(),
+                Value<String> garmentLabelEnglish = const Value.absent(),
+                Value<String> garmentLabelUrdu = const Value.absent(),
                 Value<int> quantity = const Value.absent(),
                 Value<String> measurementProfileName = const Value.absent(),
                 Value<String> measurementUnit = const Value.absent(),
                 Value<String> measurementBasis = const Value.absent(),
                 Value<String> measurementValuesJson = const Value.absent(),
+                Value<String> measurementFieldDefinitionsJson =
+                    const Value.absent(),
                 Value<String> fitPreference = const Value.absent(),
                 Value<String> measurementNotes = const Value.absent(),
                 Value<String> styleInstructions = const Value.absent(),
@@ -8281,11 +11505,15 @@ class $$OrderItemsTableTableManager
                 orderId: orderId,
                 measurementRevisionId: measurementRevisionId,
                 garmentType: garmentType,
+                garmentLabelEnglish: garmentLabelEnglish,
+                garmentLabelUrdu: garmentLabelUrdu,
                 quantity: quantity,
                 measurementProfileName: measurementProfileName,
                 measurementUnit: measurementUnit,
                 measurementBasis: measurementBasis,
                 measurementValuesJson: measurementValuesJson,
+                measurementFieldDefinitionsJson:
+                    measurementFieldDefinitionsJson,
                 fitPreference: fitPreference,
                 measurementNotes: measurementNotes,
                 styleInstructions: styleInstructions,
@@ -8303,11 +11531,15 @@ class $$OrderItemsTableTableManager
                 required int orderId,
                 required int measurementRevisionId,
                 required String garmentType,
+                Value<String> garmentLabelEnglish = const Value.absent(),
+                Value<String> garmentLabelUrdu = const Value.absent(),
                 required int quantity,
                 required String measurementProfileName,
                 required String measurementUnit,
                 required String measurementBasis,
                 required String measurementValuesJson,
+                Value<String> measurementFieldDefinitionsJson =
+                    const Value.absent(),
                 required String fitPreference,
                 Value<String> measurementNotes = const Value.absent(),
                 Value<String> styleInstructions = const Value.absent(),
@@ -8324,11 +11556,15 @@ class $$OrderItemsTableTableManager
                 orderId: orderId,
                 measurementRevisionId: measurementRevisionId,
                 garmentType: garmentType,
+                garmentLabelEnglish: garmentLabelEnglish,
+                garmentLabelUrdu: garmentLabelUrdu,
                 quantity: quantity,
                 measurementProfileName: measurementProfileName,
                 measurementUnit: measurementUnit,
                 measurementBasis: measurementBasis,
                 measurementValuesJson: measurementValuesJson,
+                measurementFieldDefinitionsJson:
+                    measurementFieldDefinitionsJson,
                 fitPreference: fitPreference,
                 measurementNotes: measurementNotes,
                 styleInstructions: styleInstructions,
@@ -9746,6 +12982,419 @@ typedef $$KarigarAssignmentsTableProcessedTableManager =
       KarigarAssignment,
       PrefetchHooks Function({bool orderItemId, bool karigarId})
     >;
+typedef $$MeasurementTemplateFieldsTableCreateCompanionBuilder =
+    MeasurementTemplateFieldsCompanion Function({
+      Value<int> id,
+      required int templateVersionId,
+      required String fieldId,
+      required String displayLabel,
+      Value<String?> displayLabelUrdu,
+      required int displayOrder,
+      required bool isRequired,
+      Value<bool> isArchived,
+    });
+typedef $$MeasurementTemplateFieldsTableUpdateCompanionBuilder =
+    MeasurementTemplateFieldsCompanion Function({
+      Value<int> id,
+      Value<int> templateVersionId,
+      Value<String> fieldId,
+      Value<String> displayLabel,
+      Value<String?> displayLabelUrdu,
+      Value<int> displayOrder,
+      Value<bool> isRequired,
+      Value<bool> isArchived,
+    });
+
+final class $$MeasurementTemplateFieldsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $MeasurementTemplateFieldsTable,
+          MeasurementTemplateField
+        > {
+  $$MeasurementTemplateFieldsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $MeasurementTemplateVersionsTable _templateVersionIdTable(
+    _$AppDatabase db,
+  ) => db.measurementTemplateVersions.createAlias(
+    'measurement_template_fields__template_version_id__measurement_template_versions__id',
+  );
+
+  $$MeasurementTemplateVersionsTableProcessedTableManager
+  get templateVersionId {
+    final $_column = $_itemColumn<int>('template_version_id')!;
+
+    final manager = $$MeasurementTemplateVersionsTableTableManager(
+      $_db,
+      $_db.measurementTemplateVersions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_templateVersionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MeasurementTemplateFieldsTableFilterComposer
+    extends Composer<_$AppDatabase, $MeasurementTemplateFieldsTable> {
+  $$MeasurementTemplateFieldsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fieldId => $composableBuilder(
+    column: $table.fieldId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayLabel => $composableBuilder(
+    column: $table.displayLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayLabelUrdu => $composableBuilder(
+    column: $table.displayLabelUrdu,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isRequired => $composableBuilder(
+    column: $table.isRequired,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$MeasurementTemplateVersionsTableFilterComposer get templateVersionId {
+    final $$MeasurementTemplateVersionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.templateVersionId,
+          referencedTable: $db.measurementTemplateVersions,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateVersionsTableFilterComposer(
+                $db: $db,
+                $table: $db.measurementTemplateVersions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$MeasurementTemplateFieldsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MeasurementTemplateFieldsTable> {
+  $$MeasurementTemplateFieldsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fieldId => $composableBuilder(
+    column: $table.fieldId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayLabel => $composableBuilder(
+    column: $table.displayLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayLabelUrdu => $composableBuilder(
+    column: $table.displayLabelUrdu,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isRequired => $composableBuilder(
+    column: $table.isRequired,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$MeasurementTemplateVersionsTableOrderingComposer get templateVersionId {
+    final $$MeasurementTemplateVersionsTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.templateVersionId,
+          referencedTable: $db.measurementTemplateVersions,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateVersionsTableOrderingComposer(
+                $db: $db,
+                $table: $db.measurementTemplateVersions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$MeasurementTemplateFieldsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MeasurementTemplateFieldsTable> {
+  $$MeasurementTemplateFieldsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get fieldId =>
+      $composableBuilder(column: $table.fieldId, builder: (column) => column);
+
+  GeneratedColumn<String> get displayLabel => $composableBuilder(
+    column: $table.displayLabel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get displayLabelUrdu => $composableBuilder(
+    column: $table.displayLabelUrdu,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isRequired => $composableBuilder(
+    column: $table.isRequired,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => column,
+  );
+
+  $$MeasurementTemplateVersionsTableAnnotationComposer get templateVersionId {
+    final $$MeasurementTemplateVersionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.templateVersionId,
+          referencedTable: $db.measurementTemplateVersions,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MeasurementTemplateVersionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.measurementTemplateVersions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$MeasurementTemplateFieldsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MeasurementTemplateFieldsTable,
+          MeasurementTemplateField,
+          $$MeasurementTemplateFieldsTableFilterComposer,
+          $$MeasurementTemplateFieldsTableOrderingComposer,
+          $$MeasurementTemplateFieldsTableAnnotationComposer,
+          $$MeasurementTemplateFieldsTableCreateCompanionBuilder,
+          $$MeasurementTemplateFieldsTableUpdateCompanionBuilder,
+          (
+            MeasurementTemplateField,
+            $$MeasurementTemplateFieldsTableReferences,
+          ),
+          MeasurementTemplateField,
+          PrefetchHooks Function({bool templateVersionId})
+        > {
+  $$MeasurementTemplateFieldsTableTableManager(
+    _$AppDatabase db,
+    $MeasurementTemplateFieldsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MeasurementTemplateFieldsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$MeasurementTemplateFieldsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$MeasurementTemplateFieldsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> templateVersionId = const Value.absent(),
+                Value<String> fieldId = const Value.absent(),
+                Value<String> displayLabel = const Value.absent(),
+                Value<String?> displayLabelUrdu = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+                Value<bool> isRequired = const Value.absent(),
+                Value<bool> isArchived = const Value.absent(),
+              }) => MeasurementTemplateFieldsCompanion(
+                id: id,
+                templateVersionId: templateVersionId,
+                fieldId: fieldId,
+                displayLabel: displayLabel,
+                displayLabelUrdu: displayLabelUrdu,
+                displayOrder: displayOrder,
+                isRequired: isRequired,
+                isArchived: isArchived,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int templateVersionId,
+                required String fieldId,
+                required String displayLabel,
+                Value<String?> displayLabelUrdu = const Value.absent(),
+                required int displayOrder,
+                required bool isRequired,
+                Value<bool> isArchived = const Value.absent(),
+              }) => MeasurementTemplateFieldsCompanion.insert(
+                id: id,
+                templateVersionId: templateVersionId,
+                fieldId: fieldId,
+                displayLabel: displayLabel,
+                displayLabelUrdu: displayLabelUrdu,
+                displayOrder: displayOrder,
+                isRequired: isRequired,
+                isArchived: isArchived,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $MeasurementTemplateFieldsTable,
+                    MeasurementTemplateField
+                  >(table),
+                  $$MeasurementTemplateFieldsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({templateVersionId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (templateVersionId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.templateVersionId,
+                                referencedTable:
+                                    $$MeasurementTemplateFieldsTableReferences
+                                        ._templateVersionIdTable(db),
+                                referencedColumn:
+                                    $$MeasurementTemplateFieldsTableReferences
+                                        ._templateVersionIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MeasurementTemplateFieldsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MeasurementTemplateFieldsTable,
+      MeasurementTemplateField,
+      $$MeasurementTemplateFieldsTableFilterComposer,
+      $$MeasurementTemplateFieldsTableOrderingComposer,
+      $$MeasurementTemplateFieldsTableAnnotationComposer,
+      $$MeasurementTemplateFieldsTableCreateCompanionBuilder,
+      $$MeasurementTemplateFieldsTableUpdateCompanionBuilder,
+      (MeasurementTemplateField, $$MeasurementTemplateFieldsTableReferences),
+      MeasurementTemplateField,
+      PrefetchHooks Function({bool templateVersionId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9756,6 +13405,14 @@ class $AppDatabaseManager {
       $$CustomersTableTableManager(_db, _db.customers);
   $$MeasurementProfilesTableTableManager get measurementProfiles =>
       $$MeasurementProfilesTableTableManager(_db, _db.measurementProfiles);
+  $$GarmentCatalogEntriesTableTableManager get garmentCatalogEntries =>
+      $$GarmentCatalogEntriesTableTableManager(_db, _db.garmentCatalogEntries);
+  $$MeasurementTemplateVersionsTableTableManager
+  get measurementTemplateVersions =>
+      $$MeasurementTemplateVersionsTableTableManager(
+        _db,
+        _db.measurementTemplateVersions,
+      );
   $$MeasurementRevisionsTableTableManager get measurementRevisions =>
       $$MeasurementRevisionsTableTableManager(_db, _db.measurementRevisions);
   $$OrdersTableTableManager get orders =>
@@ -9768,4 +13425,9 @@ class $AppDatabaseManager {
       $$KarigarsTableTableManager(_db, _db.karigars);
   $$KarigarAssignmentsTableTableManager get karigarAssignments =>
       $$KarigarAssignmentsTableTableManager(_db, _db.karigarAssignments);
+  $$MeasurementTemplateFieldsTableTableManager get measurementTemplateFields =>
+      $$MeasurementTemplateFieldsTableTableManager(
+        _db,
+        _db.measurementTemplateFields,
+      );
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../localization/localization_extensions.dart';
+
 /// Prevents an accidental back navigation from discarding edited form data.
 class UnsavedChangesGuard extends StatefulWidget {
   const UnsavedChangesGuard({
@@ -25,16 +27,16 @@ class _UnsavedChangesGuardState extends State<UnsavedChangesGuard> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         icon: const Icon(Icons.edit_note_outlined),
-        title: const Text('Discard unsaved changes?'),
-        content: const Text('Your entries on this screen have not been saved.'),
+        title: Text(context.l10n.confirmDiscardTitle),
+        content: Text(context.l10n.confirmDiscardBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Keep editing'),
+            child: Text(context.l10n.keepEditing),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Discard changes'),
+            child: Text(context.l10n.discard),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tailor/core/database/app_database.dart';
+import 'package:tailor/core/localization/presentation_preferences.dart';
 import 'package:tailor/features/customers/data/customers_dao.dart';
 import 'package:tailor/features/documents/order_document_service.dart';
 import 'package:tailor/features/karigars/data/karigars_dao.dart';
@@ -80,9 +81,16 @@ void main() {
   Future<GeneratedOrderDocument> generate(
     OrderDocumentKind kind, {
     bool withAssignment = false,
+    DocumentLanguage language = DocumentLanguage.english,
   }) async {
     final regular = await rootBundle.load('assets/fonts/Roboto-Regular.ttf');
     final medium = await rootBundle.load('assets/fonts/Roboto-Medium.ttf');
+    final urduRegular = await rootBundle.load(
+      'assets/fonts/NotoNaskhArabic-Regular.ttf',
+    );
+    final urduMedium = await rootBundle.load(
+      'assets/fonts/NotoNaskhArabic-Medium.ttf',
+    );
     final history = await karigars
         .watchAssignmentsForItem(order.items.single.id)
         .first;
@@ -98,6 +106,9 @@ void main() {
       generatedAt: DateTime.utc(2026, 10, 10, 12),
       regularFont: regular,
       mediumFont: medium,
+      urduRegularFont: urduRegular,
+      urduMediumFont: urduMedium,
+      documentLanguage: language,
     );
   }
 
@@ -146,8 +157,37 @@ void main() {
       );
       order = (await orders.getOrder(order.order.id))!;
       final document = await generate(OrderDocumentKind.customerReceipt);
-      expect(document.auditText, contains('CANCELLED EXCLUDED'));
+      expect(document.auditText, contains('Cancelled — excluded from charges'));
       expect(document.auditText, contains('Order total PKR 0'));
+    },
+  );
+
+  test('Urdu receipt uses localized headings, labels, and totals', () async {
+    final document = await generate(
+      OrderDocumentKind.customerReceipt,
+      language: DocumentLanguage.urdu,
+    );
+    expect(document.bytes.take(4), [0x25, 0x50, 0x44, 0x46]);
+    expect(document.auditText, contains('آرڈر رسید'));
+    expect(document.auditText, contains('شرٹ'));
+    expect(document.auditText, contains('آرڈر کا کل PKR 3,750'));
+  });
+
+  test(
+    'bilingual work slip preserves mixed text and financial privacy',
+    () async {
+      final document = await generate(
+        OrderDocumentKind.karigarSlip,
+        withAssignment: true,
+        language: DocumentLanguage.bilingual,
+      );
+      expect(
+        document.auditText,
+        contains('KARIGAR WORK SLIP / کاریگر کام پرچی'),
+      );
+      expect(document.auditText, contains('Chest / چھاتی 40.5 in'));
+      expect(document.auditText, contains('Keep the checks aligned'));
+      expect(document.auditText, isNot(contains('PKR')));
     },
   );
 }

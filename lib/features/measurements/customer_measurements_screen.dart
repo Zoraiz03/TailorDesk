@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/database/app_database.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/localization/localization_extensions.dart';
 import 'measurement_detail_screen.dart';
 import 'measurement_form_screen.dart';
 import 'measurement_profile_card.dart';
@@ -28,7 +29,7 @@ class CustomerMeasurementsScreen extends ConsumerWidget {
     if (saved == true && context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Measurements saved.')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.measurementSaved)));
     }
   }
 
@@ -46,20 +47,20 @@ class CustomerMeasurementsScreen extends ConsumerWidget {
           : FloatingActionButton.extended(
               onPressed: () => _add(context),
               icon: const Icon(Icons.add),
-              label: const Text('Add Measurements'),
+              label: Text(context.l10n.addMeasurement),
             ),
       body: profiles.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load measurements',
-          subtitle: 'Your saved data has not been changed.',
+          title: context.l10n.couldNotLoadMeasurements,
+          subtitle: context.l10n.savedDataUnchanged,
           action: OutlinedButton.icon(
             onPressed: () => ref.invalidate(
               customerMeasurementProfilesProvider(customer.id),
             ),
             icon: const Icon(Icons.refresh),
-            label: const Text('Try Again'),
+            label: Text(context.l10n.tryAgain),
           ),
         ),
         data: (records) {
@@ -77,7 +78,7 @@ class CustomerMeasurementsScreen extends ConsumerWidget {
                   : FilledButton.icon(
                       onPressed: () => _add(context),
                       icon: const Icon(Icons.add),
-                      label: const Text('Add Measurements'),
+                      label: Text(context.l10n.addMeasurement),
                     ),
             );
           }

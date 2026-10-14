@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/section_header.dart';
@@ -53,8 +54,8 @@ class DashboardScreen extends ConsumerWidget {
                             style: theme.textTheme.titleLarge,
                           ),
                           Text(
-                            DateFormat(
-                              'EEEE, d MMMM yyyy',
+                            DateFormat.yMMMMEEEEd(
+                              Localizations.localeOf(context).toLanguageTag(),
                             ).format(DateTime.now()),
                             style: theme.textTheme.bodySmall,
                           ),
@@ -74,17 +75,17 @@ class DashboardScreen extends ConsumerWidget {
                     MaterialPageRoute(builder: (_) => const NewOrderScreen()),
                   ),
                   icon: const Icon(Icons.add),
-                  label: const Text('New Order'),
+                  label: Text(context.l10n.newOrder),
                   style: FilledButton.styleFrom(
                     minimumSize: const Size(double.infinity, 52),
                   ),
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: SectionHeader(title: 'Overview'),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: SectionHeader(title: context.l10n.overview),
               ),
             ),
             metrics.when(
@@ -94,13 +95,12 @@ class DashboardScreen extends ConsumerWidget {
               error: (_, __) => SliverToBoxAdapter(
                 child: EmptyState(
                   icon: Icons.error_outline,
-                  title: 'Could not load dashboard',
-                  subtitle:
-                      'Your saved records have not been changed. Try loading the overview again.',
+                  title: context.l10n.couldNotLoad,
+                  subtitle: context.l10n.savedDataUnchanged,
                   action: OutlinedButton.icon(
                     onPressed: () => ref.invalidate(dashboardMetricsProvider),
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Try Again'),
+                    label: Text(context.l10n.tryAgain),
                   ),
                 ),
               ),
@@ -116,12 +116,12 @@ class DashboardScreen extends ConsumerWidget {
                         : 1.45,
                     children: [
                       SummaryCard(
-                        title: 'Active Orders',
+                        title: context.l10n.activeOrders,
                         value: '${value.activeOrders}',
                         icon: Icons.receipt_long,
                       ),
                       SummaryCard(
-                        title: 'Due Today',
+                        title: context.l10n.dueToday,
                         value: '${value.dueToday}',
                         icon: Icons.today,
                         iconColor: AppColors.info,
@@ -135,7 +135,7 @@ class DashboardScreen extends ConsumerWidget {
                         ),
                       ),
                       SummaryCard(
-                        title: 'Overdue',
+                        title: context.l10n.overdue,
                         value: '${value.overdue}',
                         icon: Icons.warning_amber_rounded,
                         iconColor: AppColors.error,
@@ -149,7 +149,7 @@ class DashboardScreen extends ConsumerWidget {
                         ),
                       ),
                       SummaryCard(
-                        title: 'Outstanding',
+                        title: context.l10n.outstanding,
                         value: formatPaisa(value.outstandingPaisa),
                         icon: Icons.account_balance_wallet_outlined,
                         iconColor: AppColors.gold,
@@ -167,10 +167,10 @@ class DashboardScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 24, 20, 0),
-                child: SectionHeader(title: 'Workshop'),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: SectionHeader(title: context.l10n.workshop),
               ),
             ),
             metrics.when(
@@ -186,7 +186,7 @@ class DashboardScreen extends ConsumerWidget {
                   childAspectRatio: 1.45,
                   children: [
                     SummaryCard(
-                      title: 'Unassigned Items',
+                      title: context.l10n.unassignedItems,
                       value: '${value.unassignedItems}',
                       icon: Icons.assignment_ind_outlined,
                       iconColor: AppColors.warning,
@@ -200,7 +200,7 @@ class DashboardScreen extends ConsumerWidget {
                       ),
                     ),
                     SummaryCard(
-                      title: 'Karigar Overdue',
+                      title: context.l10n.karigarOverdue,
                       value: '${value.overdueAssignments}',
                       icon: Icons.engineering_outlined,
                       iconColor: AppColors.error,
@@ -217,10 +217,10 @@ class DashboardScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 24, 20, 0),
-                child: SectionHeader(title: 'Upcoming deliveries'),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: SectionHeader(title: context.l10n.upcomingDeliveries),
               ),
             ),
             metrics.when(
@@ -228,11 +228,11 @@ class DashboardScreen extends ConsumerWidget {
               error: (_, __) =>
                   const SliverToBoxAdapter(child: SizedBox.shrink()),
               data: (value) => value.upcoming.isEmpty
-                  ? const SliverToBoxAdapter(
+                  ? SliverToBoxAdapter(
                       child: EmptyState(
                         icon: Icons.event_available_outlined,
-                        title: 'No upcoming deliveries',
-                        subtitle: 'Active orders will appear here.',
+                        title: context.l10n.noUpcomingDeliveries,
+                        subtitle: context.l10n.activeOrdersAppearHere,
                       ),
                     )
                   : SliverPadding(
@@ -245,7 +245,7 @@ class DashboardScreen extends ConsumerWidget {
                             child: ListTile(
                               title: Text(record.customer.name),
                               subtitle: Text(
-                                '${record.order.orderNumber} · ${record.progress.label}',
+                                '${record.order.orderNumber} · ${localizedStatus(context.l10n, record.progress.name)}',
                               ),
                               trailing: Text(
                                 DateFormat.MMMd().format(
@@ -266,10 +266,10 @@ class DashboardScreen extends ConsumerWidget {
                       ),
                     ),
             ),
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 24, 20, 0),
-                child: SectionHeader(title: 'Quick Actions'),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: SectionHeader(title: context.l10n.quickActions),
               ),
             ),
             SliverToBoxAdapter(
@@ -280,7 +280,7 @@ class DashboardScreen extends ConsumerWidget {
                     Expanded(
                       child: _QuickAction(
                         icon: Icons.person_add_outlined,
-                        label: 'Add Customer',
+                        label: context.l10n.addCustomer,
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -293,7 +293,7 @@ class DashboardScreen extends ConsumerWidget {
                     Expanded(
                       child: _QuickAction(
                         icon: Icons.straighten_outlined,
-                        label: 'Measurements',
+                        label: context.l10n.measurements,
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -306,7 +306,7 @@ class DashboardScreen extends ConsumerWidget {
                     Expanded(
                       child: _QuickAction(
                         icon: Icons.engineering_outlined,
-                        label: 'Karigars',
+                        label: context.l10n.karigars,
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(

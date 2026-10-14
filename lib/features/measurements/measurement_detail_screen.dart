@@ -10,6 +10,8 @@ import 'measurement_form_screen.dart';
 import 'measurement_models.dart';
 import 'measurement_providers.dart';
 import 'measurement_templates.dart';
+import '../settings/garment_catalog.dart';
+import '../../core/localization/localization_extensions.dart';
 
 class MeasurementDetailScreen extends ConsumerWidget {
   const MeasurementDetailScreen({
@@ -32,9 +34,9 @@ class MeasurementDetailScreen extends ConsumerWidget {
       ),
     );
     if (saved == true && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('New measurement revision saved.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.measurementSaved)));
     }
   }
 
@@ -45,21 +47,21 @@ class MeasurementDetailScreen extends ConsumerWidget {
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, _) => Scaffold(
-        appBar: AppBar(title: const Text('Measurements')),
-        body: const EmptyState(
+        appBar: AppBar(title: Text(context.l10n.measurements)),
+        body: EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load measurements',
-          subtitle: 'Your saved data has not been changed.',
+          title: context.l10n.couldNotLoadMeasurements,
+          subtitle: context.l10n.savedDataUnchanged,
         ),
       ),
       data: (record) {
         if (record == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Measurements')),
-            body: const EmptyState(
+            appBar: AppBar(title: Text(context.l10n.measurements)),
+            body: EmptyState(
               icon: Icons.straighten_outlined,
-              title: 'Profile not found',
-              subtitle: 'This measurement profile is no longer available.',
+              title: context.l10n.profileNotFound,
+              subtitle: context.l10n.profileNotFoundHelp,
             ),
           );
         }
@@ -87,11 +89,19 @@ class _MeasurementDetails extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final revision = record.latestRevision;
-    final garment = GarmentType.fromStorage(revision.garmentType);
+    final garmentLabel = localizedGarmentLabel(
+      context.l10n,
+      revision.garmentType,
+      english: revision.garmentLabelEnglish,
+      urdu: revision.garmentLabelUrdu,
+    );
     final unit = MeasurementUnit.fromStorage(revision.unit);
     final basis = MeasurementBasis.fromStorage(revision.measurementBasis);
     final fit = FitPreference.fromStorage(revision.fitPreference);
-    final template = garmentMeasurementTemplates[garment]!;
+    final fields = decodeFieldDefinitions(
+      revision.fieldDefinitionsJson,
+      revision.garmentType,
+    );
     final history = ref.watch(measurementHistoryProvider(record.profile.id));
 
     return Scaffold(
@@ -99,7 +109,7 @@ class _MeasurementDetails extends ConsumerWidget {
         title: Text(revision.profileName),
         actions: [
           IconButton(
-            tooltip: 'Create new revision',
+            tooltip: context.l10n.createNewRevision,
             onPressed: onEdit,
             icon: const Icon(Icons.edit_outlined),
           ),
@@ -115,12 +125,12 @@ class _MeasurementDetails extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    garment.label,
+                    garmentLabel,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    '${customer.name} · ${unit.label}',
+                    '${customer.name} · ${localizedUnit(context.l10n, unit.storageKey)}',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: AppSpacing.sm),
@@ -128,9 +138,17 @@ class _MeasurementDetails extends ConsumerWidget {
                     spacing: AppSpacing.sm,
                     runSpacing: AppSpacing.sm,
                     children: [
-                      _InfoChip(label: basis.label),
-                      _InfoChip(label: '${fit.label} fit'),
-                      _InfoChip(label: 'Revision ${revision.revisionNumber}'),
+                      _InfoChip(
+                        label: localizedBasis(context.l10n, basis.storageKey),
+                      ),
+                      _InfoChip(
+                        label: localizedFit(context.l10n, fit.storageKey),
+                      ),
+                      _InfoChip(
+                        label: context.l10n.revisionNumber(
+                          revision.revisionNumber,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -147,12 +165,17 @@ class _MeasurementDetails extends ConsumerWidget {
             child: Padding(
               padding: AppSpacing.cardPadding,
               child: Column(
-                children: template.fields
-                    .where((field) => record.values.containsKey(field.key))
+                children: fields
+                    .where((field) => record.values.containsKey(field.id))
                     .map(
                       (field) => _ValueRow(
-                        label: field.label,
-                        value: '${record.values[field.key]} ${unit.suffix}',
+                        label: localizedMeasurementLabel(
+                          context.l10n,
+                          field.id,
+                          english: field.label,
+                          urdu: field.labelUrdu,
+                        ),
+                        value: '${record.values[field.id]} ${unit.suffix}',
                       ),
                     )
                     .toList(),
@@ -162,33 +185,33 @@ class _MeasurementDetails extends ConsumerWidget {
           if (revision.styleInstructions.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.lg),
             _TextSection(
-              title: 'Style instructions',
+              title: context.l10n.styleInstructions,
               text: revision.styleInstructions,
             ),
           ],
           if (revision.notes.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.sm),
-            _TextSection(title: 'Notes', text: revision.notes),
+            _TextSection(title: context.l10n.notes, text: revision.notes),
           ],
           const SizedBox(height: AppSpacing.xl),
           Row(
             children: [
               Expanded(
                 child: Text(
-                  'Revision history',
+                  context.l10n.revisionHistory,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
               TextButton.icon(
                 onPressed: onEdit,
                 icon: const Icon(Icons.add, size: 18),
-                label: const Text('New Revision'),
+                label: Text(context.l10n.editMeasurement),
               ),
             ],
           ),
           history.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => const Text('Could not load revision history.'),
+            error: (error, _) => Text(context.l10n.revisionLoadFailed),
             data: (revisions) => Card(
               child: Column(
                 children: revisions
@@ -197,7 +220,9 @@ class _MeasurementDetails extends ConsumerWidget {
                         leading: CircleAvatar(
                           child: Text('${item.revisionNumber}'),
                         ),
-                        title: Text('Revision ${item.revisionNumber}'),
+                        title: Text(
+                          context.l10n.revisionNumber(item.revisionNumber),
+                        ),
                         subtitle: Text(
                           DateFormat(
                             'd MMM yyyy, h:mm a',
@@ -218,10 +243,18 @@ class _MeasurementDetails extends ConsumerWidget {
   }
 
   void _showRevision(BuildContext context, MeasurementRevision revision) {
-    final garment = GarmentType.fromStorage(revision.garmentType);
+    final garmentLabel = localizedGarmentLabel(
+      context.l10n,
+      revision.garmentType,
+      english: revision.garmentLabelEnglish,
+      urdu: revision.garmentLabelUrdu,
+    );
     final unit = MeasurementUnit.fromStorage(revision.unit);
     final values = decodeMeasurementValues(revision.valuesJson);
-    final template = garmentMeasurementTemplates[garment]!;
+    final fields = decodeFieldDefinitions(
+      revision.fieldDefinitionsJson,
+      revision.garmentType,
+    );
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -232,25 +265,33 @@ class _MeasurementDetails extends ConsumerWidget {
           padding: AppSpacing.pagePadding,
           children: [
             Text(
-              'Revision ${revision.revisionNumber}',
+              context.l10n.revisionNumber(revision.revisionNumber),
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: AppSpacing.xs),
-            Text('${garment.label} · ${revision.profileName} · ${unit.label}'),
+            Text(
+              '$garmentLabel · ${revision.profileName} · ${localizedUnit(context.l10n, unit.storageKey)}',
+            ),
             const SizedBox(height: AppSpacing.lg),
-            ...template.fields
-                .where((field) => values.containsKey(field.key))
+            ...fields
+                .where((field) => values.containsKey(field.id))
                 .map(
                   (field) => _ValueRow(
-                    label: field.label,
-                    value: '${values[field.key]} ${unit.suffix}',
+                    label: localizedMeasurementLabel(
+                      context.l10n,
+                      field.id,
+                      english: field.label,
+                      urdu: field.labelUrdu,
+                    ),
+                    value: '${values[field.id]} ${unit.suffix}',
                   ),
                 ),
             if (revision.styleInstructions.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.md),
-              Text('Style: ${revision.styleInstructions}'),
+              Text(context.l10n.stylePrefix(revision.styleInstructions)),
             ],
-            if (revision.notes.isNotEmpty) Text('Notes: ${revision.notes}'),
+            if (revision.notes.isNotEmpty)
+              Text(context.l10n.notesPrefix(revision.notes)),
           ],
         ),
       ),

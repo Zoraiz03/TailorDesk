@@ -10,6 +10,8 @@ import 'package:sqlite3/sqlite3.dart' as sqlite;
 import 'package:tailor/core/database/app_database.dart';
 import 'package:tailor/features/customers/data/customers_dao.dart';
 import 'package:tailor/features/settings/backup/backup_service.dart';
+import 'package:tailor/features/settings/garment_catalog.dart';
+import 'package:tailor/features/settings/garment_catalog_providers.dart';
 
 void main() {
   late Directory temp;
@@ -82,6 +84,26 @@ void main() {
     await CustomersDao(database).createCustomer(name: 'Legacy', phone: '0300');
     await database.close();
     final raw = sqlite.sqlite3.open(databaseFile.path);
+    raw.execute(
+      'ALTER TABLE measurement_revisions DROP COLUMN template_version_id',
+    );
+    raw.execute(
+      'ALTER TABLE measurement_revisions DROP COLUMN field_definitions_json',
+    );
+    raw.execute(
+      'ALTER TABLE order_items DROP COLUMN measurement_field_definitions_json',
+    );
+    raw.execute(
+      'ALTER TABLE measurement_revisions DROP COLUMN garment_label_english',
+    );
+    raw.execute(
+      'ALTER TABLE measurement_revisions DROP COLUMN garment_label_urdu',
+    );
+    raw.execute('ALTER TABLE order_items DROP COLUMN garment_label_english');
+    raw.execute('ALTER TABLE order_items DROP COLUMN garment_label_urdu');
+    raw.execute('DROP TABLE measurement_template_fields');
+    raw.execute('DROP TABLE measurement_template_versions');
+    raw.execute('DROP TABLE garment_catalog_entries');
     raw.execute('DROP TABLE karigar_assignments');
     raw.execute('DROP TABLE karigars');
     raw.userVersion = 4;
@@ -115,11 +137,47 @@ void main() {
     await service.restore(database, backupBytes);
     final migrated = AppDatabase(NativeDatabase(databaseFile));
     database = migrated;
-    expect(migrated.schemaVersion, 5);
+    expect(migrated.schemaVersion, 7);
     expect(
       (await CustomersDao(migrated).watchAll().first).single.name,
       'Legacy',
     );
     expect(await migrated.select(migrated.karigars).get(), isEmpty);
   });
+
+  test(
+    'backup restores Stage 9 catalog, template versions, and prices',
+    () async {
+      final catalog = GarmentCatalogRepository(database);
+      final customId = await catalog.createCustomTemplate(
+        name: 'Custom Peshwas',
+        nameUrdu: 'خاص پیشواز',
+        convention: 'body',
+        fields: const [
+          GarmentTemplateField(
+            id: 'length',
+            label: 'Length',
+            labelUrdu: 'لمبائی',
+            order: 0,
+            required: true,
+          ),
+        ],
+        defaultPricePaisa: 175000,
+      );
+      final backup = await service.createBackup(database);
+      await catalog.updateEntry(garmentId: customId, defaultPricePaisa: 99900);
+
+      await service.restore(database, backup);
+      database = AppDatabase(NativeDatabase(databaseFile));
+      final restored = await GarmentCatalogRepository(
+        database,
+      ).getById(customId);
+      expect(restored, isNotNull);
+      expect(restored!.entry.defaultStitchingPricePaisa, 175000);
+      expect(restored.templateVersion.versionNumber, 1);
+      expect(restored.fields.single.label, 'Length');
+      expect(restored.entry.displayNameUrdu, 'خاص پیشواز');
+      expect(restored.fields.single.labelUrdu, 'لمبائی');
+    },
+  );
 }

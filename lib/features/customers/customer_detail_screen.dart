@@ -5,6 +5,7 @@ import '../../core/database/app_database.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/localization/localization_extensions.dart';
 import 'customer_form_screen.dart';
 import 'customer_providers.dart';
 import '../measurements/customer_measurements_screen.dart';
@@ -28,14 +29,12 @@ class CustomerDetailScreen extends ConsumerWidget {
       await showDialog<void>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: const Text('Customer has saved history'),
-          content: const Text(
-            'This customer cannot be deleted because measurements or order history must be preserved.',
-          ),
+          title: Text(context.l10n.customerDeleteBlocked),
+          content: Text(context.l10n.customerDeleteBlocked),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('OK'),
+              child: Text(context.l10n.deleteBlockedOk),
             ),
           ],
         ),
@@ -46,19 +45,17 @@ class CustomerDetailScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete customer?'),
-        content: const Text(
-          'This removes the customer from this device. This action cannot be undone.',
-        ),
+        title: Text(context.l10n.deleteCustomer),
+        content: Text(context.l10n.deleteCustomerConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Delete'),
+            child: Text(context.l10n.delete),
           ),
         ],
       ),
@@ -70,9 +67,9 @@ class CustomerDetailScreen extends ConsumerWidget {
       if (context.mounted) Navigator.of(context).pop();
     } catch (_) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not delete customer. Try again.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.updateFailed)));
     }
   }
 
@@ -84,26 +81,26 @@ class CustomerDetailScreen extends ConsumerWidget {
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, _) => Scaffold(
-        appBar: AppBar(title: const Text('Customer')),
+        appBar: AppBar(title: Text(context.l10n.customer)),
         body: EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load customer',
-          subtitle: 'Please try again. Your saved data has not been changed.',
+          title: context.l10n.couldNotLoad,
+          subtitle: context.l10n.savedDataUnchanged,
           action: OutlinedButton.icon(
             onPressed: () => ref.invalidate(customerProvider(customerId)),
             icon: const Icon(Icons.refresh),
-            label: const Text('Try Again'),
+            label: Text(context.l10n.tryAgain),
           ),
         ),
       ),
       data: (value) {
         if (value == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Customer')),
-            body: const EmptyState(
+            appBar: AppBar(title: Text(context.l10n.customer)),
+            body: EmptyState(
               icon: Icons.person_off_outlined,
-              title: 'Customer not found',
-              subtitle: 'This customer may have been deleted.',
+              title: context.l10n.customerNotFound,
+              subtitle: context.l10n.customerNotFoundHelp,
             ),
           );
         }
@@ -138,16 +135,16 @@ class _CustomerDetails extends ConsumerWidget {
       if (saved == true && context.mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('Measurements saved.')));
+        ).showSnackBar(SnackBar(content: Text(context.l10n.measurementSaved)));
       }
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Customer Details'),
+        title: Text(context.l10n.customerDetails),
         actions: [
           IconButton(
-            tooltip: 'Edit customer',
+            tooltip: context.l10n.editCustomer,
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => CustomerFormScreen(customer: customer),
@@ -156,18 +153,18 @@ class _CustomerDetails extends ConsumerWidget {
             icon: const Icon(Icons.edit_outlined),
           ),
           PopupMenuButton<String>(
-            tooltip: 'More customer actions',
+            tooltip: context.l10n.more,
             onSelected: (value) {
               if (value == 'delete') onDelete();
             },
-            itemBuilder: (_) => const [
+            itemBuilder: (_) => [
               PopupMenuItem(
                 value: 'delete',
                 child: Row(
                   children: [
-                    Icon(Icons.delete_outline, color: AppColors.error),
-                    SizedBox(width: AppSpacing.md),
-                    Text('Delete customer'),
+                    const Icon(Icons.delete_outline, color: AppColors.error),
+                    const SizedBox(width: AppSpacing.md),
+                    Text(context.l10n.deleteCustomer),
                   ],
                 ),
               ),
@@ -214,7 +211,7 @@ class _CustomerDetails extends ConsumerWidget {
           if (customer.address.isNotEmpty)
             _DetailCard(
               icon: Icons.location_on_outlined,
-              title: 'Address',
+              title: context.l10n.address,
               value: customer.address,
             ),
           if (customer.address.isNotEmpty && customer.notes.isNotEmpty)
@@ -222,7 +219,7 @@ class _CustomerDetails extends ConsumerWidget {
           if (customer.notes.isNotEmpty)
             _DetailCard(
               icon: Icons.notes_outlined,
-              title: 'Notes',
+              title: context.l10n.notes,
               value: customer.notes,
             ),
           if (customer.address.isEmpty && customer.notes.isEmpty)
@@ -252,19 +249,19 @@ class _CustomerDetails extends ConsumerWidget {
                   ),
                 ),
                 icon: const Icon(Icons.add),
-                label: const Text('New Order'),
+                label: Text(context.l10n.newOrder),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
           orders.when(
             loading: () => const LinearProgressIndicator(),
-            error: (_, __) => const Text('Could not load order history.'),
+            error: (_, __) => Text(context.l10n.orderHistoryLoadFailed),
             data: (records) => records.isEmpty
-                ? const Card(
+                ? Card(
                     child: Padding(
                       padding: AppSpacing.cardPadding,
-                      child: Text('No orders for this customer yet.'),
+                      child: Text(context.l10n.noCustomerOrders),
                     ),
                   )
                 : Column(
@@ -310,16 +307,16 @@ class _CustomerDetails extends ConsumerWidget {
                     ),
                   ),
                 ),
-                child: const Text('View History'),
+                child: Text(context.l10n.viewHistory),
               ),
             ],
           ),
           measurements.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => const Card(
+            error: (error, _) => Card(
               child: Padding(
                 padding: AppSpacing.cardPadding,
-                child: Text('Could not load measurement profiles.'),
+                child: Text(context.l10n.couldNotLoadMeasurements),
               ),
             ),
             data: (records) => records.isEmpty
@@ -359,7 +356,7 @@ class _CustomerDetails extends ConsumerWidget {
           FilledButton.icon(
             onPressed: addMeasurements,
             icon: const Icon(Icons.add),
-            label: const Text('Add Measurements'),
+            label: Text(context.l10n.addMeasurement),
           ),
           const SizedBox(height: AppSpacing.xxl),
           OutlinedButton.icon(
@@ -369,7 +366,7 @@ class _CustomerDetails extends ConsumerWidget {
               ),
             ),
             icon: const Icon(Icons.edit_outlined),
-            label: const Text('Edit Customer'),
+            label: Text(context.l10n.editCustomerAction),
           ),
         ],
       ),

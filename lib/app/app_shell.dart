@@ -4,11 +4,14 @@ import '../features/dashboard/dashboard_screen.dart';
 import '../features/orders/orders_screen.dart';
 import '../features/customers/customers_screen.dart';
 import 'more_screen.dart';
+import '../core/localization/localization_extensions.dart';
 
 /// Responsive app shell: BottomNavigationBar on phones,
 /// NavigationRail on tablets (width >= 600).
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  const AppShell({super.key, this.readOnly = false});
+
+  final bool readOnly;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -17,26 +20,26 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
 
-  static const _destinations = <_Destination>[
+  List<_Destination> _destinations(BuildContext context) => <_Destination>[
     _Destination(
       icon: Icons.home_outlined,
       selectedIcon: Icons.home,
-      label: 'Home',
+      label: context.l10n.home,
     ),
     _Destination(
       icon: Icons.receipt_long_outlined,
       selectedIcon: Icons.receipt_long,
-      label: 'Orders',
+      label: context.l10n.orders,
     ),
     _Destination(
       icon: Icons.people_outline,
       selectedIcon: Icons.people,
-      label: 'Customers',
+      label: context.l10n.customers,
     ),
     _Destination(
       icon: Icons.more_horiz,
       selectedIcon: Icons.more_horiz,
-      label: 'More',
+      label: context.l10n.more,
     ),
   ];
 
@@ -55,8 +58,11 @@ class _AppShellState extends State<AppShell> {
     }
   }
 
+  Widget _content() => _body();
+
   @override
   Widget build(BuildContext context) {
+    final destinations = _destinations(context);
     final width = MediaQuery.sizeOf(context).width;
     final isTablet = width >= 600;
 
@@ -77,7 +83,7 @@ class _AppShellState extends State<AppShell> {
                   size: 28,
                 ),
               ),
-              destinations: _destinations
+              destinations: destinations
                   .map(
                     (d) => NavigationRailDestination(
                       icon: Icon(d.icon),
@@ -88,19 +94,19 @@ class _AppShellState extends State<AppShell> {
                   .toList(),
             ),
             const VerticalDivider(thickness: 1, width: 1),
-            Expanded(child: _body()),
+            Expanded(child: _content()),
           ],
         ),
       );
     }
 
     return Scaffold(
-      body: _body(),
+      body: _content(),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) =>
             setState(() => _selectedIndex = index),
-        destinations: _destinations
+        destinations: destinations
             .map(
               (d) => NavigationDestination(
                 icon: Icon(d.icon),

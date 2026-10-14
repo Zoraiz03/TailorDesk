@@ -8,6 +8,7 @@ import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/section_header.dart';
 import '../../core/widgets/status_badge.dart';
 import '../../core/widgets/summary_card.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../customers/customer_detail_screen.dart';
 import '../karigars/karigar_detail_screen.dart';
 import '../karigars/karigar_models.dart';
@@ -29,7 +30,7 @@ class ReportsScreen extends ConsumerWidget {
       initialIndex: initialTabIndex,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Reports & Analytics'),
+          title: Text(context.l10n.reportsAnalytics),
           centerTitle: false,
           bottom: const TabBar(
             isScrollable: true,
@@ -85,20 +86,20 @@ class _DueOrdersTab extends ConsumerWidget {
       error: (e, _) => Center(
         child: EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load report',
+          title: context.l10n.couldNotLoad,
           subtitle: e.toString(),
           action: OutlinedButton(
             onPressed: () => ref.invalidate(dueOrdersReportProvider),
-            child: const Text('Retry'),
+            child: Text(context.l10n.retry),
           ),
         ),
       ),
       data: (report) {
         if (report.totalDueCount == 0) {
-          return const EmptyState(
+          return EmptyState(
             icon: Icons.check_circle_outline,
-            title: 'All caught up!',
-            subtitle: 'No overdue or pending orders due right now.',
+            title: context.l10n.allCaughtUp,
+            subtitle: context.l10n.noDueOrders,
           );
         }
 
@@ -118,21 +119,21 @@ class _DueOrdersTab extends ConsumerWidget {
                   childAspectRatio: isWide ? 2.0 : 1.15,
                   children: [
                     SummaryCard(
-                      title: 'Overdue',
+                      title: context.l10n.overdue,
                       value: '${report.overdueOrders.length}',
                       icon: Icons.warning_amber_rounded,
                       iconColor: AppColors.error,
                       iconBackgroundColor: AppColors.errorBg,
                     ),
                     SummaryCard(
-                      title: 'Due Today',
+                      title: context.l10n.dueToday,
                       value: '${report.dueTodayOrders.length}',
                       icon: Icons.today_rounded,
                       iconColor: AppColors.warning,
                       iconBackgroundColor: AppColors.warningBg,
                     ),
                     SummaryCard(
-                      title: 'Upcoming',
+                      title: context.l10n.upcoming,
                       value: '${report.upcomingOrders.length}',
                       icon: Icons.event_available_rounded,
                       iconColor: AppColors.info,
@@ -329,20 +330,20 @@ class _CustomerBalancesTab extends ConsumerWidget {
       error: (e, _) => Center(
         child: EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load balances',
+          title: context.l10n.couldNotLoad,
           subtitle: e.toString(),
           action: OutlinedButton(
             onPressed: () => ref.invalidate(customerBalancesReportProvider),
-            child: const Text('Retry'),
+            child: Text(context.l10n.retry),
           ),
         ),
       ),
       data: (report) {
         if (report.items.isEmpty) {
-          return const EmptyState(
+          return EmptyState(
             icon: Icons.done_all_rounded,
-            title: 'No outstanding balances',
-            subtitle: 'All customer accounts are completely paid up!',
+            title: context.l10n.noOutstandingBalances,
+            subtitle: context.l10n.accountsPaidUp,
           );
         }
 
@@ -354,7 +355,7 @@ class _CustomerBalancesTab extends ConsumerWidget {
               children: [
                 Expanded(
                   child: SummaryCard(
-                    title: 'Total Outstanding',
+                    title: context.l10n.totalOutstanding,
                     value: formatPaisa(report.totalOutstandingPaisa),
                     icon: Icons.account_balance_wallet_outlined,
                     iconColor: AppColors.error,
@@ -364,7 +365,7 @@ class _CustomerBalancesTab extends ConsumerWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: SummaryCard(
-                    title: 'Customers with Due',
+                    title: context.l10n.customersWithDue,
                     value: '${report.customerCountWithBalance}',
                     icon: Icons.people_outline_rounded,
                     iconColor: AppColors.warning,
@@ -375,7 +376,9 @@ class _CustomerBalancesTab extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
 
-            SectionHeader(title: 'Customer Balances (${report.items.length})'),
+            SectionHeader(
+              title: context.l10n.customerBalancesCount(report.items.length),
+            ),
             const SizedBox(height: AppSpacing.xs),
 
             ...report.items.map((item) => _CustomerBalanceCard(item: item)),
@@ -569,7 +572,7 @@ class _CollectionsTab extends ConsumerWidget {
           error: (e, _) => Center(
             child: EmptyState(
               icon: Icons.error_outline,
-              title: 'Could not load collections',
+              title: context.l10n.couldNotLoad,
               subtitle: e.toString(),
             ),
           ),
@@ -587,27 +590,27 @@ class _CollectionsTab extends ConsumerWidget {
                   childAspectRatio: 1.45,
                   children: [
                     SummaryCard(
-                      title: 'Gross Collections',
+                      title: context.l10n.grossCollections,
                       value: formatPaisa(report.grossCollectionsPaisa),
                       icon: Icons.arrow_downward_rounded,
                       iconColor: AppColors.primary,
                       iconBackgroundColor: AppColors.primaryLight,
                     ),
                     SummaryCard(
-                      title: 'Total Refunds',
+                      title: context.l10n.totalRefunds,
                       value: formatPaisa(report.totalRefundsPaisa),
                       icon: Icons.arrow_upward_rounded,
                       iconColor: AppColors.error,
                       iconBackgroundColor: AppColors.errorBg,
                     ),
                     SummaryCard(
-                      title: 'Net Collections',
+                      title: context.l10n.netCollections,
                       value: formatPaisa(report.netCollectionsPaisa),
                       icon: Icons.account_balance_rounded,
                       iconColor: AppColors.primary,
                     ),
                     SummaryCard(
-                      title: 'Transactions',
+                      title: context.l10n.transactions,
                       value: '${report.paymentCount + report.refundCount}',
                       icon: Icons.receipt_long_outlined,
                       iconColor: AppColors.gold,
@@ -632,15 +635,15 @@ class _CollectionsTab extends ConsumerWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Row(
+                            Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.money,
                                   size: 18,
                                   color: AppColors.primary,
                                 ),
-                                SizedBox(width: 6),
-                                Text('Cash Collected'),
+                                const SizedBox(width: 6),
+                                Text(context.l10n.cashCollected),
                               ],
                             ),
                             Text(
@@ -655,15 +658,15 @@ class _CollectionsTab extends ConsumerWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Row(
+                            Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.account_balance,
                                   size: 18,
                                   color: AppColors.info,
                                 ),
-                                SizedBox(width: 6),
-                                Text('Bank Transfer (Manual)'),
+                                const SizedBox(width: 6),
+                                Text(context.l10n.bankTransferManual),
                               ],
                             ),
                             Text(
@@ -701,14 +704,16 @@ class _CollectionsTab extends ConsumerWidget {
 
                 // Transaction Ledger
                 SectionHeader(
-                  title: 'Ledger Entries (${report.ledgerEntries.length})',
+                  title: context.l10n.ledgerEntriesCount(
+                    report.ledgerEntries.length,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
 
                 if (report.ledgerEntries.isEmpty)
-                  const EmptyState(
+                  EmptyState(
                     icon: Icons.receipt_long_outlined,
-                    title: 'No transactions in this period',
+                    title: context.l10n.noTransactions,
                     subtitle:
                         'No payments or refunds recorded for the selected range.',
                   )
@@ -817,11 +822,11 @@ class _KarigarWorkloadTab extends ConsumerWidget {
       error: (e, _) => Center(
         child: EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load workload',
+          title: context.l10n.couldNotLoad,
           subtitle: e.toString(),
           action: OutlinedButton(
             onPressed: () => ref.invalidate(karigarWorkloadReportProvider),
-            child: const Text('Retry'),
+            child: Text(context.l10n.retry),
           ),
         ),
       ),
@@ -839,20 +844,20 @@ class _KarigarWorkloadTab extends ConsumerWidget {
               childAspectRatio: 1.45,
               children: [
                 SummaryCard(
-                  title: 'Active Workers',
+                  title: context.l10n.activeWorkers,
                   value: '${report.totalActiveWorkers}',
                   icon: Icons.people_alt_outlined,
                   iconColor: AppColors.primary,
                 ),
                 SummaryCard(
-                  title: 'Active Work Items',
+                  title: context.l10n.activeWorkItems,
                   value: '${report.totalActiveAssignments}',
                   icon: Icons.hourglass_top_rounded,
                   iconColor: AppColors.info,
                   iconBackgroundColor: AppColors.infoBg,
                 ),
                 SummaryCard(
-                  title: 'Unassigned Items',
+                  title: context.l10n.unassignedItems,
                   value: '${report.totalUnassignedItems}',
                   icon: Icons.assignment_late_outlined,
                   iconColor: report.totalUnassignedItems > 0
@@ -863,7 +868,7 @@ class _KarigarWorkloadTab extends ConsumerWidget {
                       : AppColors.primaryLight,
                 ),
                 SummaryCard(
-                  title: 'Overdue Deadlines',
+                  title: context.l10n.overdueDeadlines,
                   value: '${report.totalOverdueAssignments}',
                   icon: Icons.alarm_off_outlined,
                   iconColor: report.totalOverdueAssignments > 0
@@ -926,7 +931,7 @@ class _KarigarWorkloadTab extends ConsumerWidget {
                                     OrderDetailScreen(orderId: item.orderId),
                               ),
                             ),
-                            child: const Text('Assign'),
+                            child: Text(context.l10n.assign),
                           ),
                         ),
                       ),
@@ -939,14 +944,16 @@ class _KarigarWorkloadTab extends ConsumerWidget {
 
             // Karigar Workload List
             SectionHeader(
-              title: 'Worker Workloads (${report.workerWorkloads.length})',
+              title: context.l10n.workerWorkloadsCount(
+                report.workerWorkloads.length,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
 
             if (report.workerWorkloads.isEmpty)
-              const EmptyState(
+              EmptyState(
                 icon: Icons.engineering_outlined,
-                title: 'No karigars registered',
+                title: context.l10n.noKarigarsRegistered,
                 subtitle:
                     'Add workers from More → Karigars to track workloads.',
               )

@@ -6,6 +6,7 @@ import '../../core/database/app_database.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/status_badge.dart';
+import '../../core/localization/localization_extensions.dart';
 import 'karigar_models.dart';
 import 'karigar_providers.dart';
 
@@ -29,9 +30,9 @@ class OrderItemAssignmentCard extends ConsumerWidget {
         padding: EdgeInsets.all(AppSpacing.md),
         child: LinearProgressIndicator(),
       ),
-      error: (_, __) => const ListTile(
-        leading: Icon(Icons.error_outline),
-        title: Text('Could not load assignment'),
+      error: (_, __) => ListTile(
+        leading: const Icon(Icons.error_outline),
+        title: Text(context.l10n.couldNotLoad),
       ),
       data: (history) {
         AssignmentRecord? active;
@@ -74,7 +75,7 @@ class OrderItemAssignmentCard extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.sm),
               if (active == null)
-                const Text('No active karigar assignment.')
+                Text(context.l10n.noActiveAssignment)
               else ...[
                 Text(
                   active.karigar.name,
@@ -90,7 +91,11 @@ class OrderItemAssignmentCard extends ConsumerWidget {
                     ),
                   ),
                 if (active.assignment.workInstructions.isNotEmpty)
-                  Text('Instructions: ${active.assignment.workInstructions}'),
+                  Text(
+                    context.l10n.instructionsPrefix(
+                      active.assignment.workInstructions,
+                    ),
+                  ),
               ],
               if (enabled &&
                   item.status != 'delivered' &&
@@ -125,7 +130,7 @@ class OrderItemAssignmentCard extends ConsumerWidget {
                               .read(karigarsDaoProvider)
                               .startWork(active!.assignment.id),
                         ),
-                        child: const Text('Start work'),
+                        child: Text(context.l10n.startWork),
                       ),
                     if (active?.status == AssignmentStatus.inProgress)
                       FilledButton(
@@ -135,7 +140,7 @@ class OrderItemAssignmentCard extends ConsumerWidget {
                               .read(karigarsDaoProvider)
                               .completeWork(active!.assignment.id),
                         ),
-                        child: const Text('Mark ready'),
+                        child: Text(context.l10n.ready),
                       ),
                     if (active == null &&
                         completed != null &&
@@ -148,7 +153,7 @@ class OrderItemAssignmentCard extends ConsumerWidget {
                             assignment: completed,
                           ),
                         ),
-                        child: const Text('Return for alteration'),
+                        child: Text(context.l10n.returnForAlteration),
                       ),
                   ],
                 ),
@@ -157,7 +162,9 @@ class OrderItemAssignmentCard extends ConsumerWidget {
                 const Divider(height: AppSpacing.xxl),
                 ExpansionTile(
                   tilePadding: EdgeInsets.zero,
-                  title: Text('Assignment history (${history.length})'),
+                  title: Text(
+                    context.l10n.assignmentHistoryCount(history.length),
+                  ),
                   children: history.map((record) {
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
@@ -239,7 +246,7 @@ class _AssignDialogState extends ConsumerState<_AssignDialog> {
     if (_karigarId == null || _saving) return;
     if (widget.current != null && _reason.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter a reason for reassignment.')),
+        SnackBar(content: Text(context.l10n.enterReassignmentReason)),
       );
       return;
     }
@@ -257,9 +264,9 @@ class _AssignDialogState extends ConsumerState<_AssignDialog> {
       if (mounted) Navigator.pop(context);
     } on InactiveKarigarException {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('This karigar is inactive.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.inactiveKarigar)));
       }
     } on AssignmentNotEligibleException catch (error) {
       if (mounted) {
@@ -287,10 +294,12 @@ class _AssignDialogState extends ConsumerState<_AssignDialog> {
             children: [
               karigars.when(
                 loading: () => const LinearProgressIndicator(),
-                error: (_, __) => const Text('Could not load active karigars.'),
+                error: (_, __) => Text(context.l10n.couldNotLoad),
                 data: (items) => DropdownButtonFormField<int>(
                   initialValue: _karigarId,
-                  decoration: const InputDecoration(labelText: 'Karigar *'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.workerName,
+                  ),
                   items: items
                       .map(
                         (record) => DropdownMenuItem(
@@ -307,7 +316,7 @@ class _AssignDialogState extends ConsumerState<_AssignDialog> {
               const SizedBox(height: AppSpacing.md),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Internal deadline'),
+                title: Text(context.l10n.internalDeadline),
                 subtitle: Text(
                   _deadline == null
                       ? 'Not set'
@@ -336,16 +345,16 @@ class _AssignDialogState extends ConsumerState<_AssignDialog> {
                 controller: _instructions,
                 minLines: 2,
                 maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: 'Work instructions',
+                decoration: InputDecoration(
+                  labelText: context.l10n.workInstructions,
                 ),
               ),
               if (widget.current != null) ...[
                 const SizedBox(height: AppSpacing.md),
                 TextField(
                   controller: _reason,
-                  decoration: const InputDecoration(
-                    labelText: 'Reassignment reason *',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.reassignmentReason,
                   ),
                 ),
               ],
@@ -356,7 +365,7 @@ class _AssignDialogState extends ConsumerState<_AssignDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
         FilledButton(
           onPressed: _karigarId == null || _saving ? null : _save,
@@ -388,18 +397,18 @@ class _AlterationDialogState extends State<_AlterationDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-    title: const Text('Return for alteration'),
+    title: Text(context.l10n.returnForAlteration),
     content: TextField(
       controller: _reason,
       autofocus: true,
       minLines: 2,
       maxLines: 4,
-      decoration: const InputDecoration(labelText: 'Alteration reason *'),
+      decoration: InputDecoration(labelText: context.l10n.alterationReason),
     ),
     actions: [
       TextButton(
         onPressed: () => Navigator.pop(context),
-        child: const Text('Cancel'),
+        child: Text(context.l10n.cancel),
       ),
       FilledButton(
         onPressed: _saving

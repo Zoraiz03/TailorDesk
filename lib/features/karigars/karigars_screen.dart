@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/widgets/status_badge.dart';
 import 'karigar_form_screen.dart';
 import 'karigar_detail_screen.dart';
@@ -36,11 +37,11 @@ class _KarigarsScreenState extends ConsumerState<KarigarsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Karigars'),
+        title: Text(context.l10n.karigars),
         centerTitle: false,
         actions: [
           FilterChip(
-            label: const Text('Active only'),
+            label: Text(context.l10n.activeOnly),
             selected: _showActiveOnly,
             onSelected: (v) => setState(() => _showActiveOnly = v),
           ),
@@ -54,7 +55,7 @@ class _KarigarsScreenState extends ConsumerState<KarigarsScreen> {
             child: TextField(
               controller: _search,
               decoration: InputDecoration(
-                hintText: 'Search karigars…',
+                hintText: context.l10n.searchKarigars,
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _query.isNotEmpty
                     ? IconButton(
@@ -74,8 +75,8 @@ class _KarigarsScreenState extends ConsumerState<KarigarsScreen> {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => EmptyState(
                 icon: Icons.error_outline,
-                title: 'Could not load karigars',
-                subtitle: '$e',
+                title: context.l10n.couldNotLoad,
+                subtitle: context.l10n.savedDataUnchanged,
               ),
               data: (list) {
                 final filtered = _filter(list);
@@ -95,7 +96,7 @@ class _KarigarsScreenState extends ConsumerState<KarigarsScreen> {
                               Icons.person_add_outlined,
                               size: 20,
                             ),
-                            label: const Text('Add Karigar'),
+                            label: Text(context.l10n.addKarigar),
                           )
                         : null,
                   );
@@ -119,7 +120,7 @@ class _KarigarsScreenState extends ConsumerState<KarigarsScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addKarigar,
         icon: const Icon(Icons.person_add_outlined),
-        label: const Text('Add Karigar'),
+        label: Text(context.l10n.addKarigar),
       ),
     );
   }

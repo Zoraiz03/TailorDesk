@@ -331,7 +331,7 @@ void main() {
           .customSelect('PRAGMA user_version')
           .getSingle()
           .then((row) => row.read<int>('user_version')),
-      5,
+      6,
     );
   });
 }

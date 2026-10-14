@@ -5,6 +5,8 @@ import '../features/reports/reports_screen.dart';
 import '../features/settings/backup_restore_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../core/theme/app_colors.dart';
+import '../core/localization/localization_extensions.dart';
+import 'about_screen.dart';
 
 /// The "More" tab showing access to secondary features.
 class MoreScreen extends StatelessWidget {
@@ -13,38 +15,46 @@ class MoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('More'), centerTitle: false),
+      appBar: AppBar(title: Text(context.l10n.more), centerTitle: false),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
           _MoreTile(
+            icon: Icons.info_outline,
+            label: context.l10n.aboutTailorDesk,
+            subtitle: context.l10n.aboutSubtitle,
+            onTap: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const AboutScreen())),
+          ),
+          _MoreTile(
             icon: Icons.engineering_outlined,
-            label: 'Karigars',
-            subtitle: 'Manage tailors and workers',
+            label: context.l10n.karigars,
+            subtitle: context.l10n.karigarsSubtitle,
             onTap: () => Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const KarigarsScreen())),
           ),
           _MoreTile(
             icon: Icons.bar_chart_outlined,
-            label: 'Reports',
-            subtitle: 'Business analytics and summaries',
+            label: context.l10n.reports,
+            subtitle: context.l10n.reportsSubtitle,
             onTap: () => Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const ReportsScreen())),
           ),
           _MoreTile(
             icon: Icons.backup_outlined,
-            label: 'Backup & Restore',
-            subtitle: 'Export and import your data',
+            label: context.l10n.backupRestore,
+            subtitle: context.l10n.backupSubtitle,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const BackupRestoreScreen()),
             ),
           ),
           _MoreTile(
             icon: Icons.settings_outlined,
-            label: 'Settings',
-            subtitle: 'App preferences and configuration',
+            label: context.l10n.settings,
+            subtitle: context.l10n.appPreferencesSubtitle,
             onTap: () => Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),

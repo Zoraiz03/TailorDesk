@@ -26,7 +26,7 @@ void main() {
 
     // Initial tab: Due & Overdue
     await tester.pumpAndSettle();
-    expect(find.text('Reports & Analytics'), findsOneWidget);
+    expect(find.text('Reports & analytics'), findsOneWidget);
     expect(find.text('Due & Overdue'), findsOneWidget);
     expect(find.text('Customer Balances'), findsOneWidget);
     expect(find.text('Collections & Refunds'), findsOneWidget);
@@ -43,9 +43,9 @@ void main() {
     // Switch to Collections & Refunds (Tab 3)
     await tester.tap(find.text('Collections & Refunds'));
     await tester.pumpAndSettle();
-    expect(find.text('Gross Collections'), findsOneWidget);
-    expect(find.text('Net Collections'), findsOneWidget);
-    expect(find.text('Total Refunds'), findsOneWidget);
+    expect(find.text('Gross collections'), findsOneWidget);
+    expect(find.text('Net collections'), findsOneWidget);
+    expect(find.text('Total refunds'), findsOneWidget);
 
     // Switch to Karigar Workload (Tab 4)
     await tester.tap(find.text('Karigar Workload'));

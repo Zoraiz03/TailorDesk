@@ -14,6 +14,9 @@ class ShopSettingsRepository {
   static const shopAddressKey = 'shop_address';
   static const shopPhoneKey = 'shop_phone';
   static const receiptFooterKey = 'receipt_footer';
+  static const defaultUnitKey = 'default_measurement_unit';
+  static const setupCompletedKey = 'setup_completed';
+  static const setupStepKey = 'setup_step';
 
   Stream<ShopDetails> watch() =>
       database.select(database.appSettings).watch().map(_fromRows);
@@ -30,10 +33,23 @@ class ShopSettingsRepository {
       address: (values[shopAddressKey] ?? '').trim(),
       phone: (values[shopPhoneKey] ?? '').trim(),
       receiptFooter: (values[receiptFooterKey] ?? '').trim(),
+      defaultMeasurementUnit: values[defaultUnitKey] == 'centimetres'
+          ? 'centimetres'
+          : 'inches',
     );
   }
 
+  Stream<ShopSetupState> watchSetup() =>
+      database.select(database.appSettings).watch().map((rows) {
+        final values = {for (final row in rows) row.key: row.value};
+        return ShopSetupState(
+          completed: values[setupCompletedKey] == 'true',
+          step: int.tryParse(values[setupStepKey] ?? '') ?? 0,
+        );
+      });
+
   Future<void> save(ShopDetails details) async {
+    database.requireBusinessWrite();
     if (details.name.trim().isEmpty) {
       throw ArgumentError('Shop name is required');
     }
@@ -42,6 +58,22 @@ class ShopSettingsRepository {
       await _put(shopAddressKey, details.address.trim());
       await _put(shopPhoneKey, details.phone.trim());
       await _put(receiptFooterKey, details.receiptFooter.trim());
+      await _put(defaultUnitKey, details.defaultMeasurementUnit);
+    });
+  }
+
+  Future<void> saveSetupProgress(ShopDetails details, int step) async {
+    database.requireBusinessWrite();
+    await save(details);
+    await _put(setupStepKey, '$step');
+  }
+
+  Future<void> completeSetup(ShopDetails details) async {
+    database.requireBusinessWrite();
+    await database.transaction(() async {
+      await save(details);
+      await _put(setupCompletedKey, 'true');
+      await _put(setupStepKey, '0');
     });
   }
 
@@ -61,4 +93,8 @@ final shopSettingsRepositoryProvider = Provider<ShopSettingsRepository>((ref) {
 
 final shopDetailsProvider = StreamProvider<ShopDetails>((ref) {
   return ref.watch(shopSettingsRepositoryProvider).watch();
+});
+
+final shopSetupProvider = StreamProvider<ShopSetupState>((ref) {
+  return ref.watch(shopSettingsRepositoryProvider).watchSetup();
 });

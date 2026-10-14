@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../core/database/database_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/localization/localization_extensions.dart';
 import 'backup/backup_service.dart';
 
 /// Backup & Restore screen — Stage 1 empty state.
@@ -26,7 +27,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     if (_busy) return;
     setState(() {
       _busy = true;
-      _status = 'Creating a consistent database snapshot…';
+      _status = context.l10n.saving;
     });
     try {
       final bytes = await BackupService().createBackup(
@@ -52,11 +53,11 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       if (!mounted) return;
       setState(() {
         _status = !exported
-            ? 'Backup export was cancelled.'
-            : 'Backup created and handed to the selected destination.';
+            ? context.l10n.backupCancelled
+            : context.l10n.backupCreated;
       });
     } catch (error) {
-      if (mounted) setState(() => _status = 'Backup failed: $error');
+      if (mounted) setState(() => _status = context.l10n.backupFailed);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -102,7 +103,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     );
     final selected = await openFile(acceptedTypeGroups: const [type]);
     if (selected == null || !mounted) {
-      setState(() => _status = 'Restore selection was cancelled.');
+      setState(() => _status = context.l10n.backupCancelled);
       return;
     }
     Uint8List bytes;
@@ -110,14 +111,14 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       bytes = await selected.readAsBytes();
       setState(() {
         _busy = true;
-        _status = 'Validating backup structure, checksum, and database…';
+        _status = context.l10n.validating;
       });
       await BackupService().validate(bytes);
     } catch (error) {
       if (mounted) {
         setState(() {
           _busy = false;
-          _status = 'Backup rejected: $error';
+          _status = context.l10n.restoreFailed;
         });
       }
       return;
@@ -129,48 +130,38 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
         icon: const Icon(Icons.warning_amber_rounded, color: AppColors.error),
-        title: const Text('Replace all local data?'),
-        content: const Text(
-          'Restore replaces this device’s customers, measurements, orders, payments, karigars, assignments, and settings. It does not merge data. A safety copy of the current database will be created first.',
-        ),
+        title: Text(context.l10n.replaceLocalDataQuestion),
+        content: Text(context.l10n.restoreWarning),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Replace local data'),
+            child: Text(context.l10n.replaceLocalData),
           ),
         ],
       ),
     );
     if (confirmed != true || !mounted) {
-      setState(
-        () => _status = 'Restore was cancelled. Local data was not changed.',
-      );
+      setState(() => _status = context.l10n.backupCancelled);
       return;
     }
     setState(() {
       _busy = true;
-      _status = 'Creating safety copy and restoring…';
+      _status = context.l10n.saving;
     });
     try {
-      final safetyPath = await BackupService().restore(
-        ref.read(databaseProvider),
-        bytes,
-      );
+      await BackupService().restore(ref.read(databaseProvider), bytes);
       ref.invalidate(databaseProvider);
       if (mounted) {
-        setState(
-          () => _status =
-              'Restore completed. A safety copy was kept at $safetyPath',
-        );
+        setState(() => _status = context.l10n.restoreComplete);
       }
     } catch (error) {
       ref.invalidate(databaseProvider);
-      if (mounted) setState(() => _status = 'Restore failed: $error');
+      if (mounted) setState(() => _status = context.l10n.restoreFailed);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -186,7 +177,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Backup & Restore'), centerTitle: false),
+      appBar: AppBar(
+        title: Text(context.l10n.backupRestore),
+        centerTitle: false,
+      ),
       body: ListView(
         padding: AppSpacing.pagePadding,
         children: [
@@ -201,7 +195,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             ),
           _ActionCard(
             icon: Icons.cloud_upload_outlined,
-            title: 'Export backup',
+            title: context.l10n.createBackup,
             description:
                 'Creates a versioned local archive with a consistent SQLite snapshot and SHA-256 checksum. The archive is not encrypted.',
             buttonLabel: 'Create and export backup',
@@ -210,7 +204,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           const SizedBox(height: AppSpacing.lg),
           _ActionCard(
             icon: Icons.restore_outlined,
-            title: 'Restore backup',
+            title: context.l10n.restoreBackup,
             description:
                 'Validates the archive in a temporary location, creates a safety copy, then replaces local data. Restore does not merge records.',
             buttonLabel: 'Choose backup to restore',

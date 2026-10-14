@@ -4,9 +4,15 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import '../../core/database/app_database.dart';
+import '../../core/localization/localization_extensions.dart';
+import '../../core/localization/presentation_preferences.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/app_localizations_en.dart';
+import '../../l10n/app_localizations_ur.dart';
 import '../karigars/karigar_models.dart';
 import '../measurements/measurement_models.dart';
 import '../measurements/measurement_templates.dart';
+import '../settings/garment_catalog.dart';
 import '../orders/order_formatters.dart';
 import '../orders/order_models.dart';
 import '../settings/shop_settings.dart';
@@ -28,12 +34,24 @@ class GeneratedOrderDocument {
 }
 
 class OrderDocumentService {
+  final AppLocalizations _english = AppLocalizationsEn();
+  final AppLocalizations _urdu = AppLocalizationsUr();
+  DocumentLanguage _language = DocumentLanguage.english;
+
+  String _text(String Function(AppLocalizations value) read) =>
+      switch (_language) {
+        DocumentLanguage.english => read(_english),
+        DocumentLanguage.urdu => read(_urdu),
+        DocumentLanguage.bilingual => '${read(_english)} / ${read(_urdu)}',
+      };
+
   Future<GeneratedOrderDocument> generate({
     required OrderDocumentKind kind,
     required ShopDetails shop,
     required OrderRecord order,
     AssignmentRecord? assignment,
     DateTime? generatedAt,
+    DocumentLanguage documentLanguage = DocumentLanguage.english,
   }) async {
     if (kind != OrderDocumentKind.customerReceipt && assignment == null) {
       throw ArgumentError('A karigar assignment is required for this document');
@@ -42,6 +60,12 @@ class OrderDocumentService {
       'assets/fonts/Roboto-Regular.ttf',
     );
     final mediumData = await rootBundle.load('assets/fonts/Roboto-Medium.ttf');
+    final urduRegularData = await rootBundle.load(
+      'assets/fonts/NotoNaskhArabic-Regular.ttf',
+    );
+    final urduMediumData = await rootBundle.load(
+      'assets/fonts/NotoNaskhArabic-Medium.ttf',
+    );
     return generateWithFonts(
       kind: kind,
       shop: shop,
@@ -50,6 +74,9 @@ class OrderDocumentService {
       generatedAt: generatedAt,
       regularFont: regularData,
       mediumFont: mediumData,
+      urduRegularFont: urduRegularData,
+      urduMediumFont: urduMediumData,
+      documentLanguage: documentLanguage,
     );
   }
 
@@ -59,13 +86,33 @@ class OrderDocumentService {
     required OrderRecord order,
     required ByteData regularFont,
     required ByteData mediumFont,
+    ByteData? urduRegularFont,
+    ByteData? urduMediumFont,
+    DocumentLanguage documentLanguage = DocumentLanguage.english,
     AssignmentRecord? assignment,
     DateTime? generatedAt,
   }) async {
     final created = generatedAt ?? DateTime.now();
-    final regular = pw.Font.ttf(regularFont);
-    final medium = pw.Font.ttf(mediumFont);
-    final theme = pw.ThemeData.withFont(base: regular, bold: medium);
+    _language = documentLanguage;
+    if (documentLanguage != DocumentLanguage.english &&
+        (urduRegularFont == null || urduMediumFont == null)) {
+      throw ArgumentError('Urdu document fonts are required');
+    }
+    final latinRegular = pw.Font.ttf(regularFont);
+    final latinMedium = pw.Font.ttf(mediumFont);
+    final regular = documentLanguage == DocumentLanguage.english
+        ? latinRegular
+        : pw.Font.ttf(urduRegularFont!);
+    final medium = documentLanguage == DocumentLanguage.english
+        ? latinMedium
+        : pw.Font.ttf(urduMediumFont!);
+    final theme = pw.ThemeData.withFont(
+      base: regular,
+      bold: medium,
+      fontFallback: documentLanguage == DocumentLanguage.english
+          ? [if (urduRegularFont != null) pw.Font.ttf(urduRegularFont)]
+          : [latinRegular],
+    );
     final document = pw.Document(
       theme: theme,
       title: _title(kind, order.order.orderNumber),
@@ -78,6 +125,9 @@ class OrderDocumentService {
         pw.Page(
           pageFormat: PdfPageFormat.a4,
           margin: const pw.EdgeInsets.fromLTRB(34, 32, 34, 34),
+          textDirection: documentLanguage == DocumentLanguage.english
+              ? pw.TextDirection.ltr
+              : pw.TextDirection.rtl,
           build: (_) => pw.Column(
             children: [
               _pageHeader(shop, order.order.orderNumber, kind, 1, 1),
@@ -94,6 +144,9 @@ class OrderDocumentService {
           pageFormat: PdfPageFormat.a4,
           margin: const pw.EdgeInsets.fromLTRB(34, 32, 34, 34),
           maxPages: 100,
+          textDirection: documentLanguage == DocumentLanguage.english
+              ? pw.TextDirection.ltr
+              : pw.TextDirection.rtl,
           header: (context) => _pageHeader(
             shop,
             order.order.orderNumber,
@@ -140,6 +193,7 @@ class OrderDocumentService {
         order: order,
         assignment: assignment,
         generatedAt: created,
+        documentLanguage: documentLanguage,
       ),
     );
   }
@@ -150,21 +204,23 @@ class OrderDocumentService {
     required OrderRecord order,
     AssignmentRecord? assignment,
     DateTime? generatedAt,
+    DocumentLanguage documentLanguage = DocumentLanguage.english,
   }) {
+    _language = documentLanguage;
     final lines = <String>[shop.name, order.order.orderNumber];
     if (kind == OrderDocumentKind.customerReceipt ||
         kind == OrderDocumentKind.combined) {
       lines.addAll([
-        'ORDER RECEIPT',
+        _text((l) => l.orderReceiptHeading),
         order.customer.name,
         ...order.items.map(
           (item) =>
-              '${_garmentLabel(item.garmentType)} x ${item.quantity}${item.status == 'cancelled' ? ' CANCELLED EXCLUDED' : ''}',
+              '${_garmentLabel(item)} × ${item.quantity}${item.status == 'cancelled' ? ' ${_text((l) => l.cancelledExcluded)}' : ''}',
         ),
-        'Order total ${formatPaisa(order.totalPaisa)}',
-        'Net paid ${formatPaisa(order.netPaidPaisa)}',
-        'Balance ${formatPaisa(order.balancePaisa)}',
-        'Payment ${order.paymentStatusLabel}',
+        '${_text((l) => l.orderTotal)} ${formatPaisa(order.totalPaisa)}',
+        '${_text((l) => l.netPaid)} ${formatPaisa(order.netPaidPaisa)}',
+        '${_text((l) => l.balance)} ${formatPaisa(order.balancePaisa)}',
+        '${_text((l) => l.payment)} ${_paymentStatus(order)}',
       ]);
     }
     if (kind == OrderDocumentKind.karigarSlip ||
@@ -173,43 +229,45 @@ class OrderDocumentService {
       final item = assignment.orderItem;
       final unit = MeasurementUnit.fromStorage(item.measurementUnit).suffix;
       lines.addAll([
-        'KARIGAR WORK SLIP',
+        _text((l) => l.workSlipHeading),
         assignment.karigar.name,
-        '${_garmentLabel(item.garmentType)} x ${item.quantity}',
+        '${_garmentLabel(item)} × ${item.quantity}',
         ...decodeMeasurementValues(item.measurementValuesJson).entries.map(
           (entry) =>
-              '${_measurementLabel(item.garmentType, entry.key)} ${entry.value} $unit',
+              '${_measurementLabel(item, entry.key)} ${entry.value} $unit',
         ),
         item.styleInstructions,
         assignment.assignment.workInstructions,
       ]);
     }
-    lines.add('Generated ${(generatedAt ?? DateTime.now()).toIso8601String()}');
+    lines.add(
+      '${_text((l) => l.generated)} ${(generatedAt ?? DateTime.now()).toIso8601String()}',
+    );
     return lines.where((line) => line.trim().isNotEmpty).join('\n');
   }
 
   List<pw.Widget> _receiptWidgets(ShopDetails shop, OrderRecord order) {
     final date = DateFormat('d MMM yyyy');
     return [
-      _sectionTitle('ORDER RECEIPT'),
+      _sectionTitle(_text((l) => l.orderReceiptHeading)),
       pw.SizedBox(height: 8),
       pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Expanded(
             child: _details([
-              ['Customer', order.customer.name],
-              ['Phone', order.customer.phone],
+              [_text((l) => l.customer), order.customer.name],
+              [_text((l) => l.phone), order.customer.phone],
               if (order.customer.address.isNotEmpty)
-                ['Address', order.customer.address],
+                [_text((l) => l.address), order.customer.address],
             ]),
           ),
           pw.SizedBox(width: 18),
           pw.Expanded(
             child: _details([
-              ['Order', order.order.orderNumber],
-              ['Booked', date.format(order.order.bookingDate)],
-              ['Promised', date.format(order.order.deliveryDate)],
+              [_text((l) => l.order), order.order.orderNumber],
+              [_text((l) => l.booked), date.format(order.order.bookingDate)],
+              [_text((l) => l.promised), date.format(order.order.deliveryDate)],
             ]),
           ),
         ],
@@ -225,15 +283,19 @@ class OrderDocumentService {
           decoration: _boxDecoration(),
           child: pw.Column(
             children: [
-              _amountRow('Order total', order.totalPaisa),
-              _amountRow('Net paid', order.netPaidPaisa),
+              _amountRow(_text((l) => l.orderTotal), order.totalPaisa),
+              _amountRow(_text((l) => l.netPaid), order.netPaidPaisa),
               pw.Divider(),
-              _amountRow('Balance', order.balancePaisa, bold: true),
+              _amountRow(
+                _text((l) => l.balance),
+                order.balancePaisa,
+                bold: true,
+              ),
               pw.SizedBox(height: 4),
               pw.Align(
                 alignment: pw.Alignment.centerRight,
                 child: pw.Text(
-                  'Payment status: ${order.paymentStatusLabel}',
+                  '${_text((l) => l.paymentStatusDocument)}: ${_paymentStatus(order)}',
                   style: const pw.TextStyle(fontSize: 9),
                 ),
               ),
@@ -246,19 +308,20 @@ class OrderDocumentService {
       )) ...[
         pw.SizedBox(height: 8),
         pw.Text(
-          'Manual bank transfers are recorded but not electronically verified.',
+          _text((l) => l.manualTransferNotice),
           style: const pw.TextStyle(fontSize: 8),
         ),
       ],
       if (order.order.notes.isNotEmpty) ...[
         pw.SizedBox(height: 12),
-        _noteBox('Order notes', order.order.notes),
+        _noteBox(_text((l) => l.orderNotes), order.order.notes),
       ],
       if (shop.receiptFooter.isNotEmpty) ...[
         pw.SizedBox(height: 16),
         pw.Center(
           child: pw.Text(
             shop.receiptFooter,
+            textDirection: _directionFor(shop.receiptFooter),
             textAlign: pw.TextAlign.center,
             style: const pw.TextStyle(fontSize: 9),
           ),
@@ -282,10 +345,13 @@ class OrderDocumentService {
     final unit = MeasurementUnit.fromStorage(item.measurementUnit);
     final deadline = assignment.assignment.internalDeadline;
     return [
-      _sectionTitle('ORDER RECEIPT'),
+      _sectionTitle(_text((l) => l.orderReceiptHeading)),
       pw.SizedBox(height: 5),
       _details([
-        ['Customer', '${order.customer.name} - ${order.customer.phone}'],
+        [
+          _text((l) => l.customer),
+          '${order.customer.name} - ${order.customer.phone}',
+        ],
         [
           'Dates',
           'Booked ${DateFormat('d MMM yyyy').format(order.order.bookingDate)} - Promised ${DateFormat('d MMM yyyy').format(order.order.deliveryDate)}',
@@ -301,7 +367,7 @@ class OrderDocumentService {
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
             pw.Text(
-              '${_garmentLabel(item.garmentType)} x ${item.quantity}${cancelled ? ' - CANCELLED' : ''}',
+              '${_garmentLabel(item)} × ${item.quantity}${cancelled ? ' - ${_text((l) => l.cancelled)}' : ''}',
               style: const pw.TextStyle(fontWeight: pw.FontWeight.bold),
             ),
             pw.Text(formatPaisa(itemTotal)),
@@ -312,10 +378,14 @@ class OrderDocumentService {
       pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.end,
         children: [
-          pw.Text('Total ${formatPaisa(order.totalPaisa)}  |  '),
-          pw.Text('Paid ${formatPaisa(order.netPaidPaisa)}  |  '),
           pw.Text(
-            'Balance ${formatPaisa(order.balancePaisa)}',
+            '${_text((l) => l.total)} ${formatPaisa(order.totalPaisa)}  |  ',
+          ),
+          pw.Text(
+            '${_text((l) => l.paid)} ${formatPaisa(order.netPaidPaisa)}  |  ',
+          ),
+          pw.Text(
+            '${_text((l) => l.balance)} ${formatPaisa(order.balancePaisa)}',
             style: const pw.TextStyle(fontWeight: pw.FontWeight.bold),
           ),
         ],
@@ -323,20 +393,23 @@ class OrderDocumentService {
       pw.Align(
         alignment: pw.Alignment.centerRight,
         child: pw.Text(
-          'Payment status: ${order.paymentStatusLabel}',
+          '${_text((l) => l.paymentStatusDocument)}: ${_paymentStatus(order)}',
           style: const pw.TextStyle(fontSize: 8),
         ),
       ),
       pw.SizedBox(height: 10),
       pw.Divider(borderStyle: pw.BorderStyle.dashed),
       pw.SizedBox(height: 7),
-      _sectionTitle('KARIGAR WORK SLIP'),
+      _sectionTitle(_text((l) => l.workSlipHeading)),
       pw.SizedBox(height: 5),
       _details([
-        ['Karigar', assignment.karigar.name],
-        ['Garment', '${_garmentLabel(item.garmentType)} x ${item.quantity}'],
+        [_text((l) => l.workerName), assignment.karigar.name],
+        [_text((l) => l.garment), '${_garmentLabel(item)} × ${item.quantity}'],
         if (deadline != null)
-          ['Internal deadline', DateFormat('d MMM yyyy').format(deadline)],
+          [
+            _text((l) => l.internalDeadline),
+            DateFormat('d MMM yyyy').format(deadline),
+          ],
       ]),
       pw.SizedBox(height: 5),
       pw.Container(
@@ -346,7 +419,7 @@ class OrderDocumentService {
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Text(
-              'Frozen measurements (${unit.label})',
+              '${_text((l) => l.frozenMeasurements)} (${_unitLabel(unit)})',
               style: const pw.TextStyle(
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 9,
@@ -362,7 +435,7 @@ class OrderDocumentService {
                     return pw.SizedBox(
                       width: 145,
                       child: pw.Text(
-                        '${_measurementLabel(item.garmentType, entry.key)}: ${entry.value} ${unit.suffix}',
+                        '${_measurementLabel(item, entry.key)}: ${entry.value} ${unit.suffix}',
                         style: const pw.TextStyle(fontSize: 8),
                       ),
                     );
@@ -374,17 +447,21 @@ class OrderDocumentService {
       ),
       if (item.styleInstructions.isNotEmpty) ...[
         pw.SizedBox(height: 5),
-        _compactNote('Style instructions', item.styleInstructions),
+        _compactNote(_text((l) => l.styleInstructions), item.styleInstructions),
       ],
       if (assignment.assignment.workInstructions.isNotEmpty) ...[
         pw.SizedBox(height: 5),
-        _compactNote('Work notes', assignment.assignment.workInstructions),
+        _compactNote(
+          _text((l) => l.workNotes),
+          assignment.assignment.workInstructions,
+        ),
       ],
       if (shop.receiptFooter.isNotEmpty) ...[
         pw.SizedBox(height: 7),
         pw.Center(
           child: pw.Text(
             shop.receiptFooter,
+            textDirection: _directionFor(shop.receiptFooter),
             style: const pw.TextStyle(fontSize: 8),
           ),
         ),
@@ -397,6 +474,7 @@ class OrderDocumentService {
     padding: const pw.EdgeInsets.all(6),
     decoration: _boxDecoration(color: const PdfColor.fromInt(0xfff7f5f0)),
     child: pw.RichText(
+      textDirection: _directionFor(value),
       text: pw.TextSpan(
         style: const pw.TextStyle(fontSize: 8),
         children: [
@@ -431,17 +509,20 @@ class OrderDocumentService {
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Text(
-                    '${_garmentLabel(item.garmentType)} x ${item.quantity}',
+                    '${_garmentLabel(item)} × ${item.quantity}',
                     style: const pw.TextStyle(fontWeight: pw.FontWeight.bold),
                   ),
                   if (item.additionalChargeDescription.isNotEmpty)
                     pw.Text(
                       item.additionalChargeDescription,
+                      textDirection: _directionFor(
+                        item.additionalChargeDescription,
+                      ),
                       style: const pw.TextStyle(fontSize: 8),
                     ),
                   if (cancelled)
                     pw.Text(
-                      'CANCELLED - excluded from charges',
+                      _text((l) => l.cancelledExcluded),
                       style: const pw.TextStyle(
                         fontSize: 8,
                         color: PdfColors.red700,
@@ -470,16 +551,19 @@ class OrderDocumentService {
     final values = decodeMeasurementValues(item.measurementValuesJson);
     final deadline = assignment.assignment.internalDeadline;
     return [
-      _sectionTitle('KARIGAR WORK SLIP'),
+      _sectionTitle(_text((l) => l.workSlipHeading)),
       pw.SizedBox(height: 8),
       _details([
-        ['Order', order.order.orderNumber],
-        ['Karigar', assignment.karigar.name],
-        ['Garment', '${_garmentLabel(item.garmentType)} x ${item.quantity}'],
-        ['Profile', item.measurementProfileName],
-        ['Measurement basis', item.measurementBasis.replaceAll('_', ' ')],
+        [_text((l) => l.order), order.order.orderNumber],
+        [_text((l) => l.workerName), assignment.karigar.name],
+        [_text((l) => l.garment), '${_garmentLabel(item)} × ${item.quantity}'],
+        [_text((l) => l.profile), item.measurementProfileName],
+        [_text((l) => l.measurementBasis), _basisLabel(item.measurementBasis)],
         if (deadline != null)
-          ['Internal deadline', DateFormat('d MMM yyyy').format(deadline)],
+          [
+            _text((l) => l.internalDeadline),
+            DateFormat('d MMM yyyy').format(deadline),
+          ],
       ]),
       pw.SizedBox(height: 12),
       pw.Inseparable(
@@ -490,7 +574,7 @@ class OrderDocumentService {
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text(
-                'Frozen measurements (${unit.label})',
+                '${_text((l) => l.frozenMeasurements)} (${_unitLabel(unit)})',
                 style: const pw.TextStyle(fontWeight: pw.FontWeight.bold),
               ),
               pw.SizedBox(height: 6),
@@ -501,7 +585,7 @@ class OrderDocumentService {
                   return pw.SizedBox(
                     width: 145,
                     child: pw.Text(
-                      '${_measurementLabel(item.garmentType, entry.key)}: ${entry.value} ${unit.suffix}',
+                      '${_measurementLabel(item, entry.key)}: ${entry.value} ${unit.suffix}',
                       style: const pw.TextStyle(fontSize: 9),
                     ),
                   );
@@ -513,15 +597,18 @@ class OrderDocumentService {
       ),
       if (item.styleInstructions.isNotEmpty) ...[
         pw.SizedBox(height: 10),
-        _noteBox('Style instructions', item.styleInstructions),
+        _noteBox(_text((l) => l.styleInstructions), item.styleInstructions),
       ],
       if (assignment.assignment.workInstructions.isNotEmpty) ...[
         pw.SizedBox(height: 8),
-        _noteBox('Work notes', assignment.assignment.workInstructions),
+        _noteBox(
+          _text((l) => l.workNotes),
+          assignment.assignment.workInstructions,
+        ),
       ],
       if (item.measurementNotes.isNotEmpty) ...[
         pw.SizedBox(height: 8),
-        _noteBox('Measurement notes', item.measurementNotes),
+        _noteBox(_text((l) => l.measurementNotes), item.measurementNotes),
       ],
     ];
   }
@@ -553,6 +640,7 @@ class OrderDocumentService {
               children: [
                 pw.Text(
                   shop.name,
+                  textDirection: _directionFor(shop.name),
                   style: const pw.TextStyle(
                     fontSize: 16,
                     fontWeight: pw.FontWeight.bold,
@@ -560,14 +648,18 @@ class OrderDocumentService {
                   ),
                 ),
                 if (shop.address.isNotEmpty)
-                  pw.Text(shop.address, style: const pw.TextStyle(fontSize: 8)),
+                  pw.Text(
+                    shop.address,
+                    textDirection: _directionFor(shop.address),
+                    style: const pw.TextStyle(fontSize: 8),
+                  ),
                 if (shop.phone.isNotEmpty)
                   pw.Text(shop.phone, style: const pw.TextStyle(fontSize: 8)),
               ],
             ),
           ),
           pw.Text(
-            '$orderNumber\nPage $page of $pages',
+            '$orderNumber\n${_text((l) => l.pageOf(page, pages))}',
             textAlign: pw.TextAlign.right,
             style: const pw.TextStyle(fontSize: 8),
           ),
@@ -586,7 +678,7 @@ class OrderDocumentService {
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
         pw.Text(
-          'Generated ${DateFormat('d MMM yyyy, h:mm a').format(generatedAt)}',
+          '${_text((l) => l.generated)} ${DateFormat('d MMM yyyy, h:mm a').format(generatedAt)}',
           style: const pw.TextStyle(fontSize: 7, color: PdfColors.grey700),
         ),
         pw.Text(
@@ -613,6 +705,7 @@ class OrderDocumentService {
           (row) => pw.Padding(
             padding: const pw.EdgeInsets.only(bottom: 3),
             child: pw.RichText(
+              textDirection: _directionFor('${row[0]}: ${row[1]}'),
               text: pw.TextSpan(
                 children: [
                   pw.TextSpan(
@@ -644,7 +737,11 @@ class OrderDocumentService {
             ),
           ),
           pw.SizedBox(height: 3),
-          pw.Text(value, style: const pw.TextStyle(fontSize: 9)),
+          pw.Text(
+            value,
+            textDirection: _directionFor(value),
+            style: const pw.TextStyle(fontSize: 9),
+          ),
         ],
       ),
     ),
@@ -679,21 +776,72 @@ class OrderDocumentService {
 
   String _title(OrderDocumentKind kind, String orderNumber) =>
       '${switch (kind) {
-        OrderDocumentKind.customerReceipt => 'Order Receipt',
-        OrderDocumentKind.karigarSlip => 'Karigar Work Slip',
-        OrderDocumentKind.combined => 'Combined Order Document',
+        OrderDocumentKind.customerReceipt => _text((l) => l.customerReceipt),
+        OrderDocumentKind.karigarSlip => _text((l) => l.karigarSlip),
+        OrderDocumentKind.combined => _text((l) => l.combinedDocument),
       }} - $orderNumber';
 
-  String _garmentLabel(String storage) =>
-      GarmentType.fromStorage(storage).label;
+  String _garmentLabel(OrderItem item) {
+    final english = localizedGarmentLabel(
+      _english,
+      item.garmentType,
+      english: item.garmentLabelEnglish,
+      urdu: item.garmentLabelUrdu,
+    );
+    final urdu = localizedGarmentLabel(
+      _urdu,
+      item.garmentType,
+      english: item.garmentLabelEnglish,
+      urdu: item.garmentLabelUrdu,
+    );
+    return _languageValue(english, urdu);
+  }
 
-  String _measurementLabel(String garmentStorage, String key) {
-    final template =
-        garmentMeasurementTemplates[GarmentType.fromStorage(garmentStorage)];
-    for (final field
-        in template?.fields ?? const <MeasurementFieldDefinition>[]) {
-      if (field.key == key) return field.label;
+  String _measurementLabel(OrderItem item, String key) {
+    for (final field in decodeFieldDefinitions(
+      item.measurementFieldDefinitionsJson,
+      item.garmentType,
+    )) {
+      if (field.id == key) {
+        final english = localizedMeasurementLabel(
+          _english,
+          key,
+          english: field.label,
+          urdu: field.labelUrdu,
+        );
+        final urdu = localizedMeasurementLabel(
+          _urdu,
+          key,
+          english: field.label,
+          urdu: field.labelUrdu,
+        );
+        return _languageValue(english, urdu);
+      }
     }
     return key.replaceAll('_', ' ');
   }
+
+  String _languageValue(String english, String urdu) => switch (_language) {
+    DocumentLanguage.english => english,
+    DocumentLanguage.urdu => urdu,
+    DocumentLanguage.bilingual =>
+      english == urdu ? english : '$english / $urdu',
+  };
+
+  String _paymentStatus(OrderRecord order) {
+    if (order.balancePaisa <= 0) return _text((l) => l.paid);
+    if (order.netPaidPaisa <= 0) return _text((l) => l.unpaid);
+    return _text((l) => l.partiallyPaid);
+  }
+
+  String _unitLabel(MeasurementUnit unit) => unit == MeasurementUnit.centimetres
+      ? _text((l) => l.centimetres)
+      : _text((l) => l.inches);
+
+  String _basisLabel(String basis) => basis == 'finished_garment'
+      ? _text((l) => l.finishedGarmentMeasurements)
+      : _text((l) => l.bodyMeasurements);
+
+  pw.TextDirection? _directionFor(String value) =>
+      RegExp(r'[\u0600-\u06ff]').hasMatch(value) ? pw.TextDirection.rtl : null;
 }

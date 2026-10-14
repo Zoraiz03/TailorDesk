@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import 'measurement_models.dart';
 import 'measurement_templates.dart';
+import '../../core/localization/localization_extensions.dart';
 
 class MeasurementProfileCard extends StatelessWidget {
   const MeasurementProfileCard({
@@ -19,7 +20,12 @@ class MeasurementProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final revision = record.latestRevision;
-    final garment = GarmentType.fromStorage(revision.garmentType);
+    final garmentLabel = localizedGarmentLabel(
+      context.l10n,
+      revision.garmentType,
+      english: revision.garmentLabelEnglish,
+      urdu: revision.garmentLabelUrdu,
+    );
     final unit = MeasurementUnit.fromStorage(revision.unit);
     return Card(
       child: InkWell(
@@ -44,12 +50,12 @@ class MeasurementProfileCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${garment.label} · ${revision.profileName}',
+                      '$garmentLabel · ${revision.profileName}',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      '${unit.label} · Updated ${DateFormat('d MMM yyyy').format(record.profile.updatedAt)}',
+                      '${localizedUnit(context.l10n, unit.storageKey)} · ${DateFormat('d MMM yyyy').format(record.profile.updatedAt)}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],

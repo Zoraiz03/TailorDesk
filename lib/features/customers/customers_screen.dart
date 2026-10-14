@@ -5,6 +5,7 @@ import '../../core/database/app_database.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/localization/localization_extensions.dart';
 import 'customer_detail_screen.dart';
 import 'customer_form_screen.dart';
 import 'customer_providers.dart';
@@ -60,19 +61,22 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Customers'),
+        title: Text(context.l10n.customers),
         actions: [
           PopupMenuButton<_CustomerSort>(
             initialValue: _sort,
-            tooltip: 'Sort customers',
+            tooltip: context.l10n.sortCustomers,
             icon: const Icon(Icons.sort),
             onSelected: (value) => setState(() => _sort = value),
-            itemBuilder: (_) => const [
+            itemBuilder: (_) => [
               PopupMenuItem(
                 value: _CustomerSort.recentlyUpdated,
-                child: Text('Recently updated'),
+                child: Text(context.l10n.recentlyUpdated),
               ),
-              PopupMenuItem(value: _CustomerSort.name, child: Text('Name A–Z')),
+              PopupMenuItem(
+                value: _CustomerSort.name,
+                child: Text(context.l10n.nameAZ),
+              ),
             ],
           ),
         ],
@@ -80,31 +84,30 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openForm,
         icon: const Icon(Icons.person_add_outlined),
-        label: const Text('Add Customer'),
+        label: Text(context.l10n.addCustomer),
       ),
       body: customers.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load customers',
-          subtitle: 'Please try again. Your saved data has not been changed.',
+          title: context.l10n.couldNotLoadSettings,
+          subtitle: context.l10n.savedDataUnchanged,
           action: OutlinedButton.icon(
             onPressed: () => ref.invalidate(customersProvider),
             icon: const Icon(Icons.refresh),
-            label: const Text('Try Again'),
+            label: Text(context.l10n.retry),
           ),
         ),
         data: (allCustomers) {
           if (allCustomers.isEmpty) {
             return EmptyState(
               icon: Icons.people_outline,
-              title: 'No customers yet',
-              subtitle:
-                  'Add your first customer to start managing orders and measurements.',
+              title: context.l10n.noCustomers,
+              subtitle: context.l10n.noCustomersHelp,
               action: FilledButton.icon(
                 onPressed: _openForm,
                 icon: const Icon(Icons.person_add_outlined, size: 20),
-                label: const Text('Add Customer'),
+                label: Text(context.l10n.addCustomer),
               ),
             );
           }
@@ -120,12 +123,12 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
                   onChanged: (value) => setState(() => _query = value),
                   textInputAction: TextInputAction.search,
                   decoration: InputDecoration(
-                    hintText: 'Search by name or phone',
+                    hintText: context.l10n.searchCustomers,
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _query.isEmpty
                         ? null
                         : IconButton(
-                            tooltip: 'Clear search',
+                            tooltip: context.l10n.clearSearch,
                             onPressed: () {
                               _searchController.clear();
                               setState(() => _query = '');
@@ -147,10 +150,10 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
               ),
               Expanded(
                 child: visibleCustomers.isEmpty
-                    ? const EmptyState(
+                    ? EmptyState(
                         icon: Icons.person_search_outlined,
-                        title: 'No matching customers',
-                        subtitle: 'Try a different name or phone number.',
+                        title: context.l10n.noMatchingCustomers,
+                        subtitle: context.l10n.differentSearch,
                       )
                     : ListView.separated(
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 96),

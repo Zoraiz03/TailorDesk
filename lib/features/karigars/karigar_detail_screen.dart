@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/widgets/status_badge.dart';
 import '../orders/order_detail_screen.dart';
 import '../orders/order_providers.dart';
@@ -26,11 +27,9 @@ class KarigarDetailScreen extends ConsumerWidget {
   ) async {
     final active = record.status == KarigarStatus.active;
     if (active && record.activeCount > 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Finish or reassign active work before deactivating.'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.deactivateBlocked)));
       return;
     }
     final confirmed = await showDialog<bool>(
@@ -45,7 +44,7 @@ class KarigarDetailScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
@@ -67,19 +66,19 @@ class KarigarDetailScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete karigar?'),
+        title: Text(context.l10n.deleteKarigarQuestion),
         content: const Text(
           'A karigar can only be deleted when they have no assignment history.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Delete'),
+            child: Text(context.l10n.delete),
           ),
         ],
       ),
@@ -109,21 +108,21 @@ class KarigarDetailScreen extends ConsumerWidget {
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (_, __) => Scaffold(
-        appBar: AppBar(title: const Text('Karigar')),
-        body: const EmptyState(
+        appBar: AppBar(title: Text(context.l10n.karigarSlip)),
+        body: EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load karigar',
-          subtitle: 'Your saved data has not been changed.',
+          title: context.l10n.couldNotLoad,
+          subtitle: context.l10n.savedDataUnchanged,
         ),
       ),
       data: (record) {
         if (record == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Karigar')),
-            body: const EmptyState(
+            appBar: AppBar(title: Text(context.l10n.karigars)),
+            body: EmptyState(
               icon: Icons.person_off_outlined,
-              title: 'Karigar not found',
-              subtitle: 'This karigar may have been deleted.',
+              title: context.l10n.karigarNotFound,
+              subtitle: context.l10n.karigarNotFoundHelp,
             ),
           );
         }
@@ -131,10 +130,10 @@ class KarigarDetailScreen extends ConsumerWidget {
         final active = record.status == KarigarStatus.active;
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Karigar Details'),
+            title: Text(context.l10n.karigars),
             actions: [
               IconButton(
-                tooltip: 'Edit karigar',
+                tooltip: context.l10n.editKarigar,
                 icon: const Icon(Icons.edit_outlined),
                 onPressed: () => Navigator.push(
                   context,
@@ -153,7 +152,10 @@ class KarigarDetailScreen extends ConsumerWidget {
                     value: 'active',
                     child: Text(active ? 'Deactivate' : 'Reactivate'),
                   ),
-                  const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Text(context.l10n.delete),
+                  ),
                 ],
               ),
             ],
@@ -190,10 +192,10 @@ class KarigarDetailScreen extends ConsumerWidget {
                       if (karigar.address.isNotEmpty) Text(karigar.address),
                       if (karigar.skills.isNotEmpty) ...[
                         const SizedBox(height: AppSpacing.md),
-                        Text('Skills: ${karigar.skills}'),
+                        Text(context.l10n.skillsPrefix(karigar.skills)),
                       ],
                       if (karigar.notes.isNotEmpty)
-                        Text('Notes: ${karigar.notes}'),
+                        Text(context.l10n.notesPrefix(karigar.notes)),
                     ],
                   ),
                 ),
@@ -231,12 +233,12 @@ class KarigarDetailScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.sm),
               assignments.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (_, __) => const Text('Could not load work history.'),
+                error: (_, __) => Text(context.l10n.couldNotLoad),
                 data: (items) => items.isEmpty
-                    ? const EmptyState(
+                    ? EmptyState(
                         icon: Icons.assignment_outlined,
-                        title: 'No assignments yet',
-                        subtitle: 'Assigned garment items will appear here.',
+                        title: context.l10n.noAssignments,
+                        subtitle: context.l10n.assignmentsAppearHere,
                       )
                     : Column(
                         children: items
@@ -294,7 +296,7 @@ class _AssignmentTile extends ConsumerWidget {
         ),
         isThreeLine: true,
         trailing: PopupMenuButton<String>(
-          tooltip: 'Assignment actions',
+          tooltip: context.l10n.assignmentActions,
           onSelected: (value) async {
             if (value == 'order') {
               Navigator.push(
@@ -332,11 +334,11 @@ class _AssignmentTile extends ConsumerWidget {
                     : AppColors.textSecondary,
               ),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'slip',
-              child: Text('Preview work slip'),
+              child: Text(context.l10n.previewWorkSlip),
             ),
-            const PopupMenuItem(value: 'order', child: Text('View order')),
+            PopupMenuItem(value: 'order', child: Text(context.l10n.viewOrder)),
           ],
         ),
         onTap: () => Navigator.push(

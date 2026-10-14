@@ -21,6 +21,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
     String skills = '',
     String notes = '',
   }) {
+    attachedDatabase.requireBusinessWrite();
     final trimmedName = name.trim();
     if (trimmedName.isEmpty) throw ArgumentError('Name is required');
     final now = DateTime.now();
@@ -45,6 +46,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
     String skills = '',
     String notes = '',
   }) {
+    attachedDatabase.requireBusinessWrite();
     final trimmedName = name.trim();
     if (trimmedName.isEmpty) throw ArgumentError('Name is required');
     return (update(karigars)..where((row) => row.id.equals(id))).write(
@@ -61,6 +63,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
 
   /// Deactivates a karigar. Workers with assignment history cannot be deleted.
   Future<void> deactivateKarigar(int id) async {
+    attachedDatabase.requireBusinessWrite();
     final active =
         await (select(karigarAssignments)..where(
               (row) =>
@@ -82,6 +85,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
 
   /// Reactivates a previously deactivated karigar.
   Future<void> reactivateKarigar(int id) {
+    attachedDatabase.requireBusinessWrite();
     return (update(karigars)..where((row) => row.id.equals(id))).write(
       KarigarsCompanion(
         status: const Value('active'),
@@ -92,6 +96,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
 
   /// Permanently deletes only if the karigar has NO assignment history.
   Future<void> deleteKarigar(int id) async {
+    attachedDatabase.requireBusinessWrite();
     final count =
         await (selectOnly(karigarAssignments)
               ..addColumns([karigarAssignments.id])
@@ -253,6 +258,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
     String workInstructions = '',
     String reassignReason = '',
   }) {
+    attachedDatabase.requireBusinessWrite();
     return transaction(() async {
       // Validate karigar is active.
       final k = await (select(
@@ -330,6 +336,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
 
   /// Marks the active assignment as started; item moves to 'in_progress'.
   Future<void> startWork(int assignmentId) {
+    attachedDatabase.requireBusinessWrite();
     return transaction(() async {
       final a = await (select(
         karigarAssignments,
@@ -356,6 +363,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
 
   /// Marks the active assignment as completed; item moves to 'ready'.
   Future<void> completeWork(int assignmentId) {
+    attachedDatabase.requireBusinessWrite();
     return transaction(() async {
       final a = await (select(
         karigarAssignments,
@@ -385,6 +393,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
     required int assignmentId,
     required String reason,
   }) {
+    attachedDatabase.requireBusinessWrite();
     if (reason.trim().isEmpty) throw ArgumentError('Reason is required');
     return transaction(() async {
       final a = await (select(
@@ -426,6 +435,7 @@ class KarigarsDao extends DatabaseAccessor<AppDatabase>
 
   /// Cancels the active assignment for an item (used when the order is cancelled).
   Future<void> cancelActiveAssignment(int orderItemId, {String reason = ''}) {
+    attachedDatabase.requireBusinessWrite();
     return (update(karigarAssignments)..where(
           (row) =>
               row.orderItemId.equals(orderItemId) &

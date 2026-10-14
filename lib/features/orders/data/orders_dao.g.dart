@@ -8,6 +8,10 @@ mixin _$OrdersDaoMixin on DatabaseAccessor<AppDatabase> {
   $OrdersTable get orders => attachedDatabase.orders;
   $MeasurementProfilesTable get measurementProfiles =>
       attachedDatabase.measurementProfiles;
+  $GarmentCatalogEntriesTable get garmentCatalogEntries =>
+      attachedDatabase.garmentCatalogEntries;
+  $MeasurementTemplateVersionsTable get measurementTemplateVersions =>
+      attachedDatabase.measurementTemplateVersions;
   $MeasurementRevisionsTable get measurementRevisions =>
       attachedDatabase.measurementRevisions;
   $OrderItemsTable get orderItems => attachedDatabase.orderItems;
@@ -29,6 +33,17 @@ class OrdersDaoManager {
       $$MeasurementProfilesTableTableManager(
         _db.attachedDatabase,
         _db.measurementProfiles,
+      );
+  $$GarmentCatalogEntriesTableTableManager get garmentCatalogEntries =>
+      $$GarmentCatalogEntriesTableTableManager(
+        _db.attachedDatabase,
+        _db.garmentCatalogEntries,
+      );
+  $$MeasurementTemplateVersionsTableTableManager
+  get measurementTemplateVersions =>
+      $$MeasurementTemplateVersionsTableTableManager(
+        _db.attachedDatabase,
+        _db.measurementTemplateVersions,
       );
   $$MeasurementRevisionsTableTableManager get measurementRevisions =>
       $$MeasurementRevisionsTableTableManager(

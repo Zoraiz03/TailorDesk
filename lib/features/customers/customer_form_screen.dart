@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/database/app_database.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/unsaved_changes_guard.dart';
+import '../../core/localization/localization_extensions.dart';
 import 'customer_providers.dart';
 
 class CustomerFormScreen extends ConsumerStatefulWidget {
@@ -97,9 +98,9 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _saving = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not save customer. Try again.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.customerSaveFailed)));
     }
   }
 
@@ -109,7 +110,9 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
       hasUnsavedChanges: _hasUnsavedChanges,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_isEditing ? 'Edit Customer' : 'Add Customer'),
+          title: Text(
+            _isEditing ? context.l10n.editCustomer : context.l10n.addCustomer,
+          ),
         ),
         body: SafeArea(
           child: Form(
@@ -124,15 +127,15 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
                   maxLength: 100,
-                  decoration: const InputDecoration(
-                    labelText: 'Full name',
-                    hintText: 'e.g. Ahmed Khan',
-                    prefixIcon: Icon(Icons.person_outline),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.customerName,
+                    hintText: context.l10n.nameHint,
+                    prefixIcon: const Icon(Icons.person_outline),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Enter the customer name';
+                      return context.l10n.enterName;
                     }
                     return null;
                   },
@@ -144,17 +147,17 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
                   maxLength: 30,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone number',
-                    hintText: 'e.g. 0300 1234567',
-                    prefixIcon: Icon(Icons.phone_outlined),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.phoneNumber,
+                    hintText: context.l10n.phoneHint,
+                    prefixIcon: const Icon(Icons.phone_outlined),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
                     final phone = value?.trim() ?? '';
-                    if (phone.isEmpty) return 'Enter a phone number';
+                    if (phone.isEmpty) return context.l10n.enterPhone;
                     if (!RegExp(r'^[0-9+()\-\s]{7,30}$').hasMatch(phone)) {
-                      return 'Enter a valid phone number';
+                      return context.l10n.invalidPhone;
                     }
                     return null;
                   },
@@ -166,10 +169,10 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
                   textInputAction: TextInputAction.next,
                   minLines: 2,
                   maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Address (optional)',
-                    prefixIcon: Icon(Icons.location_on_outlined),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.addressOptional,
+                    prefixIcon: const Icon(Icons.location_on_outlined),
+                    border: const OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -179,11 +182,11 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
                   textCapitalization: TextCapitalization.sentences,
                   minLines: 3,
                   maxLines: 5,
-                  decoration: const InputDecoration(
-                    labelText: 'Notes (optional)',
-                    hintText: 'Preferences or other useful details',
-                    prefixIcon: Icon(Icons.notes_outlined),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.notes,
+                    hintText: context.l10n.notesHint,
+                    prefixIcon: const Icon(Icons.notes_outlined),
+                    border: const OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -197,7 +200,9 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.check),
-                  label: Text(_saving ? 'Saving…' : 'Save Customer'),
+                  label: Text(
+                    _saving ? context.l10n.saving : context.l10n.save,
+                  ),
                 ),
               ],
             ),

@@ -7,8 +7,10 @@ import '../../core/database/app_database.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../measurements/measurement_models.dart';
 import '../measurements/measurement_templates.dart';
+import '../settings/garment_catalog.dart';
 import '../karigars/order_item_assignment_card.dart';
 import '../karigars/karigar_models.dart';
 import '../karigars/karigar_providers.dart';
@@ -33,18 +35,18 @@ class OrderDetailScreen extends ConsumerWidget {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('Balance still outstanding'),
+          title: Text(context.l10n.balanceOutstandingTitle),
           content: Text(
             '${formatPaisa(record.balancePaisa)} remains due. Mark this garment delivered anyway?',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Keep current status'),
+              child: Text(context.l10n.keepCurrentStatus),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Mark delivered'),
+              child: Text(context.l10n.markDelivered),
             ),
           ],
         ),
@@ -55,11 +57,9 @@ class OrderDetailScreen extends ConsumerWidget {
       await ref.read(ordersDaoProvider).updateItemStatus(itemId, status);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not update garment status. Try again.'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.updateFailed)));
       }
     }
   }
@@ -86,18 +86,18 @@ class OrderDetailScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Cancel order?'),
+        title: Text(context.l10n.cancelOrderQuestion),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Keep order'),
+            child: Text(context.l10n.keepOrder),
           ),
           FilledButton(
             onPressed: record.netPaidPaisa > 0
                 ? null
                 : () => Navigator.pop(context, true),
-            child: const Text('Cancel order'),
+            child: Text(context.l10n.cancelOrder),
           ),
         ],
       ),
@@ -107,9 +107,9 @@ class OrderDetailScreen extends ConsumerWidget {
         await ref.read(ordersDaoProvider).cancelOrder(orderId);
       } catch (_) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not cancel this order.')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(context.l10n.updateFailed)));
         }
       }
     }
@@ -155,8 +155,8 @@ class OrderDetailScreen extends ConsumerWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.receipt_long_outlined),
-              title: const Text('Customer receipt'),
-              subtitle: const Text('Charges, payments, and balance'),
+              title: Text(context.l10n.customerReceipt),
+              subtitle: Text(context.l10n.receiptSubtitle),
               onTap: () => _openDocument(
                 sheetContext,
                 record,
@@ -164,21 +164,19 @@ class OrderDetailScreen extends ConsumerWidget {
               ),
             ),
             if (assignments.isEmpty)
-              const ListTile(
-                leading: Icon(Icons.info_outline),
-                title: Text('No karigar work slips available'),
-                subtitle: Text('Assign a garment to a karigar first.'),
+              ListTile(
+                leading: const Icon(Icons.info_outline),
+                title: Text(context.l10n.noWorkSlips),
+                subtitle: Text(context.l10n.assignGarmentFirst),
               ),
             ...assignments.expand(
               (assignment) => [
                 ListTile(
                   leading: const Icon(Icons.engineering_outlined),
                   title: Text(
-                    '${GarmentType.fromStorage(assignment.orderItem.garmentType).label} - ${assignment.karigar.name}',
+                    '${localizedGarmentLabel(context.l10n, assignment.orderItem.garmentType, english: assignment.orderItem.garmentLabelEnglish, urdu: assignment.orderItem.garmentLabelUrdu)} — ${assignment.karigar.name}',
                   ),
-                  subtitle: const Text(
-                    'Karigar work slip without financial details',
-                  ),
+                  subtitle: Text(context.l10n.financialPrivacyNotice),
                   onTap: () => _openDocument(
                     sheetContext,
                     record,
@@ -188,10 +186,10 @@ class OrderDetailScreen extends ConsumerWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.view_agenda_outlined),
-                  title: Text('Combined page - ${assignment.karigar.name}'),
-                  subtitle: const Text(
-                    'Customer receipt and selected work slip',
+                  title: Text(
+                    context.l10n.combinedPageFor(assignment.karigar.name),
                   ),
+                  subtitle: Text(context.l10n.combinedDocument),
                   onTap: () => _openDocument(
                     sheetContext,
                     record,
@@ -233,21 +231,21 @@ class OrderDetailScreen extends ConsumerWidget {
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (_, __) => Scaffold(
-        appBar: AppBar(title: const Text('Order')),
-        body: const EmptyState(
+        appBar: AppBar(title: Text(context.l10n.order)),
+        body: EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load order',
-          subtitle: 'Your saved data has not been changed.',
+          title: context.l10n.couldNotLoad,
+          subtitle: context.l10n.savedDataUnchanged,
         ),
       ),
       data: (record) {
         if (record == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Order')),
-            body: const EmptyState(
+            appBar: AppBar(title: Text(context.l10n.order)),
+            body: EmptyState(
               icon: Icons.receipt_long_outlined,
-              title: 'Order not found',
-              subtitle: 'This order is not available.',
+              title: context.l10n.orderNotFound,
+              subtitle: context.l10n.orderNotFoundHelp,
             ),
           );
         }
@@ -256,13 +254,13 @@ class OrderDetailScreen extends ConsumerWidget {
             title: Text(record.order.orderNumber),
             actions: [
               IconButton(
-                tooltip: 'Print or export documents',
+                tooltip: context.l10n.printExportDocuments,
                 onPressed: () => _documents(context, ref, record),
                 icon: const Icon(Icons.print_outlined),
               ),
               if (record.progress != OrderProgress.cancelled)
                 IconButton(
-                  tooltip: 'Edit delivery date and notes',
+                  tooltip: context.l10n.editOrderDetails,
                   onPressed: () => _editSchedule(context, ref, record),
                   icon: const Icon(Icons.edit_calendar_outlined),
                 ),
@@ -272,8 +270,11 @@ class OrderDetailScreen extends ConsumerWidget {
                   onSelected: (value) {
                     if (value == 'cancel') _cancel(context, ref, record);
                   },
-                  itemBuilder: (_) => const [
-                    PopupMenuItem(value: 'cancel', child: Text('Cancel order')),
+                  itemBuilder: (_) => [
+                    PopupMenuItem(
+                      value: 'cancel',
+                      child: Text(context.l10n.cancelOrder),
+                    ),
                   ],
                 ),
             ],
@@ -297,21 +298,30 @@ class OrderDetailScreen extends ConsumerWidget {
                       Text(record.customer.phone),
                       const SizedBox(height: AppSpacing.md),
                       Text(
-                        'Booked ${DateFormat.yMMMd().format(record.order.bookingDate)}',
+                        '${context.l10n.booked} ${DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(record.order.bookingDate)}',
                       ),
                       Text(
-                        'Delivery ${DateFormat.yMMMd().format(record.order.deliveryDate)}',
+                        '${context.l10n.deliveryDate} ${DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(record.order.deliveryDate)}',
                       ),
-                      Text('Progress: ${record.progress.label}'),
-                      Text('Payment: ${record.paymentStatusLabel}'),
+                      Text(
+                        context.l10n.progressLabel(
+                          localizedStatus(context.l10n, record.progress.name),
+                        ),
+                      ),
+                      Text(
+                        context.l10n.paymentLabel(record.paymentStatusLabel),
+                      ),
                       if (record.order.notes.isNotEmpty)
-                        Text('Notes: ${record.order.notes}'),
+                        Text(context.l10n.notesPrefix(record.order.notes)),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
-              Text('Garments', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                context.l10n.garments,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: AppSpacing.sm),
               ...record.items.map(
                 (item) => _OrderItemCard(
@@ -324,7 +334,7 @@ class OrderDetailScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.xl),
               Text(
-                'Payment ledger',
+                context.l10n.paymentsRefunds,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               ...record.payments.map(
@@ -336,10 +346,10 @@ class OrderDetailScreen extends ConsumerWidget {
                         : Icons.arrow_downward,
                   ),
                   title: Text(
-                    '${payment.recordType == PaymentRecordType.refund.storageKey ? 'Refund' : 'Payment'} · ${formatPaisa(payment.amountPaisa)}',
+                    '${payment.recordType == PaymentRecordType.refund.storageKey ? context.l10n.refund : context.l10n.payment} · ${formatPaisa(payment.amountPaisa)}',
                   ),
                   subtitle: Text(
-                    '${DateFormat.yMMMd().format(payment.paymentDate)} · ${payment.method == PaymentMethod.manualBankTransfer.storageKey ? 'Manual bank transfer (unverified)' : 'Cash'}',
+                    '${DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(payment.paymentDate)} · ${localizedPaymentMethod(context.l10n, payment.method)}',
                   ),
                 ),
               ),
@@ -348,11 +358,17 @@ class OrderDetailScreen extends ConsumerWidget {
                   padding: AppSpacing.cardPadding,
                   child: Column(
                     children: [
-                      _MoneyRow(label: 'Order total', value: record.totalPaisa),
-                      _MoneyRow(label: 'Net paid', value: record.netPaidPaisa),
+                      _MoneyRow(
+                        label: context.l10n.orderTotal,
+                        value: record.totalPaisa,
+                      ),
+                      _MoneyRow(
+                        label: context.l10n.netPaid,
+                        value: record.netPaidPaisa,
+                      ),
                       const Divider(height: AppSpacing.lg),
                       _MoneyRow(
-                        label: 'Balance',
+                        label: context.l10n.balance,
                         value: record.balancePaisa,
                         prominent: true,
                       ),
@@ -365,7 +381,7 @@ class OrderDetailScreen extends ConsumerWidget {
                 FilledButton.icon(
                   onPressed: () => _addLedger(context, ref, record),
                   icon: const Icon(Icons.payments_outlined),
-                  label: const Text('Add payment or refund'),
+                  label: Text(context.l10n.addPaymentRefund),
                 ),
               const SizedBox(height: AppSpacing.xxl),
             ],
@@ -391,25 +407,43 @@ class _OrderItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final values = decodeMeasurementValues(item.measurementValuesJson);
-    final garment = GarmentType.fromStorage(item.garmentType);
+    final garmentLabel = localizedGarmentLabel(
+      context.l10n,
+      item.garmentType,
+      english: item.garmentLabelEnglish,
+      urdu: item.garmentLabelUrdu,
+    );
+    final fields = decodeFieldDefinitions(
+      item.measurementFieldDefinitionsJson,
+      item.garmentType,
+    );
+    final labels = {
+      for (final field in fields)
+        field.id: localizedMeasurementLabel(
+          context.l10n,
+          field.id,
+          english: field.label,
+          urdu: field.labelUrdu,
+        ),
+    };
     final unit = MeasurementUnit.fromStorage(item.measurementUnit);
     return Card(
       child: ExpansionTile(
-        title: Text('${garment.label} × ${item.quantity}'),
+        title: Text('$garmentLabel × ${item.quantity}'),
         subtitle: Text(
           '${item.measurementProfileName} · ${formatPaisa((item.quantity * item.stitchingPricePaisa) + item.clothChargePaisa + item.additionalChargePaisa)}',
         ),
         childrenPadding: AppSpacing.cardPadding,
         children: [
           Align(
-            alignment: Alignment.centerLeft,
+            alignment: AlignmentDirectional.centerStart,
             child: Wrap(
               spacing: AppSpacing.lg,
               runSpacing: AppSpacing.sm,
               children: values.entries
                   .map(
                     (entry) => Text(
-                      '${entry.key.replaceAll('_', ' ')}: ${entry.value} ${unit.suffix}',
+                      '${labels[entry.key] ?? entry.key.replaceAll('_', ' ')}: ${entry.value} ${unit.suffix}',
                     ),
                   )
                   .toList(),
@@ -417,14 +451,14 @@ class _OrderItemCard extends StatelessWidget {
           ),
           if (item.styleInstructions.isNotEmpty)
             Align(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: Padding(
                 padding: const EdgeInsets.only(top: AppSpacing.md),
-                child: Text('Style: ${item.styleInstructions}'),
+                child: Text(context.l10n.stylePrefix(item.styleInstructions)),
               ),
             ),
           Align(
-            alignment: Alignment.centerLeft,
+            alignment: AlignmentDirectional.centerStart,
             child: Padding(
               padding: const EdgeInsets.only(top: AppSpacing.md),
               child: Text(
@@ -444,13 +478,15 @@ class _OrderItemCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<OrderItemStatus>(
             initialValue: OrderItemStatus.fromStorage(item.status),
-            decoration: const InputDecoration(labelText: 'Garment status'),
+            decoration: InputDecoration(labelText: context.l10n.garmentStatus),
             items: OrderItemStatus.values
                 .where((status) => status != OrderItemStatus.cancelled)
                 .map(
                   (status) => DropdownMenuItem(
                     value: status,
-                    child: Text(status.label),
+                    child: Text(
+                      localizedStatus(context.l10n, status.storageKey),
+                    ),
                   ),
                 )
                 .toList(),
@@ -519,9 +555,9 @@ class _LedgerDialogState extends State<_LedgerDialog> {
   Future<void> _save() async {
     final amount = parseRupeesToPaisa(_amount.text);
     if (amount == null || amount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter an amount greater than zero.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.enterPositiveAmount)));
       return;
     }
     setState(() => _saving = true);
@@ -540,24 +576,20 @@ class _LedgerDialogState extends State<_LedgerDialog> {
     } on ExcessPaymentException {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Payment exceeds the outstanding balance.'),
-          ),
+          SnackBar(content: Text(context.l10n.paymentExceedsBalance)),
         );
       }
     } on ExcessRefundException {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Refund exceeds the net amount paid.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.refundExceedsPaid)));
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not save the ledger entry. Try again.'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.updateFailed)));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -566,7 +598,7 @@ class _LedgerDialogState extends State<_LedgerDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-    title: const Text('Payment ledger entry'),
+    title: Text(context.l10n.ledgerEntry),
     content: SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -574,7 +606,14 @@ class _LedgerDialogState extends State<_LedgerDialog> {
           SegmentedButton<PaymentRecordType>(
             segments: PaymentRecordType.values
                 .map(
-                  (type) => ButtonSegment(value: type, label: Text(type.label)),
+                  (type) => ButtonSegment(
+                    value: type,
+                    label: Text(
+                      type == PaymentRecordType.refund
+                          ? context.l10n.refund
+                          : context.l10n.payment,
+                    ),
+                  ),
                 )
                 .toList(),
             selected: {_type},
@@ -585,7 +624,7 @@ class _LedgerDialogState extends State<_LedgerDialog> {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
-              labelText: 'Amount',
+              labelText: context.l10n.amount,
               prefixText: 'PKR ',
               helperText: _type == PaymentRecordType.payment
                   ? 'Balance: ${formatPaisa(widget.order.balancePaisa)}'
@@ -594,12 +633,14 @@ class _LedgerDialogState extends State<_LedgerDialog> {
           ),
           DropdownButtonFormField<PaymentMethod>(
             initialValue: _method,
-            decoration: const InputDecoration(labelText: 'Method'),
+            decoration: InputDecoration(labelText: context.l10n.method),
             items: PaymentMethod.values
                 .map(
                   (method) => DropdownMenuItem(
                     value: method,
-                    child: Text(method.label),
+                    child: Text(
+                      localizedPaymentMethod(context.l10n, method.storageKey),
+                    ),
                   ),
                 )
                 .toList(),
@@ -607,13 +648,13 @@ class _LedgerDialogState extends State<_LedgerDialog> {
                 setState(() => _method = value ?? PaymentMethod.cash),
           ),
           if (_method == PaymentMethod.manualBankTransfer)
-            const Text(
-              'Recorded manually; transfer is not electronically verified.',
-              style: TextStyle(color: AppColors.textSecondary),
+            Text(
+              context.l10n.manualTransferNotice,
+              style: const TextStyle(color: AppColors.textSecondary),
             ),
           TextField(
             controller: _notes,
-            decoration: const InputDecoration(labelText: 'Notes (optional)'),
+            decoration: InputDecoration(labelText: context.l10n.notesOptional),
           ),
         ],
       ),
@@ -621,11 +662,11 @@ class _LedgerDialogState extends State<_LedgerDialog> {
     actions: [
       TextButton(
         onPressed: () => Navigator.pop(context),
-        child: const Text('Cancel'),
+        child: Text(context.l10n.cancel),
       ),
       FilledButton(
         onPressed: _saving ? null : _save,
-        child: Text(_saving ? 'Saving…' : 'Save'),
+        child: Text(_saving ? context.l10n.saving : context.l10n.save),
       ),
     ],
   );
@@ -659,13 +700,13 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-    title: const Text('Edit order details'),
+    title: Text(context.l10n.editOrderDetails),
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Delivery date'),
+          title: Text(context.l10n.deliveryDate),
           subtitle: Text(DateFormat.yMMMd().format(_deliveryDate)),
           onTap: () async {
             final picked = await showDatePicker(
@@ -680,7 +721,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
         TextField(
           controller: _notes,
           maxLines: 3,
-          decoration: const InputDecoration(labelText: 'Order notes'),
+          decoration: InputDecoration(labelText: context.l10n.orderNotes),
         ),
         const SizedBox(height: AppSpacing.sm),
         const Text(
@@ -691,7 +732,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
     actions: [
       TextButton(
         onPressed: () => Navigator.pop(context),
-        child: const Text('Cancel'),
+        child: Text(context.l10n.cancel),
       ),
       FilledButton(
         onPressed: () async {
@@ -704,7 +745,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
               );
           if (context.mounted) Navigator.pop(context);
         },
-        child: const Text('Save'),
+        child: Text(context.l10n.save),
       ),
     ],
   );

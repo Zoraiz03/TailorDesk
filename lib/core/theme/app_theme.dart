@@ -8,7 +8,7 @@ import 'app_spacing.dart';
 ///
 /// Uses system fonts for guaranteed offline first-launch.
 abstract final class AppTheme {
-  static ThemeData light() {
+  static ThemeData light({bool urdu = false}) {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: AppColors.primary,
       primary: AppColors.primary,
@@ -23,16 +23,15 @@ abstract final class AppTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.background,
-      fontFamily:
-          '.AppleSystemUIFont', // System font — always available offline
+      fontFamily: urdu ? 'NotoNaskhArabic' : '.AppleSystemUIFont',
       // ── AppBar ───────────────────────────────────────────────────────────
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: AppColors.background,
         foregroundColor: AppColors.charcoal,
         elevation: 0,
         scrolledUnderElevation: 0.5,
         centerTitle: false,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,
@@ -41,7 +40,7 @@ abstract final class AppTheme {
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.charcoal,
-          letterSpacing: -0.3,
+          letterSpacing: urdu ? 0 : -0.3,
         ),
       ),
       // ── Cards ────────────────────────────────────────────────────────────
@@ -191,70 +190,82 @@ abstract final class AppTheme {
         minVerticalPadding: 12,
       ),
       // ── Text ─────────────────────────────────────────────────────────────
-      textTheme: const TextTheme(
+      textTheme: TextTheme(
         headlineLarge: TextStyle(
           fontSize: 28,
           fontWeight: FontWeight.w700,
           color: AppColors.charcoal,
-          letterSpacing: -0.5,
+          letterSpacing: urdu ? 0 : -0.5,
+          height: urdu ? 1.5 : null,
         ),
         headlineMedium: TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.w700,
           color: AppColors.charcoal,
-          letterSpacing: -0.3,
+          letterSpacing: urdu ? 0 : -0.3,
+          height: urdu ? 1.5 : null,
         ),
         headlineSmall: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: AppColors.charcoal,
+          height: urdu ? 1.5 : null,
         ),
         titleLarge: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.charcoal,
-          letterSpacing: -0.3,
+          letterSpacing: urdu ? 0 : -0.3,
+          height: urdu ? 1.5 : null,
         ),
         titleMedium: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           color: AppColors.charcoal,
+          height: urdu ? 1.5 : null,
         ),
         titleSmall: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w600,
           color: AppColors.charcoal,
+          height: urdu ? 1.5 : null,
         ),
         bodyLarge: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w400,
           color: AppColors.charcoal,
+          height: urdu ? 1.5 : null,
         ),
         bodyMedium: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w400,
           color: AppColors.charcoal,
+          height: urdu ? 1.5 : null,
         ),
         bodySmall: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w400,
           color: AppColors.textSecondary,
+          height: urdu ? 1.5 : null,
         ),
         labelLarge: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w600,
           color: AppColors.charcoal,
+          height: urdu ? 1.5 : null,
         ),
         labelMedium: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
           color: AppColors.textSecondary,
+          height: urdu ? 1.5 : null,
         ),
         labelSmall: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w500,
           color: AppColors.textSecondary,
-          letterSpacing: 0.3,
+          letterSpacing: urdu ? 0 : 0.3,
+          height: urdu ? 1.5 : null,
         ),
       ),
     );

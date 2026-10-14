@@ -6,11 +6,13 @@ import 'package:intl/intl.dart';
 import '../../core/database/app_database.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/unsaved_changes_guard.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../customers/customer_providers.dart';
 import '../measurements/measurement_form_screen.dart';
 import '../measurements/measurement_models.dart';
 import '../measurements/measurement_providers.dart';
-import '../measurements/measurement_templates.dart';
+import '../settings/garment_catalog.dart';
+import '../settings/garment_catalog_providers.dart';
 import 'order_formatters.dart';
 import 'order_models.dart';
 import 'order_providers.dart';
@@ -80,11 +82,14 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
     if (picked != null) setState(() => _deliveryDate = picked);
   }
 
-  Future<void> _addLine(List<MeasurementProfileRecord> profiles) async {
+  Future<void> _addLine(
+    List<MeasurementProfileRecord> profiles,
+    Map<String, GarmentCatalogRecord> catalog,
+  ) async {
     if (profiles.isEmpty) return;
     final line = await showDialog<_DraftLine>(
       context: context,
-      builder: (_) => _LineDialog(profiles: profiles),
+      builder: (_) => _LineDialog(profiles: profiles, catalog: catalog),
     );
     if (line != null) setState(() => _lines.add(line));
   }
@@ -93,27 +98,25 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
     if (_saving || !_formKey.currentState!.validate()) return;
     if (_customerId == null) return;
     if (_lines.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Add at least one garment line.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.addGarmentLine)));
       return;
     }
     final advance = _advance.text.trim().isEmpty
         ? 0
         : parseRupeesToPaisa(_advance.text);
     if (advance == null || advance < 0 || advance > _total) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Enter an advance up to the order total.'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.advanceLimit)));
       return;
     }
     setState(() => _saving = true);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Review order'),
+        title: Text(context.l10n.reviewOrder),
         content: Text(
           '${_lines.length} garment line${_lines.length == 1 ? '' : 's'}\n'
           'Delivery: ${DateFormat.yMMMd().format(_deliveryDate)}\n'
@@ -123,11 +126,11 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Go back'),
+            child: Text(context.l10n.goBack),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Save order'),
+            child: Text(context.l10n.saveOrder),
           ),
         ],
       ),
@@ -158,17 +161,15 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
       }
     } on DuplicateOrderSubmissionException {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('This order was already saved.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.orderAlreadySaved)));
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not save the order. Nothing was changed.'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.orderSaveFailed)));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -181,23 +182,31 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
     final profiles = _customerId == null
         ? const AsyncValue<List<MeasurementProfileRecord>>.data([])
         : ref.watch(customerMeasurementRevisionsProvider(_customerId!));
+    final enabledCatalog = ref.watch(enabledGarmentCatalogProvider);
+    final catalogById = {
+      for (final item in enabledCatalog.value ?? const <GarmentCatalogRecord>[])
+        item.entry.garmentId: item,
+    };
     final selectedCustomer = customers.value
         ?.where((c) => c.id == _customerId)
         .firstOrNull;
     return UnsavedChangesGuard(
       hasUnsavedChanges: _hasUnsavedChanges,
       child: Scaffold(
-        appBar: AppBar(title: const Text('New Order')),
+        appBar: AppBar(title: Text(context.l10n.newOrder)),
         body: Form(
           key: _formKey,
           child: ListView(
             padding: AppSpacing.pagePadding,
             children: [
-              Text('Customer', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                context.l10n.customer,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: AppSpacing.sm),
               customers.when(
                 loading: () => const LinearProgressIndicator(),
-                error: (_, __) => const Text('Could not load customers.'),
+                error: (_, __) => Text(context.l10n.couldNotLoadCustomers),
                 data: (values) {
                   final query = _customerQuery.trim().toLowerCase();
                   final visible = values.where((customer) {
@@ -209,9 +218,9 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
                   return Column(
                     children: [
                       TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Search customers',
-                          prefixIcon: Icon(Icons.search),
+                        decoration: InputDecoration(
+                          labelText: context.l10n.searchCustomers,
+                          prefixIcon: const Icon(Icons.search),
                         ),
                         onChanged: (value) =>
                             setState(() => _customerQuery = value),
@@ -220,8 +229,8 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
                       DropdownButtonFormField<int>(
                         initialValue: _customerId,
                         isExpanded: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Select customer',
+                        decoration: InputDecoration(
+                          labelText: context.l10n.selectCustomer,
                         ),
                         items: visible
                             .map(
@@ -235,7 +244,7 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
                             )
                             .toList(),
                         validator: (value) =>
-                            value == null ? 'Select a customer' : null,
+                            value == null ? context.l10n.selectCustomer : null,
                         onChanged: (value) => setState(() {
                           _customerId = value;
                           _lines.clear();
@@ -246,7 +255,10 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
                 },
               ),
               const SizedBox(height: AppSpacing.xxl),
-              Text('Garments', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                context.l10n.garments,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: AppSpacing.sm),
               ..._lines.indexed.map((entry) {
                 final index = entry.$1;
@@ -260,7 +272,7 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
                       '${line.profileName} · ${formatPaisa(line.draft.totalPaisa)}',
                     ),
                     trailing: IconButton(
-                      tooltip: 'Remove garment',
+                      tooltip: context.l10n.removeGarment,
                       onPressed: () => setState(() => _lines.removeAt(index)),
                       icon: const Icon(Icons.delete_outline),
                     ),
@@ -269,9 +281,16 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
               }),
               profiles.when(
                 loading: () => const LinearProgressIndicator(),
-                error: (_, __) => const Text('Could not load measurements.'),
+                error: (_, __) => Text(context.l10n.couldNotLoadMeasurements),
                 data: (values) {
-                  if (_customerId != null && values.isEmpty) {
+                  final enabledValues = values
+                      .where(
+                        (record) => catalogById.containsKey(
+                          record.latestRevision.garmentType,
+                        ),
+                      )
+                      .toList();
+                  if (_customerId != null && enabledValues.isEmpty) {
                     return OutlinedButton.icon(
                       onPressed: selectedCustomer == null
                           ? null
@@ -284,24 +303,26 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
                               ),
                             ),
                       icon: const Icon(Icons.straighten),
-                      label: const Text('Create measurements first'),
+                      label: Text(context.l10n.createMeasurementsFirst),
                     );
                   }
                   return OutlinedButton.icon(
-                    onPressed: values.isEmpty ? null : () => _addLine(values),
+                    onPressed: enabledValues.isEmpty
+                        ? null
+                        : () => _addLine(enabledValues, catalogById),
                     icon: const Icon(Icons.add),
-                    label: const Text('Add garment'),
+                    label: Text(context.l10n.addGarment),
                   );
                 },
               ),
               const SizedBox(height: AppSpacing.xxl),
               Text(
-                'Delivery & notes',
+                '${context.l10n.deliveryDate} & ${context.l10n.notes}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Delivery date'),
+                title: Text(context.l10n.deliveryDate),
                 subtitle: Text(DateFormat.yMMMd().format(_deliveryDate)),
                 trailing: const Icon(Icons.calendar_today_outlined),
                 onTap: _pickDeliveryDate,
@@ -309,31 +330,41 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
               TextFormField(
                 controller: _notes,
                 maxLines: 3,
-                decoration: const InputDecoration(
-                  labelText: 'Order notes (optional)',
+                decoration: InputDecoration(
+                  labelText: context.l10n.orderNotesOptional,
                 ),
               ),
               const SizedBox(height: AppSpacing.xxl),
-              Text('Payment', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                context.l10n.payment,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: AppSpacing.sm),
               TextFormField(
                 controller: _advance,
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: const InputDecoration(
-                  labelText: 'Advance (PKR)',
+                decoration: InputDecoration(
+                  labelText: context.l10n.advancePkr,
                   prefixText: 'PKR ',
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
               DropdownButtonFormField<PaymentMethod>(
                 initialValue: _advanceMethod,
-                decoration: const InputDecoration(labelText: 'Advance method'),
+                decoration: InputDecoration(
+                  labelText: context.l10n.advanceMethod,
+                ),
                 items: PaymentMethod.values
                     .map(
                       (method) => DropdownMenuItem(
                         value: method,
-                        child: Text(method.label),
+                        child: Text(
+                          localizedPaymentMethod(
+                            context.l10n,
+                            method.storageKey,
+                          ),
+                        ),
                       ),
                     )
                     .toList(),
@@ -342,11 +373,9 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
                 ),
               ),
               if (_advanceMethod == PaymentMethod.manualBankTransfer)
-                const Padding(
-                  padding: EdgeInsets.only(top: AppSpacing.sm),
-                  child: Text(
-                    'Manual bank transfers are recorded only; the app cannot verify the transfer.',
-                  ),
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.sm),
+                  child: Text(context.l10n.manualTransferNotice),
                 ),
               const SizedBox(height: AppSpacing.xxl),
               Card(
@@ -354,7 +383,7 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
                   padding: AppSpacing.cardPadding,
                   child: Row(
                     children: [
-                      const Expanded(child: Text('Order total')),
+                      Expanded(child: Text(context.l10n.orderTotal)),
                       Text(
                         formatPaisa(_total),
                         style: Theme.of(context).textTheme.titleLarge,
@@ -372,7 +401,9 @@ class _NewOrderScreenState extends ConsumerState<NewOrderScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.check),
-                label: Text(_saving ? 'Saving…' : 'Review & save order'),
+                label: Text(
+                  _saving ? context.l10n.saving : context.l10n.reviewOrder,
+                ),
               ),
               const SizedBox(height: AppSpacing.xxl),
             ],
@@ -395,8 +426,9 @@ class _DraftLine {
 }
 
 class _LineDialog extends StatefulWidget {
-  const _LineDialog({required this.profiles});
+  const _LineDialog({required this.profiles, required this.catalog});
   final List<MeasurementProfileRecord> profiles;
+  final Map<String, GarmentCatalogRecord> catalog;
 
   @override
   State<_LineDialog> createState() => _LineDialogState();
@@ -417,6 +449,15 @@ class _LineDialogState extends State<_LineDialog> {
     super.initState();
     _profile = widget.profiles.first;
     _style.text = _profile.latestRevision.styleInstructions;
+    _applyDefaultPrice();
+  }
+
+  void _applyDefaultPrice() {
+    final price = widget
+        .catalog[_profile.latestRevision.garmentType]
+        ?.entry
+        .defaultStitchingPricePaisa;
+    _stitching.text = price == null || price == 0 ? '' : '${price ~/ 100}';
   }
 
   @override
@@ -443,17 +484,20 @@ class _LineDialogState extends State<_LineDialog> {
     final additional = _money(_additional);
     if (additional > 0 && _additionalDescription.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Describe the additional charge.')),
+        SnackBar(content: Text(context.l10n.describeAdditionalCharge)),
       );
       return;
     }
-    final garment = GarmentType.fromStorage(
+    final garmentLabel = localizedGarmentLabel(
+      context.l10n,
       _profile.latestRevision.garmentType,
+      english: _profile.latestRevision.garmentLabelEnglish,
+      urdu: _profile.latestRevision.garmentLabelUrdu,
     );
     Navigator.pop(
       context,
       _DraftLine(
-        garmentLabel: garment.label,
+        garmentLabel: garmentLabel,
         profileName: _profile.latestRevision.profileName,
         draft: OrderLineDraft(
           measurementRevisionId: _profile.latestRevision.id,
@@ -475,11 +519,11 @@ class _LineDialogState extends State<_LineDialog> {
     String? moneyValidator(String? value, {bool optional = false}) {
       if (optional && (value == null || value.trim().isEmpty)) return null;
       final parsed = parseRupeesToPaisa(value ?? '');
-      return parsed == null || parsed < 0 ? 'Enter zero or more' : null;
+      return parsed == null || parsed < 0 ? context.l10n.enterNumber : null;
     }
 
     return AlertDialog(
-      title: const Text('Add garment'),
+      title: Text(context.l10n.addGarment),
       content: SizedBox(
         width: 460,
         child: Form(
@@ -491,64 +535,65 @@ class _LineDialogState extends State<_LineDialog> {
                 DropdownButtonFormField<MeasurementProfileRecord>(
                   initialValue: _profile,
                   isExpanded: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Measurement profile',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.measurementProfile,
                   ),
                   items: widget.profiles.map((record) {
                     final revision = record.latestRevision;
                     return DropdownMenuItem(
                       value: record,
                       child: Text(
-                        '${GarmentType.fromStorage(revision.garmentType).label} · ${revision.profileName} · rev ${revision.revisionNumber}',
+                        '${localizedGarmentLabel(context.l10n, revision.garmentType, english: revision.garmentLabelEnglish, urdu: revision.garmentLabelUrdu)} · ${revision.profileName} · ${context.l10n.revisionNumber(revision.revisionNumber)}',
                       ),
                     );
                   }).toList(),
                   onChanged: (value) => setState(() {
                     _profile = value ?? _profile;
                     _style.text = _profile.latestRevision.styleInstructions;
+                    _applyDefaultPrice();
                   }),
                 ),
                 TextFormField(
                   controller: _quantity,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(labelText: 'Quantity'),
+                  decoration: InputDecoration(labelText: context.l10n.quantity),
                   validator: (value) => (int.tryParse(value ?? '') ?? 0) <= 0
-                      ? 'Enter a positive quantity'
+                      ? context.l10n.enterNumber
                       : null,
                 ),
                 TextFormField(
                   controller: _stitching,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: decoration('Stitching per piece'),
+                  decoration: decoration(context.l10n.stitchingPrice),
                   validator: (value) => moneyValidator(value),
                 ),
                 TextFormField(
                   controller: _cloth,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: decoration('Cloth line charge'),
+                  decoration: decoration(context.l10n.clothCharge),
                   validator: (value) => moneyValidator(value, optional: true),
                 ),
                 TextFormField(
                   controller: _additional,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: decoration('Additional line charge'),
+                  decoration: decoration(context.l10n.additionalCharge),
                   validator: (value) => moneyValidator(value, optional: true),
                 ),
                 TextFormField(
                   controller: _additionalDescription,
-                  decoration: const InputDecoration(
-                    labelText: 'Additional charge description',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.additionalChargeDescription,
                   ),
                 ),
                 TextFormField(
                   controller: _style,
                   maxLines: 2,
-                  decoration: const InputDecoration(
-                    labelText: 'Style instructions',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.styleInstructions,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
@@ -563,9 +608,9 @@ class _LineDialogState extends State<_LineDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
-        FilledButton(onPressed: _submit, child: const Text('Add line')),
+        FilledButton(onPressed: _submit, child: Text(context.l10n.addLine)),
       ],
     );
   }

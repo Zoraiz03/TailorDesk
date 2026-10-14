@@ -115,13 +115,14 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<int> createProfile(MeasurementDraft draft) {
+    attachedDatabase.requireBusinessWrite();
     draft.validate();
     return transaction(() async {
       final now = DateTime.now();
       final profileId = await into(measurementProfiles).insert(
         MeasurementProfilesCompanion.insert(
           customerId: draft.customerId,
-          garmentType: draft.garmentType.storageKey,
+          garmentType: draft.garmentId,
           profileName: draft.profileName.trim(),
           createdAt: Value(now),
           updatedAt: Value(now),
@@ -143,6 +144,7 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase>
     required int profileId,
     required MeasurementDraft draft,
   }) {
+    attachedDatabase.requireBusinessWrite();
     draft.validate();
     return transaction(() async {
       final profile = await (select(
@@ -159,7 +161,7 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase>
                 ..orderBy([(row) => OrderingTerm.desc(row.revisionNumber)])
                 ..limit(1))
               .getSingle();
-      if (latest.garmentType != draft.garmentType.storageKey ||
+      if (latest.garmentType != draft.garmentId ||
           latest.unit != draft.unit.storageKey ||
           latest.measurementBasis != draft.basis.storageKey) {
         throw ArgumentError(
@@ -181,7 +183,7 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase>
         measurementProfiles,
       )..where((row) => row.id.equals(profileId))).write(
         MeasurementProfilesCompanion(
-          garmentType: Value(draft.garmentType.storageKey),
+          garmentType: Value(draft.garmentId),
           profileName: Value(draft.profileName.trim()),
           updatedAt: Value(now),
         ),
@@ -199,11 +201,15 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase>
     return MeasurementRevisionsCompanion.insert(
       profileId: profileId,
       revisionNumber: revisionNumber,
-      garmentType: draft.garmentType.storageKey,
+      garmentType: draft.garmentId,
+      garmentLabelEnglish: Value(draft.garmentLabelEnglish.trim()),
+      garmentLabelUrdu: Value(draft.garmentLabelUrdu.trim()),
       profileName: draft.profileName.trim(),
       unit: draft.unit.storageKey,
       measurementBasis: draft.basis.storageKey,
       valuesJson: draft.encodeValues(),
+      templateVersionId: Value(draft.templateVersionId),
+      fieldDefinitionsJson: Value(draft.encodeFieldDefinitions()),
       fitPreference: draft.fitPreference.storageKey,
       styleInstructions: Value(draft.styleInstructions.trim()),
       notes: Value(draft.notes.trim()),

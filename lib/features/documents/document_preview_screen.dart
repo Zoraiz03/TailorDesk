@@ -6,6 +6,8 @@ import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 
 import '../../core/theme/app_spacing.dart';
+import '../../core/localization/localization_extensions.dart';
+import '../../core/localization/presentation_preferences.dart';
 import '../karigars/karigar_models.dart';
 import '../orders/order_models.dart';
 import '../settings/shop_settings_providers.dart';
@@ -44,6 +46,9 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
       shop: shop,
       order: widget.order,
       assignment: widget.assignment,
+      documentLanguage: ref
+          .read(currentPresentationPreferencesProvider)
+          .documentLanguage,
     );
   }
 
@@ -60,8 +65,8 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
         SnackBar(
           content: Text(
             completed
-                ? 'Print job sent to the system.'
-                : 'Printing was cancelled.',
+                ? context.l10n.printJobSent
+                : context.l10n.printingCancelled,
           ),
         ),
       );
@@ -69,7 +74,7 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Could not print: $error')));
+        ).showSnackBar(SnackBar(content: Text(context.l10n.printFailed)));
       }
     }
   }
@@ -81,13 +86,16 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
           : await Printing.sharePdf(
               bytes: document.bytes,
               filename: document.fileName,
-              subject: 'Order document ${widget.order.order.orderNumber}',
+              subject:
+                  '${context.l10n.order} ${widget.order.order.orderNumber}',
             );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            completed ? 'PDF export completed.' : 'PDF export was cancelled.',
+            completed
+                ? context.l10n.pdfExportComplete
+                : context.l10n.pdfExportCancelled,
           ),
         ),
       );
@@ -95,7 +103,7 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Could not export PDF: $error')));
+        ).showSnackBar(SnackBar(content: Text(context.l10n.pdfExportFailed)));
       }
     }
   }
@@ -141,12 +149,12 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
             actions: [
               if (!kIsWeb)
                 IconButton(
-                  tooltip: 'Print with system dialog',
+                  tooltip: context.l10n.print,
                   onPressed: document == null ? null : () => _print(document),
                   icon: const Icon(Icons.print_outlined),
                 ),
               IconButton(
-                tooltip: 'Export PDF',
+                tooltip: context.l10n.exportPdf,
                 onPressed: document == null ? null : () => _export(document),
                 icon: const Icon(Icons.ios_share_outlined),
               ),
@@ -160,7 +168,7 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
               padding: AppSpacing.pagePadding,
               child: Center(
                 child: Text(
-                  'Could not generate this document.\n${snapshot.error}',
+                  context.l10n.documentGenerationFailed,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -178,15 +186,12 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    const Text(
-                      'The PDF was generated locally. Offline in-app raster preview is not bundled for web; export it to view in your browser.',
-                      textAlign: TextAlign.center,
-                    ),
+                    Text(context.l10n.webPdfHelp, textAlign: TextAlign.center),
                     const SizedBox(height: AppSpacing.xl),
                     FilledButton.icon(
                       onPressed: () => _export(document),
                       icon: const Icon(Icons.download_outlined),
-                      label: const Text('Export PDF'),
+                      label: Text(context.l10n.exportPdf),
                     ),
                   ],
                 ),
@@ -203,7 +208,7 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
               useActions: false,
               pdfFileName: document!.fileName,
               onError: (_, error) =>
-                  Center(child: Text('Could not preview PDF: $error')),
+                  Center(child: Text(context.l10n.documentPreviewFailed)),
             ),
           },
         );
@@ -212,8 +217,8 @@ class _DocumentPreviewScreenState extends ConsumerState<DocumentPreviewScreen> {
   }
 
   String _title(OrderDocumentKind kind) => switch (kind) {
-    OrderDocumentKind.customerReceipt => 'Order Receipt',
-    OrderDocumentKind.karigarSlip => 'Karigar Work Slip',
-    OrderDocumentKind.combined => 'Combined Document',
+    OrderDocumentKind.customerReceipt => context.l10n.customerReceipt,
+    OrderDocumentKind.karigarSlip => context.l10n.karigarSlip,
+    OrderDocumentKind.combined => context.l10n.combinedDocument,
   };
 }

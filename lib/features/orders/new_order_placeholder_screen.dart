@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/localization/localization_extensions.dart';
 
 /// Clearly labelled placeholder for the New Order flow.
 class NewOrderPlaceholderScreen extends StatelessWidget {
@@ -12,7 +13,7 @@ class NewOrderPlaceholderScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('New Order'), centerTitle: false),
+      appBar: AppBar(title: Text(context.l10n.newOrder), centerTitle: false),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40),

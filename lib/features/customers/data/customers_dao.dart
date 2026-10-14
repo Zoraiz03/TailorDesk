@@ -58,6 +58,7 @@ class CustomersDao extends DatabaseAccessor<AppDatabase>
     String address = '',
     String notes = '',
   }) {
+    attachedDatabase.requireBusinessWrite();
     final now = DateTime.now();
     return into(customers).insert(
       CustomersCompanion.insert(
@@ -78,6 +79,7 @@ class CustomersDao extends DatabaseAccessor<AppDatabase>
     String address = '',
     String notes = '',
   }) {
+    attachedDatabase.requireBusinessWrite();
     return (update(
       customers,
     )..where((customer) => customer.id.equals(id))).write(
@@ -92,6 +94,7 @@ class CustomersDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<int> deleteCustomer(int id) {
+    attachedDatabase.requireBusinessWrite();
     return transaction(() async {
       final linkedProfile =
           await (select(measurementProfiles)

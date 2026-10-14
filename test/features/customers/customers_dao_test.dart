@@ -88,7 +88,9 @@ void main() {
       );
       addTearDown(database.close);
 
-      final setting = await database.select(database.appSettings).getSingle();
+      final setting = await (database.select(
+        database.appSettings,
+      )..where((row) => row.key.equals('shop_name'))).getSingle();
       final customerId = await CustomersDao(
         database,
       ).createCustomer(name: 'Migrated Customer', phone: '03001234567');
@@ -101,7 +103,7 @@ void main() {
             .customSelect('PRAGMA user_version')
             .getSingle()
             .then((row) => row.read<int>('user_version')),
-        5,
+        6,
       );
     },
   );

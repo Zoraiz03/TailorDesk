@@ -15,6 +15,13 @@ enum GarmentType {
     (type) => type.storageKey == value,
     orElse: () => GarmentType.shalwarQameez,
   );
+
+  static GarmentType? tryFromStorage(String value) {
+    for (final type in values) {
+      if (type.storageKey == value) return type;
+    }
+    return null;
+  }
 }
 
 enum MeasurementUnit {

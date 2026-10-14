@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
 import 'new_order_screen.dart';
@@ -28,21 +29,21 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
   Widget build(BuildContext context) {
     final orders = ref.watch(ordersProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Orders')),
+      appBar: AppBar(title: Text(context.l10n.orders)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const NewOrderScreen()),
         ),
         icon: const Icon(Icons.add),
-        label: const Text('New Order'),
+        label: Text(context.l10n.newOrder),
       ),
       body: orders.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const EmptyState(
+        error: (_, __) => EmptyState(
           icon: Icons.error_outline,
-          title: 'Could not load orders',
-          subtitle: 'Your saved data has not been changed.',
+          title: context.l10n.couldNotLoad,
+          subtitle: context.l10n.savedDataUnchanged,
         ),
         data: (records) {
           final now = DateTime.now();
@@ -73,9 +74,9 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                 child: TextField(
                   onChanged: (value) => setState(() => _query = value),
-                  decoration: const InputDecoration(
-                    hintText: 'Search order, customer, or phone',
-                    prefixIcon: Icon(Icons.search),
+                  decoration: InputDecoration(
+                    hintText: context.l10n.searchOrders,
+                    prefixIcon: const Icon(Icons.search),
                   ),
                 ),
               ),
@@ -86,19 +87,22 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                   vertical: 8,
                 ),
                 child: SegmentedButton<_OrderFilter>(
-                  segments: const [
-                    ButtonSegment(value: _OrderFilter.all, label: Text('All')),
+                  segments: [
+                    ButtonSegment(
+                      value: _OrderFilter.all,
+                      label: Text(context.l10n.all),
+                    ),
                     ButtonSegment(
                       value: _OrderFilter.active,
-                      label: Text('Active'),
+                      label: Text(context.l10n.active),
                     ),
                     ButtonSegment(
                       value: _OrderFilter.overdue,
-                      label: Text('Overdue'),
+                      label: Text(context.l10n.overdue),
                     ),
                     ButtonSegment(
                       value: _OrderFilter.outstanding,
-                      label: Text('Outstanding'),
+                      label: Text(context.l10n.outstanding),
                     ),
                   ],
                   selected: {_filter},
@@ -111,11 +115,11 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                     ? EmptyState(
                         icon: Icons.receipt_long_outlined,
                         title: records.isEmpty
-                            ? 'No orders yet'
-                            : 'No matching orders',
+                            ? context.l10n.noOrders
+                            : context.l10n.notFound,
                         subtitle: records.isEmpty
-                            ? 'Create an order to start tracking garments, delivery, and payments.'
-                            : 'Try another search or filter.',
+                            ? context.l10n.noOrdersHelp
+                            : context.l10n.differentSearch,
                         action: records.isEmpty
                             ? FilledButton.icon(
                                 onPressed: () => Navigator.push(
@@ -125,7 +129,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                                   ),
                                 ),
                                 icon: const Icon(Icons.add),
-                                label: const Text('New Order'),
+                                label: Text(context.l10n.newOrder),
                               )
                             : null,
                       )
@@ -151,8 +155,8 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                                 '${record.order.orderNumber} · ${record.customer.name}',
                               ),
                               subtitle: Text(
-                                '$garmentCount garment${garmentCount == 1 ? '' : 's'} · Due ${DateFormat.yMMMd().format(record.order.deliveryDate)}\n'
-                                '${record.progress.label} · ${record.paymentStatusLabel} · Balance ${formatPaisa(record.balancePaisa)}',
+                                '${context.l10n.itemCount(garmentCount)} · ${context.l10n.deliveryDate} ${DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(record.order.deliveryDate)}\n'
+                                '${localizedStatus(context.l10n, record.progress.name)} · ${record.paymentStatusLabel} · ${context.l10n.balance} ${formatPaisa(record.balancePaisa)}',
                               ),
                               isThreeLine: true,
                               trailing: overdue

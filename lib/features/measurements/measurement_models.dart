@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import '../../core/database/app_database.dart';
 import 'measurement_templates.dart';
+import '../settings/garment_catalog.dart';
 
 class MeasurementDraft {
-  const MeasurementDraft({
+  MeasurementDraft({
     required this.customerId,
-    required this.garmentType,
+    required GarmentType garmentType,
     required this.profileName,
     required this.unit,
     required this.basis,
@@ -14,10 +15,36 @@ class MeasurementDraft {
     required this.fitPreference,
     this.styleInstructions = '',
     this.notes = '',
-  });
+  }) : garmentType = garmentType,
+       garmentId = garmentType.storageKey,
+       garmentLabelEnglish = garmentType.label,
+       garmentLabelUrdu = '',
+       templateVersionId = null,
+       fieldDefinitions = null;
+
+  MeasurementDraft.catalog({
+    required this.customerId,
+    required this.garmentId,
+    required this.garmentLabelEnglish,
+    this.garmentLabelUrdu = '',
+    required this.profileName,
+    required this.unit,
+    required this.basis,
+    required this.values,
+    required this.fitPreference,
+    required this.templateVersionId,
+    required this.fieldDefinitions,
+    this.styleInstructions = '',
+    this.notes = '',
+  }) : garmentType = null;
 
   final int customerId;
-  final GarmentType garmentType;
+  final GarmentType? garmentType;
+  final String garmentId;
+  final String garmentLabelEnglish;
+  final String garmentLabelUrdu;
+  final int? templateVersionId;
+  final List<GarmentTemplateField>? fieldDefinitions;
   final String profileName;
   final MeasurementUnit unit;
   final MeasurementBasis basis;
@@ -30,9 +57,20 @@ class MeasurementDraft {
     if (profileName.trim().isEmpty) {
       throw ArgumentError.value(profileName, 'profileName', 'Cannot be empty');
     }
-    final template = garmentMeasurementTemplates[garmentType]!;
-    for (final field in template.fields) {
-      final value = values[field.key];
+    final fields =
+        fieldDefinitions ??
+        [
+          for (final indexed
+              in garmentMeasurementTemplates[garmentType]!.fields.indexed)
+            GarmentTemplateField(
+              id: indexed.$2.key,
+              label: indexed.$2.label,
+              order: indexed.$1,
+              required: indexed.$2.required,
+            ),
+        ];
+    for (final field in fields.where((item) => !item.archived)) {
+      final value = values[field.id];
       if (field.required && value == null) {
         throw ArgumentError('Missing required measurement: ${field.label}');
       }
@@ -40,6 +78,24 @@ class MeasurementDraft {
         throw ArgumentError('${field.label} must be positive');
       }
     }
+  }
+
+  String encodeFieldDefinitions() {
+    final fields =
+        fieldDefinitions ??
+        [
+          for (final indexed
+              in garmentMeasurementTemplates[garmentType]!.fields.indexed)
+            GarmentTemplateField(
+              id: indexed.$2.key,
+              label: indexed.$2.label,
+              order: indexed.$1,
+              required: indexed.$2.required,
+            ),
+        ];
+    return jsonEncode(
+      fields.map((field) => field.toJson()).toList(growable: false),
+    );
   }
 
   String encodeValues() {

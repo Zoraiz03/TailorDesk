@@ -1,136 +1,290 @@
 # Project Status
 
-## Current Stage: 7 — UI Polish and Offline Acceptance (automated verification complete; device acceptance pending)
+## Current Stage: 13 — Physical Android Pilot Blocked (Device Required)
+
+Physical pilot acceptance and production approval remain pending; this is not permission to distribute.
+
+### Stage 13 attempt — 13 October 2026, 21:18 PKT
+
+- Read `AGENTS.md`, this status, `RELEASE_GUIDE.md`, and `PILOT_ACCEPTANCE.md`; preserved all existing work.
+- `/Users/zoraiz/Library/Android/sdk/platform-tools/adb devices -l` returned only `emulator-5554`, product/model `sdk_gphone16k_arm64`, device `emu64a16k`. Its `ro.kernel.qemu` value is `1`. **No physical Android phone is available to ADB.** Physical model/OS/OEM/screen details cannot be recorded yet.
+- Physical results: **0 passed, 0 failed, all pending/not executed**. No emulator results substituted. Download/file-manager install, launcher appearance, activation Download/Share/import, setup and full shop workflow, native PDF save, external backup, offline force-stop/reopen/new records, separate activated-destination restore, and same-signature in-place update all need the phone.
+- Actual printer availability/model/connection/paper size remains unknown; compatibility remains pending until tested on that equipment.
+- Added exact USB connection/troubleshooting instructions and an isolated two-installation restore/update plan to `PILOT_ACCEPTANCE.md`. Planned Stage 13 IDs are non-production and must be checked unused before installation. Temporary signing/license credentials only; preserve all existing packages and records.
+- No builds, installs, license issuance, new keys, restores, data clearing, connectivity changes or publishing occurred. No application code changed and no physical defect could be observed. Analysis/tests were not rerun for this documentation-only attempt; **71 passing tests is Stage 12 evidence**, not a Stage 13 run. `git diff --check` passed after documentation edits.
+- **Resume condition:** connect and authorise a physical Android phone, identify the intended test device, and provide on-phone interaction or mirroring. Stage 13 is not complete.
+
+Remaining launch blockers: physical pilot acceptance including secure storage/file flows/restore/update; actual printer acceptance for any promised printing support; working-tailor workflow/template sign-off; owner confirmation of production identity/version/artwork and commercial/support terms; separately protected production Android signing and licensing credentials. License release sequence remains **10**.
+
+### Feature Matrix
+
+| Feature Module | Status | Verification Evidence |
+|---|---|---|
+| Customers and history | Implemented and verified | Drift v2 migration, `CustomersDao`, `CustomerFormScreen`, search/sort, relationship integrity |
+| Garment measurements and revisions | Implemented and verified | Versioned templates, immutable revisions, frozen field labels/units/conventions, positive decimal validation |
+| Orders and frozen snapshots | Implemented and verified | Drift v4 migration, `OrdersDao`, frozen measurement snapshots preserved when profiles update |
+| Charges, payments, refunds, balances | Implemented and verified | Integer-paisa calculations, append-only payment ledger, excess payment/refund guards |
+| Karigar assignments & history | Implemented and verified | Drift v5 migration, `KarigarsDao`, reassignment reason history, deactivation guard |
+| Progress, alterations, delivery, cancellation | Implemented and verified | Derived order progress, partial delivery, delivered-order cancellation block, refund requirement |
+| Dashboard and live reports | Implemented and verified | Live Drift metrics, 4-tab `ReportsScreen` (Due/Overdue, Balances, Collections, Workload) |
+| First-use setup and shop settings | Implemented and verified | Resumable 4-step setup, schema-5 upgrade bypass, shop details/default unit persisted locally |
+| Garment catalog and pricing | Implemented and verified | 8 seeded garments, custom templates, enable/reorder, integer-paisa defaults used only for new-line prefills |
+| Customer receipts and karigar slips | Implemented and verified | `OrderDocumentService`, bundled Roboto fonts, financial privacy on karigar work slips |
+| PDF export and system printing | Implemented and verified | PDF generation, in-app preview, native print dialog, platform share sheet |
+| Backup and restore | Implemented and verified | `BackupService`, atomic `VACUUM INTO`, SHA-256 integrity, safety pre-restore backup, rollback |
+| Offline activation | Implemented and verified | Strict Ed25519 signed licenses, random secure-store installation identity, release entitlement, read-only recovery |
+| Private license issuer | Implemented and verified | Explicit key generation, issue/inspect/renew/replace-device commands, external JSONL ledger |
+| Release and update preparation | Implemented and verified | Chrome activation export fixed; external Android signing enforced; isolated same-key APK upgrade preserved activation and records |
 
 ### Completed
 
-- [x] Flutter app source structure with correct pubspec.yaml
-- [x] Material 3 theme with tailoring brand palette
-- [x] System fonts for guaranteed offline first launch
-- [x] Responsive navigation: BottomNavigationBar (phone) + NavigationRail (tablet)
-- [x] Dashboard screen with:
-  - Shop name and current date
-  - Prominent "New Order" action button
-  - Summary cards: Active Orders, Due Today, Overdue, Outstanding Balance (PKR)
-  - Upcoming deliveries with customer, garment, due date, status badge
-  - Quick actions: Add Customer, Measurements
-  - Live Drift-backed metrics and upcoming deliveries
-- [x] Reusable design system widgets:
-  - StatusBadge (Pending, In Progress, Ready, Overdue)
-  - SummaryCard (metric with icon)
-  - EmptyState (icon + title + subtitle + optional action)
-  - SectionHeader (title with optional action)
-- [x] Empty state screens for: Orders, Customers, Karigars, Reports, Backup & Restore, Settings
-- [x] Complete New Order workflow
-- [x] Drift database infrastructure with AppSettings table and migration strategy
-- [x] Riverpod database provider
-- [x] Documentation: README.md, AGENTS.md, PROJECT_STATUS.md
-
-### Stage 2 Implemented
-
-- [x] Drift `Customers` table with a version 1 → 2 migration
-- [x] `CustomersDao` create, read, update, delete, and reactive watch methods
-- [x] Reactive Riverpod customer providers
-- [x] Customer list with name/phone search and sort controls
-- [x] Add/edit customer form with validation
-- [x] Customer detail and confirmed delete flow
-- [x] Dashboard Add Customer quick action
-- [x] DAO, migration, persistence, form, search, and sorting tests
-
-### Stage 3 Implemented
-
-- [x] Schema version 3 migration preserving existing settings and customers
-- [x] Customer-linked measurement profiles with restrictive foreign keys
-- [x] Immutable measurement revisions created in local database transactions
-- [x] Complete revision snapshots prepared for future order references
-- [x] Central provisional templates for Shalwar Qameez, Coat, Trouser, Shirt, Waistcoat, and Jacket
-- [x] Inches and centimetres stored explicitly with decimal values preserved
-- [x] Explicit body versus finished-garment measurement basis
-- [x] Regular, slim, and loose fit preferences
-- [x] Customer detail measurement list, Add Measurements, and View History actions
-- [x] Measurement create/revision form with garment-specific fields, validation, unit suffixes, style instructions, and notes
-- [x] Measurement detail view with grouped values and accessible revision history
-- [x] Customer selector reachable from the dashboard Measurements quick action
-- [x] Customer deletion blocked when measurement history exists; no silent cascade deletion
-- [x] DAO, migration, relationship, revision, decimal/unit, and form validation tests
-
-### Stage 4 Implemented
-
-- [x] Schema version 4 migration adds orders, garment lines, and an append-only payment/refund ledger while preserving customers and measurement revisions
-- [x] Human-readable unique order numbers and duplicate-submission keys
-- [x] Atomic order, garment snapshot, and initial-advance creation transaction
-- [x] Multiple garment lines with shared quantity, selected immutable measurement revision, frozen measurement snapshot, style instructions, and charge breakdown
-- [x] Integer-paisa business calculations for stitching, cloth, additional charges, totals, net paid, and balance
-- [x] Cash and manually recorded bank-transfer payments; bank transfers are clearly labelled unverified
-- [x] Excess-payment and excess-refund rejection
-- [x] Per-garment status with derived order progress and partial delivery
-- [x] Cancellation preserves history, blocks delivered orders, and requires received money to be explicitly refunded first
-- [x] Searchable customer selection, multiple-line form, historical revision selection, review confirmation, validation retention, and duplicate-tap guard
-- [x] Orders search and Active, Overdue, and Outstanding filters
-- [x] Order detail with frozen measurements, full charges, ledger, balance, garment progress, outstanding-balance delivery confirmation, and editable delivery date/notes
-- [x] Customer detail New Order action and order history
-- [x] Live dashboard metrics with cancelled orders excluded
-- [x] Migration, atomicity, snapshot, exact-money, ledger, duplicate-submit, cancellation, partial-delivery, relationship, and form-validation tests
-
-### Stage 5 Implemented
-
-- [x] Schema version 5 migration adds karigars and append-only assignment history while preserving earlier business data
-- [x] Karigar create, edit, search, active/inactive filtering, detail, workload, and work-history views
-- [x] Safe deactivation blocked while work is active; workers with assignment history cannot be deleted
-- [x] Active-karigar selection for individual order garment items
-- [x] Optional internal deadlines and work instructions, with warnings when a deadline exceeds customer delivery
-- [x] Assignment, reassignment with a required reason, start-work, completion/ready, and alteration-return flows
-- [x] Assignment changes update garment progress atomically and preserve historical assignment rows
-- [x] Order cancellation closes active assignments without deleting work history
-- [x] Dashboard workshop metrics for unassigned garment items and overdue internal deadlines
-- [x] Karigar quick access from the dashboard and full management access from More
-- [x] DAO coverage for CRUD, lifecycle transitions, reassignment history, inactive-worker enforcement, alteration returns, and order-cancellation cleanup
-
-### Stage 6 Implemented
-
-- [x] Drift-backed shop name, address, phone, and receipt-footer settings
-- [x] Offline customer receipts with order, customer, garment, charge, payment, balance, cancellation, and manual-transfer details
-- [x] Financially private karigar work slips with frozen measurement snapshots, instructions, notes, worker, quantity, and deadline
-- [x] Combined customer/karigar PDFs, including a compact single-page layout for simple one-item orders and automatic pagination for larger orders
-- [x] Bundled Roboto fonts, repeated document headers/footers, A4 output, native preview/print, and platform-appropriate PDF export
-- [x] Versioned `.tailorbackup` ZIP archives with a manifest, database size and SHA-256 integrity metadata, and an attachment manifest prepared for future files
-- [x] Consistent SQLite backup snapshots, strict archive/path/schema validation, database integrity checks, and older compatible-schema migration
-- [x] Confirmed destructive restore flow with a safety backup and recoverable same-directory database replacement
-- [x] Explicit web limitations: PDF generation/export remains available, while offline raster preview, system printing, backup, and restore are not offered
-- [x] Automated document-content, backup/restore, corrupt-backup, schema-migration, and shop-settings tests
-
-### Stage 7 Implemented
-
-- [x] Consistent Material 3 form fields, buttons, dialogs, floating actions, snackbars, cards, and 48dp interactive targets
-- [x] Responsive dashboard metric layout, clearer retryable dashboard errors, and configured shop name on the dashboard
-- [x] More prominent order balance treatment and understandable status, cancellation, and ledger failure feedback
-- [x] Large-text-safe measurement selectors and measurement value rows
-- [x] Unsaved-change confirmation on customer, measurement, order, karigar, and shop-settings forms
-- [x] Failed shop-setting saves preserve input and show an understandable message
-- [x] Bundled Drift WebAssembly and worker assets with an explicit offline web database connection
-- [x] TailorDesk naming and brand colours applied to Android, iOS, and web application metadata
-- [x] Disposable-database acceptance test covering the complete order lifecycle, snapshot immutability, payments, partial delivery, assignment history, cancellation cleanup, and dashboard totals
-- [x] Practical client walkthrough and approval questions in `CLIENT_REVIEW.md`
+- [x] All Stage 1–7 foundations and features
+- [x] Stage 8 reports reconciled: the required Coat and Jacket templates remain supported; Kurta and Sherwani are retained as additional stable catalog entries
+- [x] Resumable first-use setup for shop details, default unit, enabled garments, and optional default prices
+- [x] Existing schema-5 installations migrate without record loss and are not forced through setup
+- [x] Editable, versioned measurement templates with stable field IDs, explicit body/finished-garment convention, required flags, ordering, and field archiving
+- [x] Historical measurement revisions and booked items freeze their field labels, values, units, conventions, and prices
+- [x] Stage 9 tables and settings are included automatically in whole-database backup/restore
+- [x] Live Reports module with 4 reactive tabs:
+  - Orders Due & Overdue (overdue days badge, due today, upcoming deliveries)
+  - Outstanding Customer Balances (total outstanding, per-customer breakdown)
+  - Payment Collections and Refunds (time filters: Today, 7d, 30d, All Time, Custom; gross payments, refunds, net collections without profit labeling, cash vs bank transfer breakdown, full transaction ledger)
+  - Karigar Workload & Pending Work (active workers, unassigned garment lines with quick assign, overdue internal deadlines, per-worker workload cards)
+- [x] Dashboard quick-navigation: summary cards directly link to corresponding reports tabs
+- [x] 17-step end-to-end shop acceptance test covering customer creation, dual garment measurements, multi-line order booking, advance payment, 2-worker assignment, reassignment with reason, partial delivery with outstanding balance, completion, final payment settlement, receipt/karigar slip generation, measurement revision snapshot immutability, cancellation/refund rules, reports verification, and backup/restore round-trip into an isolated database
+- [x] Android emulator runtime verification on `emulator-5554` (API 37)
+- [x] Stage 8 Android cold start was observed with Wi-Fi and mobile data disabled; this verifies the observed workflow, not an audit proving zero network requests
+- [x] Stage 10 offline activation using an emulator-only signed license, with activation retained across force-stop/relaunch
+- [x] Central database write policy blocks business mutations and restore without activation while preserving read-only access and business backup export
+- [x] Installation identity and signed activation are stored outside Drift; ordinary business backups cannot copy or replace them
+- [x] Owner-only Ed25519 issuer and operating guide cover deliberate key generation, issuance, inspection, renewal, replacement devices, key rotation, custody, and offline limitations
+- [x] Stage 11 release guide, production build gates, owner-assisted update checklist, Chrome development activation workflow, APK inspection, and isolated two-version upgrade verification
+- [x] Stage 12 original vector branding, adaptive launcher assets, About screen, Android activation-request save action, guarded single-file release configuration, and customer/pilot documentation
 
 ### Current Limitations
 
-- Reports remains an empty state
-- Backup archives are intentionally unencrypted; users must store shared copies securely
-- The app currently has no attachment feature, so Stage 6 archives contain an empty attachment manifest
-- Web supports PDF generation/export but not offline raster preview or system printing; backup and restore are unavailable on web
-- Web business records now use locally bundled SQLite WebAssembly and browser IndexedDB storage; browser testing does not prove Android behavior
 - Direct Bluetooth/USB thermal-printer integration is out of scope; native printing uses the platform print dialog
-- The Android SDK toolchain now builds a verified debug APK, but no Android device or emulator is connected, so Stage 3–7 mobile runtime and offline verification remain pending
-- Xcode is incomplete and CocoaPods is absent, so iOS launch is pending
-- The downloaded Flutter SDK works at `/Users/zoraiz/Desktop/develop/flutter`, but its `bin` directory is not yet persisted on the shell `PATH`
+- Backup archives are intentionally unencrypted; users must store external copies securely
+- Web supports PDF generation/export but not offline raster preview or system printing; backup and restore are unavailable on web
+- Provisional garment measurement templates and charge labels require working-tailor sign-off before retail deployment
+- Offline licenses cannot remotely revoke an old device or reliably prevent cloning by a privileged attacker
+- Production Android and license-signing credentials remain owner-controlled; release signing is configured to require an external keystore and no production secret was generated
+- Proposed `com.zoraiz.tailordesk`, `1.0.0`, code `1`, TailorDesk name/artwork, and future license release-sequence policy require owner approval; sequence remains `10`
 
 ### Toolchain
 
 - Flutter 3.47.7 stable
 - Dart 3.13.5
-- Generated Android and iOS runners retain Flutter's placeholder `com.example.tailor` identifiers; production signing and identifiers are intentionally not configured
+- Android SDK 36.0.0, platform android-37.0, AVD `Pixel_8` (API 37)
+- 71 automated tests passing (0 failures, Stage 12)
+- `flutter analyze` clean (0 warnings, 0 errors)
+- `dart format` clean (0 changes needed)
+- Debug Android and generated iOS runners retain Flutter's placeholder `com.example.tailor`; Android release tasks reject that placeholder and require the owner's permanent ID
 - Web runner generated for local Chrome development previews; Android remains the primary production target
 - Android SDK 36.0.0, platform android-37.0, and accepted licenses detected
+
+---
+
+## Stage 12 Verification Report — 13 October 2026
+
+### Completed preparation
+
+- Original emerald/ivory spool-and-thread SVG in `assets/branding/tailordesk.svg`; repeatable generator and `preview.png` cover 16/24/32/48/64px and circle, rounded-square, squircle approximation, teardrop masks. Preview inspected: thread and spool remain recognisable, no clipping; 16px naturally loses detail.
+- Android legacy density PNGs, adaptive foreground/background (API 26+), and monochrome layer (API 33+) configured. Web/iOS starter icon derivatives also replaced; no iPhone distribution is promised.
+- TailorDesk name and brand mark on activation, first-use setup and new **More → About TailorDesk**. About reports actual Android package version/code and unchanged license release sequence **10**. Customer receipt headings remain the shop's name/details; document code was not changed in this stage.
+- Android activation Download now uses `ACTION_CREATE_DOCUMENT` through a native channel; previously the desktop save-location API did not provide an Android save workflow. Same canonical request bytes; saved/cancelled/error outcomes covered by mocked-channel widget tests. Copy/Share behavior and licensing rules are preserved.
+- `config/production-release.example.json` holds proposed identity/version with confirmation false and empty credentials. `tool/build_customer_release.dart` accepts a single external JSON config; validates acknowledgement of release sequence 10, explicit identity/version, external signing properties, and production-public-key-only documents before invoking release build. Existing Gradle fail-closed signing/trust rules remain. Tests confirm unapproved or credential-less configs cannot start a build.
+- Created `CUSTOMER_INSTALLATION_GUIDE.md`, `CUSTOMER_UPDATE_GUIDE.md`, blank owner-only `CUSTOMER_DELIVERY_CHECKLIST.md`, `BUSINESS_POLICY_DRAFT.md`, and `PILOT_ACCEPTANCE.md`. Updated release/licensing/client-review links. No customer details invented or stored in the business database.
+
+### Actual verification
+
+- `dart format --set-exit-if-changed lib test tool`: 99 files, no changes required on final run.
+- `flutter analyze --no-pub`: no issues.
+- `flutter test --no-pub`: **71 passed**, including 7 new branding/export/release-config checks. Initial new-test harness issues were corrected before the final passing run.
+- `git diff --check`: passed. Existing unrelated work preserved.
+- Android release build succeeded using existing temporary Stage 11 signing credentials and test licensing trust, not production credentials. Package `dev.tailordesk.stage11test`; version `12.0.0-test`, code `12001`; label **TailorDesk TEST — NOT FOR DISTRIBUTION**.
+- Installed with `adb install -r` over isolated test code `11002`, same certificate. First-install timestamp unchanged; installed APK SHA-256 matches the audited build: `741f825eb40492356de01a754738c84525099777b3779ad63442f91e6926555f`.
+- Certificate SHA-256: `f55c4f551142d67ebfa6ab9835be2309676e7b93923716bce076ccee1d4c8f93`. Manifest has no debuggable flag (false); installed flags omit DEBUGGABLE; Android backup remains disabled. Five legacy densities, adaptive v26/v33 resources, emerald background, vector foreground and bundled in-app PNG verified. Arm64 AOT contains configured test public map; development key ID/privateKey marker absent. No issuer, keystore or license file bundled.
+- Local artifact: `/private/tmp/tailordesk-stage12-NON-PRODUCTION/TailorDesk-12.0.0-test-12001-DO-NOT-DISTRIBUTE.apk`. It is **not for customer delivery**.
+- Original `com.example.tailor` remains `0.1.0 (1)` with unchanged last-update time; it was not installed over, cleared, restored or uninstalled. No business migrations or licensing entitlement rules were changed.
+- Only the headless `Pixel_8` emulator was connected; no interactive emulator surface or physical phone was available. Installed name/icon resources and static previews were checked, **not live launcher rendering**. Native save-chooser interaction and post-update records/activation UI were not re-executed in Stage 12; Stage 11's earlier upgrade evidence is retained below, not relabelled as new evidence.
+
+### Owner decisions and remaining release gates
+
+- [ ] Confirm proposed production application ID **`com.zoraiz.tailordesk`**, initial customer version **`1.0.0`**, initial production version code **`1`**, working name and original artwork. Development package identity remains unchanged.
+- [ ] Keep actual license sequence **10** unless deliberately defining a future entitlement boundary; do not reset it to match version code.
+- [ ] Owner creates/protects separate production Android signing keystore and Ed25519 license signing key outside the repository; supply signing properties and explicit production public keys, verify provenance/fingerprints, exclude development roots. No production credentials were generated.
+- [ ] Decide prices, support contact/hours, response commitments, refunds, replacement-device charges, included installations and maintenance/custom-work scope. Policy remains a draft.
+- [ ] Execute `PILOT_ACCEPTANCE.md` on real isolated Android hardware: fresh activation, native request export/import/cancel, setup, restarts/offline, all shop workflows, PDFs, external backup and non-live restore, same-signature update preserving activation/records, small screens/keyboards/large text, launcher masks/themed icon, actual printer/connection/paper.
+- [ ] Preserve application ID/signing identity for updates; never instruct normal uninstall or clearing data. Confirm entitlement and export external backup first.
+
+**Stage 12 stops here.** No publishing, distribution, customer license issuance, production key generation, live restore or business-data clearing occurred.
+
+---
+
+## Stage 11 Verification Report — 13 October 2026 (historical; Stage 12 supersedes artwork/version notes)
+
+### Activation workflow
+
+- [x] Root cause fixed: Chrome clipboard and Web Share calls no longer wait for an asynchronous secure-storage read before invoking the browser API, preserving Chrome's transient user-activation window.
+- [x] Copy failures and unsupported Share behavior now produce visible, actionable messages instead of an unhandled failure.
+- [x] Added **Download activation request**, which uses a direct browser download of the same canonical bytes accepted by `ActivationRequest.decode` and the private issuer.
+- [x] Actual Chrome/macOS run on fixed origin `http://localhost:7357`: **Copy request** placed the 101-byte canonical JSON on the macOS clipboard; `pbpaste` returned the JSON rather than the previous Terminal command.
+- [x] **Share request** invoked Chrome/macOS Web Share handling. Dismissing it created no fallback download; Share and Download are now intentionally separate actions.
+- [x] Chrome downloaded `tailordesk-activation-request.json`; SHA-256 `a1a4fc73eab4b79096b65cd2af60fcb727c6aa4667425251deff4c7c6a16d5c0`; the issuer parsed that downloaded file and created a temporary test license successfully.
+- [x] Development build trusted only the existing `dev-2026-01` public key. A development-only license was issued outside the repository, imported through Chrome, and remained valid after the local server was stopped, restarted on port `7357`, and the page was reloaded. No private material was printed or bundled.
+
+### Identity and release controls
+
+- Current visible name is `TailorDesk`; Android and web icons are Flutter starter artwork; version is `0.1.0+1`; license release sequence remains `10`.
+- Debug Android and iOS identities remain `com.example.tailor`. Android release configuration now requires an explicit non-`com.example.*` application ID; no final production ID was guessed.
+- Changing the application ID creates a separate installation with separate database, settings, installation identity, and activation. The permanent ID must be selected before customer deployment and preserved for every update.
+- Release signing loads an owner-selected properties file and keystore only from absolute paths outside the repository. Release configuration has no debug-signing fallback and fails when signing values are missing.
+- Release builds require explicit license public keys and an explicit `production` or opt-in `test` trust mode. Production mode rejects the reserved `dev-*` and `stage11-test*` key IDs; development mode is rejected for release tasks.
+- Android app signing and Ed25519 license signing remain separate. `android/release-signing.properties.example` contains placeholders only.
+
+### Non-production release and upgrade verification
+
+All items below used temporary credentials under `/private/tmp/tailordesk-stage11-nonproduction` and package `dev.tailordesk.stage11test`. They are **NON-PRODUCTION — DO NOT DISTRIBUTE**. The existing `com.example.tailor` installation was never cleared, replaced, or uninstalled.
+
+- [x] Built release APK `11.0.1-test` / version code `11001` and `11.0.2-test` / version code `11002` with the same temporary Android signing key.
+- [x] Both APKs report application label `TailorDesk TEST — NOT FOR DISTRIBUTION`, package `dev.tailordesk.stage11test`, minimum SDK 24, target SDK 36, and the same signing certificate SHA-256 `f55c4f551142d67ebfa6ab9835be2309676e7b93923716bce076ccee1d4c8f93`.
+- [x] APK Signature Scheme v2 verification passed for both upgrade-test artifacts. APK SHA-256 values used for the installed upgrade: v11001 `9716d9ddec30425733f869b94e220e0df510c287626f5489df9e8ca4fa47fb10`; v11002 `907db5863353e25f1724beb862d3d71068efe6c2591cb7871a0540543f5e365b`.
+- [x] `android:debuggable` is false and `android:allowBackup` is false. Assets contain the two declared Roboto fonts and Flutter manifests; no `.jks`, keystore, private issuer JSON, ledger, activation request, or license file is bundled.
+- [x] AOT inspection found exactly the configured Stage 11 test public-key map. The existing `dev-2026-01` ID/public key and private-key markers were absent.
+- [x] Installed v11001, imported a signed test license entitled through release 10, completed setup with shop marker `Stage11UpgradeShop.`, and added customer marker `UpgradeMarkerCustomer / 03001234567`.
+- [x] `adb install -r` installed v11002 over v11001. After force-stop/relaunch, activation `STAGE11-NONPRODUCTION-001`, installation ID `inst_Vbf57-ek4IAv2vUVPwYTNP1z_2dWGxbR`, shop settings, and customer marker were unchanged.
+- [x] The original `com.example.tailor` package remained installed at version `0.1.0+1` and reopened its preserved `Stitch & Style Studio` dashboard after the isolated test.
+- [x] After final production-trust hardening, the release-mode v11002 test APK was rebuilt and re-inspected: SHA-256 `6ebbb6213993631f14f6122007f4c7346eddb23ff4acfefa037ec417c24500f9`, same package/label/certificate, `debuggable=false`, only the configured test public-key map present, and no signing/private-license artifacts bundled.
+- [x] Negative build check: a release invoked in `production` trust mode with `dev-2026-01` failed during Gradle configuration with `Production builds must not contain development or Stage 11 test license key IDs.`
+
+### Required checks
+
+- [x] `dart format --set-exit-if-changed lib test tool` — 93 files, no changes
+- [x] `flutter analyze` — no issues
+- [x] `flutter test` — 64 tests passed
+- [x] `git diff --check` — passed
+- [x] Android release-mode test build — two signed APKs succeeded; current `build/app/outputs/flutter-apk/app-release.apk` is the non-production v11002 test build, not a distributable artifact
+
+### Unresolved owner values and physical-device checks
+
+- [ ] Approve or replace the `TailorDesk` product/device name.
+- [ ] Supply approved launcher/store artwork; current Android/web icons are Flutter starter icons.
+- [ ] Choose an owner-controlled permanent Android application ID and align/refactor the code namespace if desired. Choose the iOS bundle ID separately before iOS release.
+- [ ] Choose first customer-facing version name/version code and decide when a post-10 license release sequence becomes a paid entitlement boundary.
+- [ ] Create and protect the production Android keystore and production Ed25519 license key outside the repository; approve production key IDs and certificate fingerprints.
+- [ ] Repeat install/update, secure-storage, file picker, backup export/restore, OEM backup behavior, large-text/layout, and activation checks on the customer's physical Android device.
+- [ ] Export and restore a real pre-update business backup on controlled client hardware, then reconcile representative customer, measurement, order, payment, karigar, report, and document records.
+- [ ] Physical printer/paper compatibility and the prior working-tailor catalog/wording approvals remain pending.
+
+Stage 11 stops here. No APK was published, no customer license was issued, no production private key or Android keystore was generated, and no existing business data was cleared.
+
+---
+
+## Stage 9 Verification Report — 12 October 2026
+
+### Stage 8 Reconciliation
+
+- Garments use stable string identifiers, not persisted Dart enum indexes. Required defaults are Shalwar Qameez, Coat, Trouser/Pant, Shirt, Waistcoat, and Jacket. Kurta and Sherwani are preserved as additional entries.
+- Backups are **not encrypted**. SHA-256 detects accidental corruption or tampering but provides no confidentiality. The UI and client documentation state this explicitly; no encryption was added.
+- Automated database/workflow tests, Android runtime checks, and physical printer checks are reported separately below. No claim of zero network requests is made.
+
+### Implementation
+
+- Drift schema version 6 adds garment catalog entries, immutable measurement-template versions, template fields, revision field-definition snapshots, and booked-order field-definition snapshots.
+- Fresh databases start a four-step setup and save progress after each step. Existing schema-5 installations receive seeded configuration and `setup_completed=true` without changing customers, measurements, orders, or settings.
+- Settings now edit shop details and the default measurement unit, and link to catalog/template management.
+- Garments can be enabled/disabled, reordered, assigned an integer-paisa default stitching price, or added as custom templates. Disabled garments remain readable historically and are excluded from new measurement profiles/order lines.
+- Template revision archives omitted fields in the new version. Old versions and frozen snapshots remain unchanged; no measurement conversion, relabeling, allowance, or formula is applied.
+- Default prices prefill new order lines only and remain editable before booking. Later default changes do not update booked prices or balances.
+
+### Automated Verification
+
+- [x] `dart run build_runner build --delete-conflicting-outputs` — succeeded (the installed build runner reports that the option is obsolete and ignored)
+- [x] `dart format --set-exit-if-changed lib test` — 84 files, no changes required
+- [x] `flutter analyze` — no issues found
+- [x] `flutter test` — 55 tests passed
+- [x] `git diff --check` — passed
+- [x] Fresh setup incomplete state, saved step recovery after database reopen, and completion
+- [x] Actual schema-5 structure migrated to schema 6 with customer/shop data retained and setup bypassed
+- [x] Garment seed coverage, enabling/disabling, and reordering
+- [x] Custom template creation, immutable version increment, stable IDs, and archived fields
+- [x] Historical revision/order field labels and booked price preserved after template/default-price changes
+- [x] Backup/restore round trip includes custom catalog entries, template versions, fields, and prices; older supported schema backup migration remains covered
+
+### Android Runtime Verification
+
+- [x] Built, installed, and launched on `emulator-5554` (Android 17 / API 37)
+- [x] Existing installation opened directly to the dashboard after schema migration; it was not forced through setup
+- [x] Visually inspected the phone Settings screen and Garments & Templates screen; the ivory/charcoal/emerald theme, controls, scrolling, Coat, Jacket, ordering, enable switches, default-price actions, and custom-garment action rendered correctly
+- [ ] Fresh first-use setup was not opened on the emulator because clearing the existing app data would violate the data-preservation requirement; setup is covered by automated persistence tests
+- [ ] Interrupted setup was not manually force-stopped/resumed on Android
+- [ ] Native backup picker/share/restore was not exercised during this Stage 9 runtime pass
+- [ ] No physical printer test was performed; receipt/work-slip printer compatibility remains pending on client hardware
+- [ ] No packet capture or network-request audit was performed
+
+### Remaining Client Decisions
+
+- A working tailor must approve every seeded field, required/optional choice, garment name, and body/finished-garment convention.
+- The client must choose which garments are enabled, their display order, and default stitching prices.
+- Receipt/work-slip wording, charge labels, physical printer/paper compatibility, backup custody, and restore practice still require client approval.
+
+The historical Stage 9 report ends here; the completed Stage 10 report follows.
+
+---
+
+## Stage 10 Verification Report — 12 October 2026
+
+### Implementation and policy
+
+- Release sequence `10` is explicit. A signed `maximumReleaseSequence >= 10` grants perpetual use of this release; maintenance expiry is displayed but never disables an entitled release.
+- Licenses are strict, size-limited, versioned JSON envelopes containing exact canonical payload bytes plus an Ed25519 signature. Validation covers field sets/types, canonical serialization, signature/key ID, product, installation identity, license type, and release entitlement.
+- The application contains only build-supplied trusted public keys. It has no master code, release-build bypass, production key generator, licensing server, recurring check, or automatic updater.
+- A cryptographically random installation ID and the signed license are stored in platform secure storage under a dedicated namespace, separately from Drift. Storage failure does not trigger identity regeneration.
+- Missing, invalid, or incompatible activation never deletes business data. Existing shops may open read-only and export a backup; all DAO/settings/catalog mutations and business-data restore pass through the central database write policy.
+- Android OS backup/device-transfer rules exclude app-private database, file, root, and preference domains. TailorDesk's explicit business backup remains the supported transfer route and excludes activation state.
+- Settings displays the signed shop, license ID, activation state, maintenance date, and release entitlement, and accepts a renewed license. Editing the operational shop display name does not alter signed identity.
+- `tool/license_issuer.dart` provides `generate-keys`, `issue`, `inspect`, `renew`, and `replace-device`. Private key and issuance ledger paths must be owner-selected locations outside the repository; key generation refuses overwrite and does not print secret material.
+
+### Automated verification
+
+- [x] `flutter pub get` — succeeded
+- [x] `dart run build_runner build --delete-conflicting-outputs` — succeeded (installed build runner reports the option obsolete and ignored)
+- [x] `dart format --set-exit-if-changed lib test tool` — passed
+- [x] `flutter analyze` — no issues found
+- [x] `flutter test` — 63 tests passed
+- [x] `git diff --check` — passed
+- [x] Valid activation and restart using persistent test storage
+- [x] Tampered payload/signature, wrong installation/product/key, malformed/oversized input, unsupported format, and under-entitled release rejection
+- [x] Invalid or lower-entitlement import preserves the current valid license
+- [x] Expired maintenance retains access to an entitled release; boundary and future-release entitlement behavior covered
+- [x] Existing records remain readable without activation while customer, measurement, settings, and restore writes are blocked
+- [x] Business backup restore does not transfer or overwrite activation state
+- [x] Secure-store access failure does not generate a replacement installation identity
+- [x] Issuer commands were exercised with temporary keys and files under `/private/tmp`; issue, inspect, renewal, and replacement-device output verified
+
+### Android and artifact verification
+
+- [x] Debug APK built and installed on `emulator-5554` (Android 17 / API 37) without clearing its existing business data
+- [x] Activation screen, installation code, recovery copy, and `.tailorlicense` selection were inspected; Android octet-stream handling was added after runtime inspection found the custom extension initially disabled
+- [x] A temporary emulator license activated the existing installation and opened its preserved `Stitch & Style Studio` dashboard
+- [x] Activation survived a full force-stop and relaunch
+- [x] With Wi-Fi and mobile data explicitly disabled, a fresh force-stop/relaunch opened the licensed dashboard; network services were restored afterward
+- [x] APK SHA-256: `394aea521d56c1fbcb7a7d24c75c847a7670d2e3e3f26223c4fabf545fcee25e`
+- [x] The debug kernel artifact contained no issuer CLI, temporary license IDs/paths, master-code/bypass markers, or owner private-key path. Cryptography-library implementation symbols are expected; no private signing material was supplied to the build.
+- [ ] Clear-data/reinstall behavior was not performed because it would destroy the existing emulator state; it is documented and identity persistence/failure behavior is covered automatically
+- [ ] Android OS cloud-backup/device-transfer execution was not exercised; manifest/rule resources and explicit backup separation were inspected and tested at application level
+- [ ] No packet capture was performed. The implementation has no licensing network client, but this report does not claim a whole-app zero-network audit
+- [ ] Physical-device secure storage, OEM backup behavior, and client device-replacement operations remain pending
+
+### Owner and client actions before production
+
+- Generate and back up a production signing key deliberately outside the repository; embed only its public key at release build time.
+- Configure production application ID and Android release signing, then repeat activation and replacement-device checks on client hardware.
+- Establish license-ID/customer-ID conventions, an owner-controlled issuance ledger, authorization rules for replacement devices, and secure delivery/custody procedures.
+- Review `OWNER_LICENSING_GUIDE.md`. Offline replacement does not revoke an old installation, and sufficiently privileged copying cannot be made unbreakable without an online service.
+
+Stage 10 stops here. No production key, customer license, publishing, online licensing service, or automatic update mechanism was created.
 
 ---
 

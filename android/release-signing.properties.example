@@ -1,0 +1,6 @@
+# Copy this file to an owner-controlled directory outside the repository.
+# Never commit the populated copy or the keystore.
+storeFile=/absolute/path/outside/the/repository/tailordesk-upload.jks
+storePassword=REPLACE_WITH_A_STRONG_UNIQUE_PASSWORD
+keyAlias=tailordesk-upload
+keyPassword=REPLACE_WITH_A_STRONG_UNIQUE_PASSWORD

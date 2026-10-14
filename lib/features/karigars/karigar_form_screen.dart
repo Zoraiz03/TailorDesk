@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/database/app_database.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/unsaved_changes_guard.dart';
+import '../../core/localization/localization_extensions.dart';
 import 'karigar_providers.dart';
 
 class KarigarFormScreen extends ConsumerStatefulWidget {
@@ -96,9 +97,9 @@ class _KarigarFormScreenState extends ConsumerState<KarigarFormScreen> {
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not save karigar. Try again.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.updateFailed)));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -121,7 +122,7 @@ class _KarigarFormScreenState extends ConsumerState<KarigarFormScreen> {
                   controller: _name,
                   textInputAction: TextInputAction.next,
                   autofocus: !_editing,
-                  decoration: const InputDecoration(labelText: 'Name *'),
+                  decoration: InputDecoration(labelText: context.l10n.name),
                   validator: (value) => value == null || value.trim().isEmpty
                       ? 'Enter the karigar name'
                       : null,
@@ -131,21 +132,25 @@ class _KarigarFormScreenState extends ConsumerState<KarigarFormScreen> {
                   controller: _phone,
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: 'Phone'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.phoneOptional,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _address,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: 'Address'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.addressOptional,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _skills,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    labelText: 'Garment skills',
-                    hintText: 'Shirt, trouser, waistcoat',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.garmentSkills,
+                    hintText: context.l10n.garmentSkillsHint,
                     helperText: 'Separate multiple skills with commas.',
                   ),
                 ),
@@ -154,7 +159,7 @@ class _KarigarFormScreenState extends ConsumerState<KarigarFormScreen> {
                   controller: _notes,
                   minLines: 3,
                   maxLines: 5,
-                  decoration: const InputDecoration(labelText: 'Notes'),
+                  decoration: InputDecoration(labelText: context.l10n.notes),
                 ),
                 const SizedBox(height: AppSpacing.xxl),
                 FilledButton.icon(

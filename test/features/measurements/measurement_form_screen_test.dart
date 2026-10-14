@@ -68,7 +68,10 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('save-measurements')));
     await tester.pump();
 
-    expect(find.text('Must be positive'), findsOneWidget);
+    expect(
+      find.text('Kameez length must be greater than zero'),
+      findsOneWidget,
+    );
     expect(
       find.descendant(
         of: find.byKey(const ValueKey('measurement-kameez_length')),
@@ -95,8 +98,8 @@ void main() {
     await tester.tap(find.text('Centimetres'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Change unit?'), findsOneWidget);
-    expect(find.textContaining('never converted'), findsOneWidget);
+    expect(find.text('Change Unit?'), findsOneWidget);
+    expect(find.textContaining('never converted'), findsWidgets);
     await tester.tap(find.text('Keep Values'));
     await tester.pumpAndSettle();
     expect(find.text('30.5'), findsOneWidget);

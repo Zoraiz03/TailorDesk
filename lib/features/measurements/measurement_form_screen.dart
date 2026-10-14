@@ -6,9 +6,13 @@ import '../../core/database/app_database.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/unsaved_changes_guard.dart';
+import '../../core/localization/localization_extensions.dart';
 import 'measurement_models.dart';
 import 'measurement_providers.dart';
 import 'measurement_templates.dart';
+import '../settings/garment_catalog.dart';
+import '../settings/garment_catalog_providers.dart';
+import '../settings/shop_settings_providers.dart';
 
 class MeasurementFormScreen extends ConsumerStatefulWidget {
   const MeasurementFormScreen({
@@ -32,7 +36,11 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
   late final TextEditingController _notesController;
   final Map<String, TextEditingController> _valueControllers = {};
 
-  late GarmentType _garmentType;
+  late String _garmentId;
+  late String _garmentLabelEnglish;
+  late String _garmentLabelUrdu;
+  late List<GarmentTemplateField> _fieldDefinitions;
+  int? _templateVersionId;
   late MeasurementUnit _unit;
   late MeasurementBasis _basis;
   late FitPreference _fit;
@@ -41,19 +49,32 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
   bool _saved = false;
 
   bool get _isEditing => widget.existing != null;
-  GarmentMeasurementTemplate get _template =>
-      garmentMeasurementTemplates[_garmentType]!;
 
   @override
   void initState() {
     super.initState();
     final revision = widget.existing?.latestRevision;
-    _garmentType = revision == null
-        ? GarmentType.shalwarQameez
-        : GarmentType.fromStorage(revision.garmentType);
+    _garmentId = revision?.garmentType ?? GarmentType.shalwarQameez.storageKey;
+    _garmentLabelEnglish = revision?.garmentLabelEnglish.isNotEmpty == true
+        ? revision!.garmentLabelEnglish
+        : legacyGarmentLabel(_garmentId);
+    _garmentLabelUrdu = revision?.garmentLabelUrdu ?? '';
+    _fieldDefinitions = revision == null
+        ? decodeFieldDefinitions('', _garmentId)
+        : decodeFieldDefinitions(revision.fieldDefinitionsJson, _garmentId);
+    _templateVersionId = revision?.templateVersionId;
     _unit = revision == null
         ? MeasurementUnit.inches
         : MeasurementUnit.fromStorage(revision.unit);
+    if (revision == null) {
+      ref.read(shopSettingsRepositoryProvider).get().then((details) {
+        if (mounted && !_dirty) {
+          setState(() {
+            _unit = MeasurementUnit.fromStorage(details.defaultMeasurementUnit);
+          });
+        }
+      });
+    }
     _basis = revision == null
         ? MeasurementBasis.body
         : MeasurementBasis.fromStorage(revision.measurementBasis);
@@ -82,9 +103,9 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
   }
 
   void _createValueControllers(Map<String, double> values) {
-    for (final field in _template.fields) {
-      _valueControllers[field.key] = TextEditingController(
-        text: values[field.key]?.toString() ?? '',
+    for (final field in _fieldDefinitions.where((item) => !item.archived)) {
+      _valueControllers[field.id] = TextEditingController(
+        text: values[field.id]?.toString() ?? '',
       )..addListener(_markDirty);
     }
   }
@@ -98,18 +119,16 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
     return await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
-            title: Text('Change $change?'),
-            content: const Text(
-              'Entered measurement values will be cleared. Values are never converted or reinterpreted automatically.',
-            ),
+            title: Text(context.l10n.changePrompt(change)),
+            content: Text(context.l10n.clearMeasurementsWarning),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext, false),
-                child: const Text('Keep Values'),
+                child: Text(context.l10n.keepValues),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(dialogContext, true),
-                child: const Text('Clear & Change'),
+                child: Text(context.l10n.clearAndChange),
               ),
             ],
           ),
@@ -117,21 +136,31 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
         false;
   }
 
-  Future<void> _changeGarment(GarmentType type) async {
-    if (type == _garmentType || !await _confirmClearValues('garment')) return;
+  Future<void> _changeGarment(GarmentCatalogRecord garment) async {
+    if (garment.entry.garmentId == _garmentId ||
+        !await _confirmClearValues(context.l10n.garment)) {
+      return;
+    }
     for (final controller in _valueControllers.values) {
       controller.dispose();
     }
     _valueControllers.clear();
     setState(() {
       _dirty = true;
-      _garmentType = type;
+      _garmentId = garment.entry.garmentId;
+      _garmentLabelEnglish = garment.entry.displayName;
+      _garmentLabelUrdu = garment.entry.displayNameUrdu ?? '';
+      _fieldDefinitions = garment.fields;
+      _templateVersionId = garment.templateVersion.id;
+      _basis = MeasurementBasis.fromStorage(
+        garment.templateVersion.measurementConvention,
+      );
       _createValueControllers(const {});
     });
   }
 
   Future<void> _changeUnit(MeasurementUnit unit) async {
-    if (unit == _unit || !await _confirmClearValues('unit')) return;
+    if (unit == _unit || !await _confirmClearValues(context.l10n.unit)) return;
     for (final controller in _valueControllers.values) {
       controller.clear();
     }
@@ -142,7 +171,8 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
   }
 
   Future<void> _changeBasis(MeasurementBasis basis) async {
-    if (basis == _basis || !await _confirmClearValues('measurement basis')) {
+    if (basis == _basis ||
+        !await _confirmClearValues(context.l10n.measurementBasis)) {
       return;
     }
     for (final controller in _valueControllers.values) {
@@ -163,14 +193,18 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
       final source = entry.value.text.trim().replaceAll(',', '.');
       if (source.isNotEmpty) values[entry.key] = double.parse(source);
     }
-    final draft = MeasurementDraft(
+    final draft = MeasurementDraft.catalog(
       customerId: widget.customer.id,
-      garmentType: _garmentType,
+      garmentId: _garmentId,
+      garmentLabelEnglish: _garmentLabelEnglish,
+      garmentLabelUrdu: _garmentLabelUrdu,
       profileName: _profileNameController.text,
       unit: _unit,
       basis: _basis,
       values: values,
       fitPreference: _fit,
+      templateVersionId: _templateVersionId,
+      fieldDefinitions: _fieldDefinitions,
       styleInstructions: _styleController.text,
       notes: _notesController.text,
     );
@@ -192,9 +226,7 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
       if (!mounted) return;
       setState(() => _saving = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not save measurements. Please try again.'),
-        ),
+        SnackBar(content: Text(context.l10n.measurementSaveFailed)),
       );
     }
   }
@@ -212,12 +244,43 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final availableGarments = ref.watch(enabledGarmentCatalogProvider);
+    final allGarments = ref.watch(garmentCatalogProvider);
+    final garmentRecords = _isEditing
+        ? allGarments.value ?? const <GarmentCatalogRecord>[]
+        : availableGarments.value ?? const <GarmentCatalogRecord>[];
+    if (!_isEditing &&
+        garmentRecords.isNotEmpty &&
+        _templateVersionId == null) {
+      final selected =
+          garmentRecords
+              .where((item) => item.entry.garmentId == _garmentId)
+              .firstOrNull ??
+          garmentRecords.first;
+      if (selected.entry.garmentId != _garmentId) {
+        for (final controller in _valueControllers.values) {
+          controller.dispose();
+        }
+        _valueControllers.clear();
+      }
+      _garmentId = selected.entry.garmentId;
+      _garmentLabelEnglish = selected.entry.displayName;
+      _garmentLabelUrdu = selected.entry.displayNameUrdu ?? '';
+      _fieldDefinitions = selected.fields;
+      _templateVersionId = selected.templateVersion.id;
+      _basis = MeasurementBasis.fromStorage(
+        selected.templateVersion.measurementConvention,
+      );
+      if (_valueControllers.isEmpty) _createValueControllers(const {});
+    }
     return UnsavedChangesGuard(
       hasUnsavedChanges: _dirty && !_saved,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            _isEditing ? 'New Measurement Revision' : 'Add Measurements',
+            _isEditing
+                ? context.l10n.editMeasurement
+                : context.l10n.addMeasurement,
           ),
         ),
         body: SafeArea(
@@ -228,28 +291,48 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
               children: [
                 _CustomerSummary(customer: widget.customer),
                 const SizedBox(height: AppSpacing.xl),
-                Text('Profile', style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  context.l10n.measurementProfile,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(height: AppSpacing.md),
-                DropdownButtonFormField<GarmentType>(
+                DropdownButtonFormField<String>(
                   key: const ValueKey('measurement-garment'),
-                  initialValue: _garmentType,
-                  decoration: const InputDecoration(
-                    labelText: 'Garment',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.checkroom_outlined),
+                  initialValue:
+                      garmentRecords.any(
+                        (item) => item.entry.garmentId == _garmentId,
+                      )
+                      ? _garmentId
+                      : null,
+                  decoration: InputDecoration(
+                    labelText: context.l10n.garment,
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.checkroom_outlined),
                   ),
-                  items: GarmentType.values
+                  items: garmentRecords
                       .map(
-                        (type) => DropdownMenuItem(
-                          value: type,
-                          child: Text(type.label),
+                        (garment) => DropdownMenuItem(
+                          value: garment.entry.garmentId,
+                          child: Text(
+                            localizedGarmentLabel(
+                              context.l10n,
+                              garment.entry.garmentId,
+                              english: garment.entry.displayName,
+                              urdu: garment.entry.displayNameUrdu,
+                            ),
+                          ),
                         ),
                       )
                       .toList(),
                   onChanged: _isEditing
                       ? null
                       : (value) {
-                          if (value != null) _changeGarment(value);
+                          if (value != null) {
+                            final garment = garmentRecords.firstWhere(
+                              (item) => item.entry.garmentId == value,
+                            );
+                            _changeGarment(garment);
+                          }
                         },
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -257,24 +340,24 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                   key: const ValueKey('measurement-profile-name'),
                   controller: _profileNameController,
                   textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Profile name',
-                    hintText: 'e.g. Everyday or Wedding',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.label_outline),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.profileName,
+                    hintText: context.l10n.profileNameHint,
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.label_outline),
                   ),
                   validator: (value) => value == null || value.trim().isEmpty
-                      ? 'Enter a profile name'
+                      ? context.l10n.enterProfileName
                       : null,
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 Text(
-                  'Measurement context',
+                  context.l10n.measurementContext,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Choose whether these are body or finished-garment measurements. The app does not add allowances or convert between them.',
+                  context.l10n.measurementContextHelp,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -287,8 +370,8 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                             value: basis,
                             label: Text(
                               basis == MeasurementBasis.body
-                                  ? 'Body'
-                                  : 'Finished garment',
+                                  ? context.l10n.bodyMeasurements
+                                  : context.l10n.finishedGarmentMeasurements,
                             ),
                           ),
                         )
@@ -307,7 +390,9 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                         .map(
                           (unit) => ButtonSegment(
                             value: unit,
-                            label: Text(unit.label),
+                            label: Text(
+                              localizedUnit(context.l10n, unit.storageKey),
+                            ),
                           ),
                         )
                         .toList(),
@@ -329,7 +414,12 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        '${_garmentType.label} values',
+                        localizedGarmentLabel(
+                          context.l10n,
+                          _garmentId,
+                          english: _garmentLabelEnglish,
+                          urdu: _garmentLabelUrdu,
+                        ),
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
@@ -353,13 +443,14 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                     return Wrap(
                       spacing: AppSpacing.md,
                       runSpacing: AppSpacing.md,
-                      children: _template.fields
+                      children: _fieldDefinitions
+                          .where((field) => !field.archived)
                           .map(
                             (field) => SizedBox(
                               width: width,
                               child: _MeasurementValueField(
                                 definition: field,
-                                controller: _valueControllers[field.key]!,
+                                controller: _valueControllers[field.id]!,
                                 unitSuffix: _unit.suffix,
                               ),
                             ),
@@ -370,7 +461,7 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 Text(
-                  'Fit preference',
+                  context.l10n.fit,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -379,8 +470,12 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                   child: SegmentedButton<FitPreference>(
                     segments: FitPreference.values
                         .map(
-                          (fit) =>
-                              ButtonSegment(value: fit, label: Text(fit.label)),
+                          (fit) => ButtonSegment(
+                            value: fit,
+                            label: Text(
+                              localizedFit(context.l10n, fit.storageKey),
+                            ),
+                          ),
                         )
                         .toList(),
                     selected: {_fit},
@@ -396,10 +491,10 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                   minLines: 3,
                   maxLines: 5,
                   textCapitalization: TextCapitalization.sentences,
-                  decoration: const InputDecoration(
-                    labelText: 'Style instructions (optional)',
-                    hintText: 'Collar, cuff, pocket, or finishing preferences',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.styleInstructions,
+                    hintText: context.l10n.styleHint,
+                    border: const OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -409,9 +504,9 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                   minLines: 3,
                   maxLines: 5,
                   textCapitalization: TextCapitalization.sentences,
-                  decoration: const InputDecoration(
-                    labelText: 'Notes (optional)',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.notes,
+                    border: const OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -427,10 +522,10 @@ class _MeasurementFormScreenState extends ConsumerState<MeasurementFormScreen> {
                       : const Icon(Icons.save_outlined),
                   label: Text(
                     _saving
-                        ? 'Saving…'
+                        ? context.l10n.saving
                         : _isEditing
-                        ? 'Save New Revision'
-                        : 'Save Measurements',
+                        ? context.l10n.saveNewVersion
+                        : context.l10n.saveMeasurements,
                   ),
                 ),
               ],
@@ -470,30 +565,40 @@ class _MeasurementValueField extends StatelessWidget {
     required this.unitSuffix,
   });
 
-  final MeasurementFieldDefinition definition;
+  final GarmentTemplateField definition;
   final TextEditingController controller;
   final String unitSuffix;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      key: ValueKey('measurement-${definition.key}'),
+      key: ValueKey('measurement-${definition.id}'),
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))],
       decoration: InputDecoration(
-        labelText: '${definition.label}${definition.required ? ' *' : ''}',
+        labelText:
+            '${localizedMeasurementLabel(context.l10n, definition.id, english: definition.label, urdu: definition.labelUrdu)}${definition.required ? ' *' : ''}',
         suffixText: unitSuffix,
         border: const OutlineInputBorder(),
       ),
       validator: (source) {
         final value = source?.trim() ?? '';
         if (value.isEmpty) {
-          return definition.required ? 'Required' : null;
+          return definition.required ? context.l10n.required : null;
         }
         final parsed = double.tryParse(value.replaceAll(',', '.'));
-        if (parsed == null) return 'Enter a number';
-        if (parsed <= 0) return 'Must be positive';
+        if (parsed == null) return context.l10n.enterNumber;
+        if (parsed <= 0) {
+          return context.l10n.measurementPositive(
+            localizedMeasurementLabel(
+              context.l10n,
+              definition.id,
+              english: definition.label,
+              urdu: definition.labelUrdu,
+            ),
+          );
+        }
         return null;
       },
     );
