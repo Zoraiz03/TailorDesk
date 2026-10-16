@@ -106,7 +106,7 @@ void main() {
 
     await tester.tap(find.text('Centimetres'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Clear & Change'));
+    await tester.tap(find.text('Clear and change'));
     await tester.pumpAndSettle();
 
     final field = tester.widget<TextFormField>(

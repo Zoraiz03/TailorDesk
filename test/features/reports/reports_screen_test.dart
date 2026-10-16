@@ -28,29 +28,29 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Reports & analytics'), findsOneWidget);
     expect(find.text('Due & Overdue'), findsOneWidget);
-    expect(find.text('Customer Balances'), findsOneWidget);
-    expect(find.text('Collections & Refunds'), findsOneWidget);
-    expect(find.text('Karigar Workload'), findsOneWidget);
+    expect(find.text('Outstanding Balances'), findsOneWidget);
+    expect(find.text('Collections'), findsOneWidget);
+    expect(find.text('Workload'), findsOneWidget);
 
     // Empty state on Tab 1
     expect(find.text('All caught up!'), findsOneWidget);
 
     // Switch to Customer Balances (Tab 2)
-    await tester.tap(find.text('Customer Balances'));
+    await tester.tap(find.text('Outstanding Balances'));
     await tester.pumpAndSettle();
     expect(find.text('No outstanding balances'), findsOneWidget);
 
     // Switch to Collections & Refunds (Tab 3)
-    await tester.tap(find.text('Collections & Refunds'));
+    await tester.tap(find.text('Collections'));
     await tester.pumpAndSettle();
     expect(find.text('Gross collections'), findsOneWidget);
     expect(find.text('Net collections'), findsOneWidget);
     expect(find.text('Total refunds'), findsOneWidget);
 
     // Switch to Karigar Workload (Tab 4)
-    await tester.tap(find.text('Karigar Workload'));
+    await tester.tap(find.text('Workload'));
     await tester.pumpAndSettle();
-    expect(find.text('Active Workers'), findsOneWidget);
+    expect(find.text('Active workers'), findsOneWidget);
     expect(find.text('No karigars registered'), findsOneWidget);
 
     await tester.pumpWidget(const SizedBox.shrink());

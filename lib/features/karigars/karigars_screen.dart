@@ -204,8 +204,8 @@ class _KarigarTile extends StatelessWidget {
                           ),
                         ),
                         if (!active)
-                          const StatusBadge(
-                            label: 'Inactive',
+                          StatusBadge(
+                            label: context.l10n.inactive,
                             color: AppColors.textSecondary,
                           ),
                       ],

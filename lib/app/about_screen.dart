@@ -39,11 +39,7 @@ class AboutScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
-        const Text(
-          'Your shop details appear on customer receipts. Business records '
-          'are stored on this device. Export backups outside the phone regularly. '
-          'There is no automatic cloud synchronisation.',
-        ),
+        Text(context.l10n.aboutData),
         const SizedBox(height: AppSpacing.lg),
         TextButton(
           onPressed: () =>

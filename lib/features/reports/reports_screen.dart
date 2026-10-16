@@ -32,7 +32,7 @@ class ReportsScreen extends ConsumerWidget {
         appBar: AppBar(
           title: Text(context.l10n.reportsAnalytics),
           centerTitle: false,
-          bottom: const TabBar(
+          bottom: TabBar(
             isScrollable: true,
             tabAlignment: TabAlignment.start,
             indicatorColor: AppColors.primary,
@@ -40,20 +40,23 @@ class ReportsScreen extends ConsumerWidget {
             unselectedLabelColor: AppColors.textSecondary,
             tabs: [
               Tab(
-                icon: Icon(Icons.schedule_outlined, size: 20),
-                text: 'Due & Overdue',
+                icon: const Icon(Icons.schedule_outlined, size: 20),
+                text: context.l10n.dueOverdue,
               ),
               Tab(
-                icon: Icon(Icons.account_balance_wallet_outlined, size: 20),
-                text: 'Customer Balances',
+                icon: const Icon(
+                  Icons.account_balance_wallet_outlined,
+                  size: 20,
+                ),
+                text: context.l10n.outstandingBalances,
               ),
               Tab(
-                icon: Icon(Icons.payments_outlined, size: 20),
-                text: 'Collections & Refunds',
+                icon: const Icon(Icons.payments_outlined, size: 20),
+                text: context.l10n.collections,
               ),
               Tab(
-                icon: Icon(Icons.handyman_outlined, size: 20),
-                text: 'Karigar Workload',
+                icon: const Icon(Icons.handyman_outlined, size: 20),
+                text: context.l10n.workload,
               ),
             ],
           ),
@@ -238,18 +241,18 @@ class _DueOrderCard extends StatelessWidget {
 
     final statusWidget = item.isOverdue
         ? StatusBadge(
-            label: '${item.daysOverdue}d overdue',
+            label: context.l10n.daysOverdue(item.daysOverdue),
             color: AppColors.error,
             backgroundColor: AppColors.errorBg,
           )
         : item.isDueToday
-        ? const StatusBadge(
-            label: 'Due Today',
+        ? StatusBadge(
+            label: context.l10n.dueToday,
             color: AppColors.warning,
             backgroundColor: AppColors.warningBg,
           )
         : StatusBadge(
-            label: 'In ${item.daysRemaining}d',
+            label: context.l10n.dueInDays(item.daysRemaining),
             color: AppColors.info,
             backgroundColor: AppColors.infoBg,
           );
@@ -1005,8 +1008,8 @@ class _KarigarWorkloadCard extends StatelessWidget {
                         ),
                         if (isInactive) ...[
                           const SizedBox(width: 8),
-                          const StatusBadge(
-                            label: 'Inactive',
+                          StatusBadge(
+                            label: context.l10n.inactive,
                             color: AppColors.textSecondary,
                           ),
                         ],
@@ -1014,7 +1017,7 @@ class _KarigarWorkloadCard extends StatelessWidget {
                     ),
                   ),
                   StatusBadge(
-                    label: '${item.activeCount} active items',
+                    label: context.l10n.activeItemsCount(item.activeCount),
                     color: item.activeCount > 0
                         ? AppColors.info
                         : AppColors.success,
@@ -1027,7 +1030,7 @@ class _KarigarWorkloadCard extends StatelessWidget {
               if (item.karigar.skills.isNotEmpty) ...[
                 const SizedBox(height: 4),
                 Text(
-                  'Skills: ${item.karigar.skills}',
+                  context.l10n.skillsPrefix(item.karigar.skills),
                   style: theme.textTheme.bodySmall,
                 ),
               ],
@@ -1036,26 +1039,26 @@ class _KarigarWorkloadCard extends StatelessWidget {
               Row(
                 children: [
                   _MetricPill(
-                    label: 'Assigned',
+                    label: context.l10n.assigned,
                     count: item.assignedCount,
                     color: AppColors.warning,
                   ),
                   const SizedBox(width: 8),
                   _MetricPill(
-                    label: 'In Progress',
+                    label: context.l10n.inProgress,
                     count: item.inProgressCount,
                     color: AppColors.info,
                   ),
                   const SizedBox(width: 8),
                   _MetricPill(
-                    label: 'Completed',
+                    label: context.l10n.completed,
                     count: item.completedCount,
                     color: AppColors.success,
                   ),
                   if (item.overdueDeadlinesCount > 0) ...[
                     const SizedBox(width: 8),
                     _MetricPill(
-                      label: 'Overdue',
+                      label: context.l10n.overdue,
                       count: item.overdueDeadlinesCount,
                       color: AppColors.error,
                     ),
@@ -1065,7 +1068,7 @@ class _KarigarWorkloadCard extends StatelessWidget {
               if (item.activeAssignments.isNotEmpty) ...[
                 const Divider(height: 18),
                 Text(
-                  'Current Active Work:',
+                  context.l10n.currentActiveWork,
                   style: theme.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),

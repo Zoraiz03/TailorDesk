@@ -170,7 +170,6 @@ class BackupService {
   }
 
   Future<String> restore(AppDatabase database, Uint8List archiveBytes) async {
-    database.requireBusinessWrite();
     final validated = await validate(archiveBytes);
     final activePath = await _databasePath();
     final active = File(activePath);

@@ -29,16 +29,16 @@ void main() {
     await tester.enterText(advance, '1234');
     final advanceController = tester.widget<TextFormField>(advance).controller!;
     await tester.scrollUntilVisible(
-      find.text('Review & save order'),
+      find.text('Review order'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Review & save order'));
+    await tester.tap(find.text('Review order'));
     await tester.pump();
 
     await tester.drag(find.byType(Scrollable).first, const Offset(0, 1000));
     await tester.pump();
-    expect(find.text('Select a customer'), findsOneWidget);
+    expect(find.text('Select customer *'), findsWidgets);
     expect(advanceController.text, '1234');
     expect(await database.select(database.orders).get(), isEmpty);
     await tester.pumpWidget(const SizedBox.shrink());

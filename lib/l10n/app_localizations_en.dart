@@ -133,13 +133,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loading => 'Loading…';
 
   @override
-  String get readOnly => 'Read-only';
-
-  @override
-  String get readOnlyMessage =>
-      'A valid license is required to change business records.';
-
-  @override
   String customerCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -176,106 +169,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String releaseNumber(int number) {
-    return 'Release $number';
-  }
-
-  @override
   String stepOf(int step, int total) {
     return 'Step $step of $total';
   }
 
   @override
-  String get activateTitle => 'Activate TailorDesk';
-
-  @override
-  String get activatedTitle => 'TailorDesk is activated';
-
-  @override
-  String get activationRequiredBody =>
-      'A purchased license is required to create or change shop records. Activation works entirely offline.';
-
-  @override
-  String get renewLicenseBody =>
-      'Import a renewed license to extend maintenance or release entitlement.';
-
-  @override
-  String get installationCode => 'Installation code';
-
-  @override
-  String get copyRequest => 'Copy request';
-
-  @override
-  String get shareRequest => 'Share request';
-
-  @override
-  String get downloadRequest => 'Download activation request';
-
-  @override
-  String get importLicense => 'Import license file';
-
-  @override
   String get validating => 'Validating…';
-
-  @override
-  String get activationCopied => 'Activation request JSON copied.';
-
-  @override
-  String get copyBlocked =>
-      'Copy was blocked by this browser. Use Download activation request instead.';
-
-  @override
-  String get shareUnsupported =>
-      'Sharing files is not supported here. Use Download activation request instead.';
-
-  @override
-  String get downloadCancelled => 'Download was cancelled.';
-
-  @override
-  String get downloadComplete =>
-      'Downloaded tailordesk-activation-request.json with the exact issuer JSON.';
-
-  @override
-  String get downloadFailed =>
-      'The activation request could not be downloaded on this platform.';
-
-  @override
-  String get licenseActivated => 'License activated.';
-
-  @override
-  String get licenseUnavailable => 'License unavailable';
-
-  @override
-  String get activated => 'Activated';
-
-  @override
-  String get activationRequired => 'Activation required';
-
-  @override
-  String licenseId(String id) {
-    return 'License ID: $id';
-  }
-
-  @override
-  String maintenanceThrough(String date) {
-    return 'Maintenance through: $date';
-  }
-
-  @override
-  String entitledRelease(int maximum, int current) {
-    return 'Entitled through release $maximum · current $current';
-  }
-
-  @override
-  String get importRenewedLicense => 'Import renewed license';
-
-  @override
-  String get openActivation => 'Open activation';
-
-  @override
-  String releaseMaintenanceNote(int release) {
-    return 'Release $release · Maintenance expiry does not disable an already entitled release.';
-  }
 
   @override
   String get setupTitle => 'Set up TailorDesk';
@@ -897,6 +796,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dueToday => 'Due today';
 
   @override
+  String daysOverdue(int count) {
+    return '${count}d overdue';
+  }
+
+  @override
+  String dueInDays(int count) {
+    return 'In ${count}d';
+  }
+
+  @override
   String get upcoming => 'Upcoming';
 
   @override
@@ -907,7 +816,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'Backups include business records and settings, but never copy activation. Backup files are not encrypted.';
+      'Creates a versioned local archive with a consistent SQLite snapshot and SHA-256 checksum. The archive is not encrypted.';
 
   @override
   String get backupCreated =>
@@ -921,7 +830,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restoreWarning =>
-      'Restore replaces all current business records. It does not replace this installation\'s license.';
+      'Restore replaces all current business records. It does not merge records.';
 
   @override
   String get chooseBackup => 'Choose backup file';
@@ -982,11 +891,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String versionLabel(String version) {
     return 'App version: $version';
-  }
-
-  @override
-  String licenseReleaseSequence(int sequence) {
-    return 'License release sequence: $sequence';
   }
 
   @override
@@ -1312,6 +1216,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Finish or reassign active work before deactivating.';
 
   @override
+  String get deactivateKarigarQuestion => 'Deactivate karigar?';
+
+  @override
+  String get reactivateKarigarQuestion => 'Reactivate karigar?';
+
+  @override
+  String get deactivate => 'Deactivate';
+
+  @override
+  String get reactivate => 'Reactivate';
+
+  @override
+  String get assignmentHistoryPreserved =>
+      'Assignment history must be preserved. Deactivate this karigar instead.';
+
+  @override
   String get deleteKarigarQuestion => 'Delete karigar?';
 
   @override
@@ -1413,6 +1333,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activeWorkItems => 'Active work items';
 
   @override
+  String activeItemsCount(int count) {
+    return '$count active items';
+  }
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get currentActiveWork => 'Current active work:';
+
+  @override
+  String get workHistory => 'Work history';
+
+  @override
   String get overdueDeadlines => 'Overdue deadlines';
 
   @override
@@ -1487,61 +1421,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notesHint => 'Preferences or other useful details';
 
   @override
-  String get activationShared => 'Activation request shared.';
-
-  @override
-  String get activationShareSubject => 'TailorDesk activation request';
-
-  @override
-  String get activationShareBody =>
-      'Send this request to the TailorDesk license issuer.';
-
-  @override
-  String get licenseImportFailed =>
-      'The license could not be imported. The current activation was not changed.';
-
-  @override
-  String get licenseNotImported =>
-      'No license has been imported for this installation.';
-
-  @override
-  String get licenseSavedUnreadable =>
-      'The saved activation could not be read safely.';
-
-  @override
-  String get licenseFormatUnsupported =>
-      'This license format is not supported.';
-
-  @override
-  String get licensePayloadUnsupported =>
-      'This license payload format is not supported.';
-
-  @override
-  String get licenseKeyMismatch => 'The license key identifiers do not match.';
-
-  @override
-  String get licenseUntrustedKey =>
-      'The license was signed by an untrusted key.';
-
-  @override
-  String get licenseSignatureSize =>
-      'The license signature has an invalid size.';
-
-  @override
-  String get licenseSignatureInvalid => 'The license signature is invalid.';
-
-  @override
-  String get licenseDifferentProduct =>
-      'This license is for a different product.';
-
-  @override
-  String get licenseDifferentInstallation =>
-      'This license belongs to a different installation.';
-
-  @override
-  String get licenseTypeUnsupported => 'The license type is not supported.';
-
-  @override
   String instructionsPrefix(String value) {
     return 'Instructions: $value';
   }
@@ -1555,4 +1434,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String skillsPrefix(String value) {
     return 'Skills: $value';
   }
+
+  @override
+  String get brandMarkLabel => 'TailorDesk spool and thread';
 }

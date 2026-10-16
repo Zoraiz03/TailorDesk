@@ -344,18 +344,6 @@ abstract class AppLocalizations {
   /// **'Loading…'**
   String get loading;
 
-  /// No description provided for @readOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Read-only'**
-  String get readOnly;
-
-  /// No description provided for @readOnlyMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'A valid license is required to change business records.'**
-  String get readOnlyMessage;
-
   /// No description provided for @customerCount.
   ///
   /// In en, this message translates to:
@@ -374,173 +362,17 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{No items} =1{1 item} other{{count} items}}'**
   String itemCount(int count);
 
-  /// No description provided for @releaseNumber.
-  ///
-  /// In en, this message translates to:
-  /// **'Release {number}'**
-  String releaseNumber(int number);
-
   /// No description provided for @stepOf.
   ///
   /// In en, this message translates to:
   /// **'Step {step} of {total}'**
   String stepOf(int step, int total);
 
-  /// No description provided for @activateTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Activate TailorDesk'**
-  String get activateTitle;
-
-  /// No description provided for @activatedTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'TailorDesk is activated'**
-  String get activatedTitle;
-
-  /// No description provided for @activationRequiredBody.
-  ///
-  /// In en, this message translates to:
-  /// **'A purchased license is required to create or change shop records. Activation works entirely offline.'**
-  String get activationRequiredBody;
-
-  /// No description provided for @renewLicenseBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Import a renewed license to extend maintenance or release entitlement.'**
-  String get renewLicenseBody;
-
-  /// No description provided for @installationCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Installation code'**
-  String get installationCode;
-
-  /// No description provided for @copyRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Copy request'**
-  String get copyRequest;
-
-  /// No description provided for @shareRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Share request'**
-  String get shareRequest;
-
-  /// No description provided for @downloadRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Download activation request'**
-  String get downloadRequest;
-
-  /// No description provided for @importLicense.
-  ///
-  /// In en, this message translates to:
-  /// **'Import license file'**
-  String get importLicense;
-
   /// No description provided for @validating.
   ///
   /// In en, this message translates to:
   /// **'Validating…'**
   String get validating;
-
-  /// No description provided for @activationCopied.
-  ///
-  /// In en, this message translates to:
-  /// **'Activation request JSON copied.'**
-  String get activationCopied;
-
-  /// No description provided for @copyBlocked.
-  ///
-  /// In en, this message translates to:
-  /// **'Copy was blocked by this browser. Use Download activation request instead.'**
-  String get copyBlocked;
-
-  /// No description provided for @shareUnsupported.
-  ///
-  /// In en, this message translates to:
-  /// **'Sharing files is not supported here. Use Download activation request instead.'**
-  String get shareUnsupported;
-
-  /// No description provided for @downloadCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Download was cancelled.'**
-  String get downloadCancelled;
-
-  /// No description provided for @downloadComplete.
-  ///
-  /// In en, this message translates to:
-  /// **'Downloaded tailordesk-activation-request.json with the exact issuer JSON.'**
-  String get downloadComplete;
-
-  /// No description provided for @downloadFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'The activation request could not be downloaded on this platform.'**
-  String get downloadFailed;
-
-  /// No description provided for @licenseActivated.
-  ///
-  /// In en, this message translates to:
-  /// **'License activated.'**
-  String get licenseActivated;
-
-  /// No description provided for @licenseUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'License unavailable'**
-  String get licenseUnavailable;
-
-  /// No description provided for @activated.
-  ///
-  /// In en, this message translates to:
-  /// **'Activated'**
-  String get activated;
-
-  /// No description provided for @activationRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Activation required'**
-  String get activationRequired;
-
-  /// No description provided for @licenseId.
-  ///
-  /// In en, this message translates to:
-  /// **'License ID: {id}'**
-  String licenseId(String id);
-
-  /// No description provided for @maintenanceThrough.
-  ///
-  /// In en, this message translates to:
-  /// **'Maintenance through: {date}'**
-  String maintenanceThrough(String date);
-
-  /// No description provided for @entitledRelease.
-  ///
-  /// In en, this message translates to:
-  /// **'Entitled through release {maximum} · current {current}'**
-  String entitledRelease(int maximum, int current);
-
-  /// No description provided for @importRenewedLicense.
-  ///
-  /// In en, this message translates to:
-  /// **'Import renewed license'**
-  String get importRenewedLicense;
-
-  /// No description provided for @openActivation.
-  ///
-  /// In en, this message translates to:
-  /// **'Open activation'**
-  String get openActivation;
-
-  /// No description provided for @releaseMaintenanceNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Release {release} · Maintenance expiry does not disable an already entitled release.'**
-  String releaseMaintenanceNote(int release);
 
   /// No description provided for @setupTitle.
   ///
@@ -1736,6 +1568,18 @@ abstract class AppLocalizations {
   /// **'Due today'**
   String get dueToday;
 
+  /// No description provided for @daysOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d overdue'**
+  String daysOverdue(int count);
+
+  /// No description provided for @dueInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'In {count}d'**
+  String dueInDays(int count);
+
   /// No description provided for @upcoming.
   ///
   /// In en, this message translates to:
@@ -1757,7 +1601,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDescription.
   ///
   /// In en, this message translates to:
-  /// **'Backups include business records and settings, but never copy activation. Backup files are not encrypted.'**
+  /// **'Creates a versioned local archive with a consistent SQLite snapshot and SHA-256 checksum. The archive is not encrypted.'**
   String get backupDescription;
 
   /// No description provided for @backupCreated.
@@ -1781,7 +1625,7 @@ abstract class AppLocalizations {
   /// No description provided for @restoreWarning.
   ///
   /// In en, this message translates to:
-  /// **'Restore replaces all current business records. It does not replace this installation\'s license.'**
+  /// **'Restore replaces all current business records. It does not merge records.'**
   String get restoreWarning;
 
   /// No description provided for @chooseBackup.
@@ -1897,12 +1741,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App version: {version}'**
   String versionLabel(String version);
-
-  /// No description provided for @licenseReleaseSequence.
-  ///
-  /// In en, this message translates to:
-  /// **'License release sequence: {sequence}'**
-  String licenseReleaseSequence(int sequence);
 
   /// No description provided for @offlineTagline.
   ///
@@ -2510,6 +2348,36 @@ abstract class AppLocalizations {
   /// **'Finish or reassign active work before deactivating.'**
   String get deactivateBlocked;
 
+  /// No description provided for @deactivateKarigarQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate karigar?'**
+  String get deactivateKarigarQuestion;
+
+  /// No description provided for @reactivateKarigarQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate karigar?'**
+  String get reactivateKarigarQuestion;
+
+  /// No description provided for @deactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get deactivate;
+
+  /// No description provided for @reactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate'**
+  String get reactivate;
+
+  /// No description provided for @assignmentHistoryPreserved.
+  ///
+  /// In en, this message translates to:
+  /// **'Assignment history must be preserved. Deactivate this karigar instead.'**
+  String get assignmentHistoryPreserved;
+
   /// No description provided for @deleteKarigarQuestion.
   ///
   /// In en, this message translates to:
@@ -2702,6 +2570,30 @@ abstract class AppLocalizations {
   /// **'Active work items'**
   String get activeWorkItems;
 
+  /// No description provided for @activeItemsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} active items'**
+  String activeItemsCount(int count);
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @currentActiveWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Current active work:'**
+  String get currentActiveWork;
+
+  /// No description provided for @workHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Work history'**
+  String get workHistory;
+
   /// No description provided for @overdueDeadlines.
   ///
   /// In en, this message translates to:
@@ -2840,96 +2732,6 @@ abstract class AppLocalizations {
   /// **'Preferences or other useful details'**
   String get notesHint;
 
-  /// No description provided for @activationShared.
-  ///
-  /// In en, this message translates to:
-  /// **'Activation request shared.'**
-  String get activationShared;
-
-  /// No description provided for @activationShareSubject.
-  ///
-  /// In en, this message translates to:
-  /// **'TailorDesk activation request'**
-  String get activationShareSubject;
-
-  /// No description provided for @activationShareBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Send this request to the TailorDesk license issuer.'**
-  String get activationShareBody;
-
-  /// No description provided for @licenseImportFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'The license could not be imported. The current activation was not changed.'**
-  String get licenseImportFailed;
-
-  /// No description provided for @licenseNotImported.
-  ///
-  /// In en, this message translates to:
-  /// **'No license has been imported for this installation.'**
-  String get licenseNotImported;
-
-  /// No description provided for @licenseSavedUnreadable.
-  ///
-  /// In en, this message translates to:
-  /// **'The saved activation could not be read safely.'**
-  String get licenseSavedUnreadable;
-
-  /// No description provided for @licenseFormatUnsupported.
-  ///
-  /// In en, this message translates to:
-  /// **'This license format is not supported.'**
-  String get licenseFormatUnsupported;
-
-  /// No description provided for @licensePayloadUnsupported.
-  ///
-  /// In en, this message translates to:
-  /// **'This license payload format is not supported.'**
-  String get licensePayloadUnsupported;
-
-  /// No description provided for @licenseKeyMismatch.
-  ///
-  /// In en, this message translates to:
-  /// **'The license key identifiers do not match.'**
-  String get licenseKeyMismatch;
-
-  /// No description provided for @licenseUntrustedKey.
-  ///
-  /// In en, this message translates to:
-  /// **'The license was signed by an untrusted key.'**
-  String get licenseUntrustedKey;
-
-  /// No description provided for @licenseSignatureSize.
-  ///
-  /// In en, this message translates to:
-  /// **'The license signature has an invalid size.'**
-  String get licenseSignatureSize;
-
-  /// No description provided for @licenseSignatureInvalid.
-  ///
-  /// In en, this message translates to:
-  /// **'The license signature is invalid.'**
-  String get licenseSignatureInvalid;
-
-  /// No description provided for @licenseDifferentProduct.
-  ///
-  /// In en, this message translates to:
-  /// **'This license is for a different product.'**
-  String get licenseDifferentProduct;
-
-  /// No description provided for @licenseDifferentInstallation.
-  ///
-  /// In en, this message translates to:
-  /// **'This license belongs to a different installation.'**
-  String get licenseDifferentInstallation;
-
-  /// No description provided for @licenseTypeUnsupported.
-  ///
-  /// In en, this message translates to:
-  /// **'The license type is not supported.'**
-  String get licenseTypeUnsupported;
-
   /// No description provided for @instructionsPrefix.
   ///
   /// In en, this message translates to:
@@ -2947,6 +2749,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skills: {value}'**
   String skillsPrefix(String value);
+
+  /// No description provided for @brandMarkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TailorDesk spool and thread'**
+  String get brandMarkLabel;
 }
 
 class _AppLocalizationsDelegate

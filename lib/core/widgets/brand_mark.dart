@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../localization/localization_extensions.dart';
+
 class BrandMark extends StatelessWidget {
   const BrandMark({super.key, this.size = 64});
   final double size;
@@ -11,7 +13,7 @@ class BrandMark extends StatelessWidget {
       'assets/branding/tailordesk.png',
       width: size,
       height: size,
-      semanticLabel: 'TailorDesk spool and thread',
+      semanticLabel: context.l10n.brandMarkLabel,
     ),
   );
 }

@@ -20,7 +20,6 @@ class OrdersDao extends DatabaseAccessor<AppDatabase> with _$OrdersDaoMixin {
   OrdersDao(super.attachedDatabase);
 
   Future<int> createOrder(NewOrderDraft draft) async {
-    attachedDatabase.requireBusinessWrite();
     draft.validate();
     return transaction(() async {
       final duplicate =
@@ -198,7 +197,6 @@ class OrdersDao extends DatabaseAccessor<AppDatabase> with _$OrdersDaoMixin {
     required DateTime date,
     String notes = '',
   }) {
-    attachedDatabase.requireBusinessWrite();
     if (amountPaisa <= 0) throw ArgumentError('Amount must be positive');
     return transaction(() async {
       final record = await getOrder(orderId);
@@ -225,7 +223,6 @@ class OrdersDao extends DatabaseAccessor<AppDatabase> with _$OrdersDaoMixin {
   }
 
   Future<void> updateItemStatus(int itemId, OrderItemStatus status) async {
-    attachedDatabase.requireBusinessWrite();
     await (update(orderItems)..where((row) => row.id.equals(itemId))).write(
       OrderItemsCompanion(
         status: Value(status.storageKey),
@@ -239,7 +236,6 @@ class OrdersDao extends DatabaseAccessor<AppDatabase> with _$OrdersDaoMixin {
     required DateTime deliveryDate,
     required String notes,
   }) async {
-    attachedDatabase.requireBusinessWrite();
     final existing = await (select(
       orders,
     )..where((row) => row.id.equals(orderId))).getSingle();
@@ -262,7 +258,6 @@ class OrdersDao extends DatabaseAccessor<AppDatabase> with _$OrdersDaoMixin {
   }
 
   Future<void> cancelOrder(int orderId) {
-    attachedDatabase.requireBusinessWrite();
     return transaction(() async {
       final record = await getOrder(orderId);
       if (record == null) throw StateError('Order not found');

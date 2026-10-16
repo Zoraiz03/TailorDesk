@@ -37,3 +37,4 @@ ios/Flutter/.last_build_id
 .DS_Store
 Icon*
 output/
+/dist/*.apk

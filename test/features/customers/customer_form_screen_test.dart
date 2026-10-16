@@ -30,7 +30,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('save-customer')));
     await tester.pump();
 
-    expect(find.text('Enter the customer name'), findsOneWidget);
+    expect(find.text('Enter a name'), findsOneWidget);
     expect(find.text('Enter a phone number'), findsOneWidget);
     expect(await database.select(database.customers).get(), isEmpty);
   });

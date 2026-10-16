@@ -12,22 +12,21 @@ void main() {
         .setMockMethodCallHandler(channel, null);
   });
 
-  testWidgets(
-    'About shows installed version and unchanged entitlement sequence',
-    (tester) async {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(channel, (call) async {
-            expect(call.method, 'appVersion');
-            return '12.0.0-test (12001)';
-          });
-      await tester.pumpWidget(const MaterialApp(home: AboutScreen()));
-      await tester.pumpAndSettle();
-      expect(find.text('About TailorDesk'), findsOneWidget);
-      expect(find.text('App version: 12.0.0-test (12001)'), findsOneWidget);
-      expect(find.text('License release sequence: 10'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
+  testWidgets('About shows installed version and local-storage notice', (
+    tester,
+  ) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (call) async {
+          expect(call.method, 'appVersion');
+          return '12.0.0-test (12001)';
+        });
+    await tester.pumpWidget(const MaterialApp(home: AboutScreen()));
+    await tester.pumpAndSettle();
+    expect(find.text('About TailorDesk'), findsOneWidget);
+    expect(find.text('App version: 12.0.0-test (12001)'), findsOneWidget);
+    expect(find.textContaining('stored on this device'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('About handles absent native version API on small screens', (
     tester,

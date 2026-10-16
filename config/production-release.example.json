@@ -1,9 +1,8 @@
 {
   "ownerConfirmed": false,
   "applicationId": "com.zoraiz.tailordesk",
+  "appLabel": "TailorDesk",
   "versionName": "1.0.0",
   "versionCode": 1,
-  "licenseReleaseSequence": 10,
-  "signingProperties": "",
-  "productionPublicKeyFiles": []
+  "signingProperties": ""
 }

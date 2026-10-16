@@ -29,14 +29,14 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
-    expect(find.text('Discard unsaved changes?'), findsOneWidget);
+    expect(find.text('Discard changes?'), findsOneWidget);
     await tester.tap(find.text('Keep editing'));
     await tester.pumpAndSettle();
     expect(find.text('Edit details'), findsOneWidget);
 
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Discard changes'));
+    await tester.tap(find.text('Discard'));
     await tester.pumpAndSettle();
     expect(find.text('Open form'), findsOneWidget);
   });

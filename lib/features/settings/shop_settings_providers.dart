@@ -49,7 +49,6 @@ class ShopSettingsRepository {
       });
 
   Future<void> save(ShopDetails details) async {
-    database.requireBusinessWrite();
     if (details.name.trim().isEmpty) {
       throw ArgumentError('Shop name is required');
     }
@@ -63,13 +62,11 @@ class ShopSettingsRepository {
   }
 
   Future<void> saveSetupProgress(ShopDetails details, int step) async {
-    database.requireBusinessWrite();
     await save(details);
     await _put(setupStepKey, '$step');
   }
 
   Future<void> completeSetup(ShopDetails details) async {
-    database.requireBusinessWrite();
     await database.transaction(() async {
       await save(details);
       await _put(setupCompletedKey, 'true');

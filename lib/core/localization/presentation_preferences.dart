@@ -45,8 +45,6 @@ class PresentationPreferencesRepository {
     );
   }
 
-  /// Presentation preferences are deliberately writable before activation and
-  /// in recovery mode. They do not change business records or license state.
   Future<void> setLanguage(String code) =>
       _put(languageKey, code == 'ur' ? 'ur' : 'en');
 
@@ -85,8 +83,7 @@ final currentPresentationPreferencesProvider =
           ),
     );
 
-/// Invalidates shop settings only when document preferences are shown next to
-/// them, keeping the locale preference independent from business-write gates.
+/// Invalidates shop settings when document preferences are shown beside them.
 void refreshPresentationPreferences(WidgetRef ref) {
   ref.invalidate(presentationPreferencesProvider);
   ref.invalidate(shopDetailsProvider);

@@ -9,9 +9,7 @@ import '../core/localization/localization_extensions.dart';
 /// Responsive app shell: BottomNavigationBar on phones,
 /// NavigationRail on tablets (width >= 600).
 class AppShell extends StatefulWidget {
-  const AppShell({super.key, this.readOnly = false});
-
-  final bool readOnly;
+  const AppShell({super.key});
 
   @override
   State<AppShell> createState() => _AppShellState();

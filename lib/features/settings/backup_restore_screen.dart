@@ -196,18 +196,16 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           _ActionCard(
             icon: Icons.cloud_upload_outlined,
             title: context.l10n.createBackup,
-            description:
-                'Creates a versioned local archive with a consistent SQLite snapshot and SHA-256 checksum. The archive is not encrypted.',
-            buttonLabel: 'Create and export backup',
+            description: context.l10n.backupDescription,
+            buttonLabel: context.l10n.createBackup,
             onPressed: kIsWeb || _busy ? null : _backup,
           ),
           const SizedBox(height: AppSpacing.lg),
           _ActionCard(
             icon: Icons.restore_outlined,
             title: context.l10n.restoreBackup,
-            description:
-                'Validates the archive in a temporary location, creates a safety copy, then replaces local data. Restore does not merge records.',
-            buttonLabel: 'Choose backup to restore',
+            description: context.l10n.restoreWarning,
+            buttonLabel: context.l10n.chooseBackup,
             destructive: true,
             onPressed: kIsWeb || _busy ? null : _restore,
           ),

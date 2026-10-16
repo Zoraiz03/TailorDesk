@@ -14,17 +14,14 @@ import 'package:tailor/l10n/app_localizations.dart';
 
 void main() {
   test(
-    'language and document preferences persist without a business license',
+    'language and document preferences persist across database reopen',
     () async {
       final directory = await Directory.systemTemp.createTemp(
         'tailordesk_l10n_',
       );
       addTearDown(() => directory.delete(recursive: true));
       final file = File('${directory.path}/tailor.sqlite');
-      var database = AppDatabase(
-        NativeDatabase(file),
-        businessWritesAllowed: false,
-      );
+      var database = AppDatabase(NativeDatabase(file));
       final preferences = PresentationPreferencesRepository(database);
 
       await preferences.setLanguage('ur');
@@ -32,18 +29,13 @@ void main() {
       final saved = await preferences.watch().first;
       expect(saved.languageCode, 'ur');
       expect(saved.documentLanguage, DocumentLanguage.bilingual);
-      expect(
-        () => CustomersDao(
-          database,
-        ).createCustomer(name: 'Blocked', phone: '0300'),
-        throwsA(isA<ActivationRequiredException>()),
-      );
+      final customerId = await CustomersDao(
+        database,
+      ).createCustomer(name: 'Allowed', phone: '0300');
+      expect(customerId, isPositive);
       await database.close();
 
-      database = AppDatabase(
-        NativeDatabase(file),
-        businessWritesAllowed: false,
-      );
+      database = AppDatabase(NativeDatabase(file));
       addTearDown(database.close);
       final reopened = await PresentationPreferencesRepository(
         database,
@@ -56,10 +48,7 @@ void main() {
   testWidgets('language selector applies Urdu and RTL immediately', (
     tester,
   ) async {
-    final database = AppDatabase(
-      NativeDatabase.memory(),
-      businessWritesAllowed: false,
-    );
+    final database = AppDatabase(NativeDatabase.memory());
     await tester.pumpWidget(
       ProviderScope(
         overrides: [databaseProvider.overrideWithValue(database)],

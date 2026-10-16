@@ -115,7 +115,6 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<int> createProfile(MeasurementDraft draft) {
-    attachedDatabase.requireBusinessWrite();
     draft.validate();
     return transaction(() async {
       final now = DateTime.now();
@@ -144,7 +143,6 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase>
     required int profileId,
     required MeasurementDraft draft,
   }) {
-    attachedDatabase.requireBusinessWrite();
     draft.validate();
     return transaction(() async {
       final profile = await (select(

@@ -4,7 +4,7 @@ TailorDesk is an offline-first shop application. This review should be completed
 
 ## Practical walkthrough
 
-1. On a fresh test installation, copy/share the activation request, have the owner issue a license for that exact installation, and import the `.tailorlicense` file while offline. Force-close and reopen to confirm activation persists. Then complete setup with shop name, optional phone/address, default unit, enabled garments, and optional prices; force-close midway once and confirm setup resumes at the saved step.
+1. On a fresh preview installation, confirm the app opens directly without activation. Complete setup with shop name, optional phone/address, default unit, enabled garments, and optional prices; force-close midway once and confirm setup resumes at the saved step.
 2. Open **More → Settings**, confirm the same shop details and unit can be changed, then open **Garments & measurement templates**.
 3. Confirm Shalwar Qameez, Coat, Trouser/Pant, Shirt, Waistcoat, and Jacket are present. Kurta and Sherwani are retained as optional additional entries. Disable one garment, reorder another, set a default price, and create one custom template.
 4. Add a customer and measurement profile. Confirm disabled garments are unavailable for new profiles, while body/finished-garment basis, unit, required fields, fit, and instructions are clear.
@@ -21,7 +21,7 @@ TailorDesk is an offline-first shop application. This review should be completed
     - **Collections & Refunds**: filter by Today, 7 Days, 30 Days, All Time, or Custom range; inspect gross collections, customer refunds, Net Collections (cash flow, not profit), cash vs bank split, and the chronological transaction ledger.
     - **Karigar Workload**: check active worker load, unassigned garment lines with one-tap quick assign, and internal deadline alerts.
 13. Repeat the core workflow in airplane mode, close the application completely, reopen it, and confirm the records, reports, and documents remain available offline. This is an operational offline check, not proof that the app makes zero network requests.
-14. On a disposable installation with sample data, remove or invalidate activation and confirm records and backup export remain available read-only while business changes and restore are blocked. Do not use live data for this recovery test.
+14. Force-stop and reopen the app with connectivity disabled. Confirm existing records remain and create another sample record offline.
 
 ## Questions for the client
 
@@ -36,9 +36,6 @@ TailorDesk is an offline-first shop application. This review should be completed
 - Do the 4 live reports (Due & Overdue, Customer Balances, Collections & Refunds, Karigar Workload) meet daily shop operations and evening cash-counter reconciliation needs?
 - Is the backup process understandable, including that archives are not encrypted and restore replaces rather than merges data?
 - Where will the shop keep external backups, and who is responsible for testing a restore regularly?
-- Who may request initial, renewed, or replacement-device licenses, and how will the owner verify those requests?
-- Is it clear that maintenance expiry does not disable an already entitled release, while a newer release may require renewed entitlement?
-- Is the read-only activation-recovery experience sufficient for safely exporting business data?
 
 ## Items requiring explicit approval
 
@@ -47,7 +44,7 @@ TailorDesk is an offline-first shop application. This review should be completed
 - Receipt and work-slip wording, shop charge labels, and the receipt footer require client approval.
 - Reports metrics, period filters, and financial terms (Net Collections cash-flow reporting without profit labeling) require client sign-off.
 - Physical printer compatibility and mobile file-picker/share behavior require testing on the client’s actual Android device and printer.
-- Production license identity/customer naming, replacement-device authorization, private-key/ledger custody, and public-key rotation require owner approval.
+- Production application identity, Android signing-key custody, support terms, and update process require owner approval.
 
 ## Run and build commands
 
@@ -64,4 +61,4 @@ flutter build apk --debug
 flutter build web
 ```
 
-Stages 10–12 are prepared for structured client review, but the app is not yet declared production-ready. Use [PILOT_ACCEPTANCE.md](PILOT_ACCEPTANCE.md) to record physical-device evidence and [CUSTOMER_DELIVERY_CHECKLIST.md](CUSTOMER_DELIVERY_CHECKLIST.md) for each owner handoff. Fresh activation/setup and recovery should still be walked through on a disposable client device; native backup/restore, OEM secure-storage/backup behavior, device replacement, and physical printing require client-hardware evidence. Emulator evidence is not physical-device acceptance. No production signing secret or customer license has been generated.
+The private preview is prepared for structured client review but is not production-ready. Use [PILOT_ACCEPTANCE.md](PILOT_ACCEPTANCE.md) to record physical-device evidence and [CUSTOMER_DELIVERY_CHECKLIST.md](CUSTOMER_DELIVERY_CHECKLIST.md) for each owner handoff. Native backup/restore, device replacement, and physical printing require client-hardware evidence. Emulator evidence is not physical-device acceptance.

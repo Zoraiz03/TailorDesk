@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 
 /// A status badge chip with a coloured dot and label.
@@ -15,31 +14,6 @@ class StatusBadge extends StatelessWidget {
     required this.color,
     this.backgroundColor,
   });
-
-  /// Convenience constructors for common order statuses.
-  factory StatusBadge.pending() => const StatusBadge(
-    label: 'Pending',
-    color: AppColors.warning,
-    backgroundColor: AppColors.warningBg,
-  );
-
-  factory StatusBadge.inProgress() => const StatusBadge(
-    label: 'In Progress',
-    color: AppColors.info,
-    backgroundColor: AppColors.infoBg,
-  );
-
-  factory StatusBadge.ready() => const StatusBadge(
-    label: 'Ready',
-    color: AppColors.success,
-    backgroundColor: AppColors.successBg,
-  );
-
-  factory StatusBadge.overdue() => const StatusBadge(
-    label: 'Overdue',
-    color: AppColors.error,
-    backgroundColor: AppColors.errorBg,
-  );
 
   @override
   Widget build(BuildContext context) {

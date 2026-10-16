@@ -133,13 +133,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get loading => 'لوڈ ہو رہا ہے…';
 
   @override
-  String get readOnly => 'صرف مطالعہ';
-
-  @override
-  String get readOnlyMessage =>
-      'کاروباری ریکارڈ تبدیل کرنے کے لیے درست لائسنس ضروری ہے۔';
-
-  @override
   String customerCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -176,106 +169,12 @@ class AppLocalizationsUr extends AppLocalizations {
   }
 
   @override
-  String releaseNumber(int number) {
-    return 'ریلیز $number';
-  }
-
-  @override
   String stepOf(int step, int total) {
     return 'مرحلہ $step از $total';
   }
 
   @override
-  String get activateTitle => 'ٹیلر ڈیسک فعال کریں';
-
-  @override
-  String get activatedTitle => 'ٹیلر ڈیسک فعال ہے';
-
-  @override
-  String get activationRequiredBody =>
-      'دکان کے ریکارڈ بنانے یا بدلنے کے لیے خریدا ہوا لائسنس ضروری ہے۔ فعالیت مکمل طور پر آف لائن ہے۔';
-
-  @override
-  String get renewLicenseBody =>
-      'دیکھ بھال یا ریلیز استحقاق بڑھانے کے لیے تجدید شدہ لائسنس درآمد کریں۔';
-
-  @override
-  String get installationCode => 'انسٹالیشن کوڈ';
-
-  @override
-  String get copyRequest => 'درخواست نقل کریں';
-
-  @override
-  String get shareRequest => 'درخواست شیئر کریں';
-
-  @override
-  String get downloadRequest => 'فعالیت کی درخواست ڈاؤن لوڈ کریں';
-
-  @override
-  String get importLicense => 'لائسنس فائل درآمد کریں';
-
-  @override
   String get validating => 'جانچ ہو رہی ہے…';
-
-  @override
-  String get activationCopied => 'فعالیت کی درخواست کا JSON نقل ہو گیا۔';
-
-  @override
-  String get copyBlocked =>
-      'براؤزر نے نقل روک دی۔ ڈاؤن لوڈ کا اختیار استعمال کریں۔';
-
-  @override
-  String get shareUnsupported =>
-      'یہاں فائل شیئر نہیں ہو سکتی۔ ڈاؤن لوڈ کا اختیار استعمال کریں۔';
-
-  @override
-  String get downloadCancelled => 'ڈاؤن لوڈ منسوخ ہو گیا۔';
-
-  @override
-  String get downloadComplete =>
-      'جاری کنندہ کے لیے درست JSON فائل ڈاؤن لوڈ ہو گئی۔';
-
-  @override
-  String get downloadFailed =>
-      'اس پلیٹ فارم پر فعالیت کی درخواست ڈاؤن لوڈ نہیں ہو سکی۔';
-
-  @override
-  String get licenseActivated => 'لائسنس فعال ہو گیا۔';
-
-  @override
-  String get licenseUnavailable => 'لائسنس دستیاب نہیں';
-
-  @override
-  String get activated => 'فعال';
-
-  @override
-  String get activationRequired => 'فعالیت درکار ہے';
-
-  @override
-  String licenseId(String id) {
-    return 'لائسنس آئی ڈی: $id';
-  }
-
-  @override
-  String maintenanceThrough(String date) {
-    return 'دیکھ بھال کی تاریخ: $date';
-  }
-
-  @override
-  String entitledRelease(int maximum, int current) {
-    return 'ریلیز $maximum تک استحقاق · موجودہ $current';
-  }
-
-  @override
-  String get importRenewedLicense => 'تجدید شدہ لائسنس درآمد کریں';
-
-  @override
-  String get openActivation => 'فعالیت کھولیں';
-
-  @override
-  String releaseMaintenanceNote(int release) {
-    return 'ریلیز $release · دیکھ بھال ختم ہونے سے پہلے سے مستحق ریلیز بند نہیں ہوتی۔';
-  }
 
   @override
   String get setupTitle => 'ٹیلر ڈیسک سیٹ اپ کریں';
@@ -896,6 +795,16 @@ class AppLocalizationsUr extends AppLocalizations {
   String get dueToday => 'آج واجب';
 
   @override
+  String daysOverdue(int count) {
+    return '$count دن تاخیر';
+  }
+
+  @override
+  String dueInDays(int count) {
+    return '$count دن میں';
+  }
+
+  @override
   String get upcoming => 'آنے والے';
 
   @override
@@ -906,7 +815,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get backupDescription =>
-      'بیک اپ میں کاروباری ریکارڈ اور ترتیبات شامل ہیں، لیکن فعالیت نہیں۔ بیک اپ فائل خفیہ کردہ نہیں ہے۔';
+      'یہ SQLite کا مستقل اسنیپ شاٹ اور SHA-256 چیک سم والا مقامی بیک اپ بناتا ہے۔ فائل خفیہ کردہ نہیں ہے۔';
 
   @override
   String get backupCreated =>
@@ -920,7 +829,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get restoreWarning =>
-      'بحالی موجودہ کاروباری ریکارڈ بدل دیتی ہے۔ یہ اس انسٹالیشن کا لائسنس نہیں بدلتی۔';
+      'بحالی تمام موجودہ کاروباری ریکارڈ بدل دیتی ہے۔ ریکارڈ ضم نہیں ہوتے۔';
 
   @override
   String get chooseBackup => 'بیک اپ فائل منتخب کریں';
@@ -981,11 +890,6 @@ class AppLocalizationsUr extends AppLocalizations {
   @override
   String versionLabel(String version) {
     return 'ایپ ورژن: $version';
-  }
-
-  @override
-  String licenseReleaseSequence(int sequence) {
-    return 'لائسنس ریلیز سلسلہ: $sequence';
   }
 
   @override
@@ -1309,6 +1213,22 @@ class AppLocalizationsUr extends AppLocalizations {
       'غیر فعال کرنے سے پہلے فعال کام مکمل یا دوبارہ مقرر کریں۔';
 
   @override
+  String get deactivateKarigarQuestion => 'کاریگر کو غیر فعال کریں؟';
+
+  @override
+  String get reactivateKarigarQuestion => 'کاریگر کو دوبارہ فعال کریں؟';
+
+  @override
+  String get deactivate => 'غیر فعال کریں';
+
+  @override
+  String get reactivate => 'دوبارہ فعال کریں';
+
+  @override
+  String get assignmentHistoryPreserved =>
+      'کام سونپنے کی تاریخ محفوظ رکھنا ضروری ہے۔ اس کاریگر کو حذف کرنے کے بجائے غیر فعال کریں۔';
+
+  @override
   String get deleteKarigarQuestion => 'کاریگر حذف کریں؟';
 
   @override
@@ -1409,6 +1329,20 @@ class AppLocalizationsUr extends AppLocalizations {
   String get activeWorkItems => 'فعال کام';
 
   @override
+  String activeItemsCount(int count) {
+    return '$count فعال کام';
+  }
+
+  @override
+  String get completed => 'مکمل';
+
+  @override
+  String get currentActiveWork => 'موجودہ فعال کام:';
+
+  @override
+  String get workHistory => 'کام کی تاریخ';
+
+  @override
   String get overdueDeadlines => 'تاخیر شدہ آخری تاریخیں';
 
   @override
@@ -1483,60 +1417,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get notesHint => 'ترجیحات یا دوسری مفید تفصیلات';
 
   @override
-  String get activationShared => 'فعالیت کی درخواست شیئر ہو گئی۔';
-
-  @override
-  String get activationShareSubject => 'TailorDesk فعالیت کی درخواست';
-
-  @override
-  String get activationShareBody =>
-      'یہ درخواست TailorDesk لائسنس جاری کرنے والے کو بھیجیں۔';
-
-  @override
-  String get licenseImportFailed =>
-      'لائسنس درآمد نہیں ہو سکا۔ موجودہ فعالیت تبدیل نہیں ہوئی۔';
-
-  @override
-  String get licenseNotImported =>
-      'اس انسٹالیشن کے لیے کوئی لائسنس درآمد نہیں ہوا۔';
-
-  @override
-  String get licenseSavedUnreadable =>
-      'محفوظ فعالیت محفوظ طریقے سے پڑھی نہیں جا سکی۔';
-
-  @override
-  String get licenseFormatUnsupported => 'یہ لائسنس فارمیٹ معاون نہیں ہے۔';
-
-  @override
-  String get licensePayloadUnsupported =>
-      'یہ لائسنس مواد فارمیٹ معاون نہیں ہے۔';
-
-  @override
-  String get licenseKeyMismatch =>
-      'لائسنس کلید کے شناختی نام مطابقت نہیں رکھتے۔';
-
-  @override
-  String get licenseUntrustedKey =>
-      'لائسنس پر غیر معتبر کلید سے دستخط ہوئے ہیں۔';
-
-  @override
-  String get licenseSignatureSize => 'لائسنس دستخط کا حجم غلط ہے۔';
-
-  @override
-  String get licenseSignatureInvalid => 'لائسنس دستخط درست نہیں ہے۔';
-
-  @override
-  String get licenseDifferentProduct =>
-      'یہ لائسنس کسی دوسری مصنوعات کے لیے ہے۔';
-
-  @override
-  String get licenseDifferentInstallation =>
-      'یہ لائسنس کسی دوسری انسٹالیشن کا ہے۔';
-
-  @override
-  String get licenseTypeUnsupported => 'یہ لائسنس قسم معاون نہیں ہے۔';
-
-  @override
   String instructionsPrefix(String value) {
     return 'ہدایات: $value';
   }
@@ -1550,4 +1430,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String skillsPrefix(String value) {
     return 'مہارتیں: $value';
   }
+
+  @override
+  String get brandMarkLabel => 'TailorDesk دھاگا اور ریل';
 }

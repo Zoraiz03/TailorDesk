@@ -35,7 +35,11 @@ class KarigarDetailScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(active ? 'Deactivate karigar?' : 'Reactivate karigar?'),
+        title: Text(
+          active
+              ? context.l10n.deactivateKarigarQuestion
+              : context.l10n.reactivateKarigarQuestion,
+        ),
         content: Text(
           active
               ? 'Their history is kept, but they cannot receive new work.'
@@ -48,7 +52,9 @@ class KarigarDetailScreen extends ConsumerWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(active ? 'Deactivate' : 'Reactivate'),
+            child: Text(
+              active ? context.l10n.deactivate : context.l10n.reactivate,
+            ),
           ),
         ],
       ),
@@ -90,11 +96,7 @@ class KarigarDetailScreen extends ConsumerWidget {
     } on KarigarHasActiveWorkException {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Assignment history must be preserved. Deactivate this karigar instead.',
-            ),
-          ),
+          SnackBar(content: Text(context.l10n.assignmentHistoryPreserved)),
         );
       }
     }
@@ -150,7 +152,11 @@ class KarigarDetailScreen extends ConsumerWidget {
                 itemBuilder: (_) => [
                   PopupMenuItem(
                     value: 'active',
-                    child: Text(active ? 'Deactivate' : 'Reactivate'),
+                    child: Text(
+                      active
+                          ? context.l10n.deactivate
+                          : context.l10n.reactivate,
+                    ),
                   ),
                   PopupMenuItem(
                     value: 'delete',
@@ -205,21 +211,21 @@ class KarigarDetailScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: _CountCard(
-                      label: 'Assigned',
+                      label: context.l10n.assigned,
                       value: record.assignedCount,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _CountCard(
-                      label: 'In progress',
+                      label: context.l10n.inProgress,
                       value: record.inProgressCount,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _CountCard(
-                      label: 'Completed',
+                      label: context.l10n.completed,
                       value: record.completedCount,
                     ),
                   ),
@@ -227,7 +233,7 @@ class KarigarDetailScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.xl),
               Text(
-                'Work history',
+                context.l10n.workHistory,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: AppSpacing.sm),

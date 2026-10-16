@@ -95,27 +95,6 @@ String localizedFit(AppLocalizations l10n, String key) => switch (key) {
 String localizedPaymentMethod(AppLocalizations l10n, String key) =>
     key == 'manual_bank_transfer' ? l10n.manualBankTransfer : l10n.cash;
 
-String localizedLicenseMessage(AppLocalizations l10n, String message) =>
-    switch (message) {
-      'No license has been imported for this installation.' =>
-        l10n.licenseNotImported,
-      'The saved activation could not be read safely.' =>
-        l10n.licenseSavedUnreadable,
-      'This license format is not supported.' => l10n.licenseFormatUnsupported,
-      'This license payload format is not supported.' =>
-        l10n.licensePayloadUnsupported,
-      'The license key identifiers do not match.' => l10n.licenseKeyMismatch,
-      'The license was signed by an untrusted key.' => l10n.licenseUntrustedKey,
-      'The license signature has an invalid size.' => l10n.licenseSignatureSize,
-      'The license signature is invalid.' => l10n.licenseSignatureInvalid,
-      'This license is for a different product.' =>
-        l10n.licenseDifferentProduct,
-      'This license belongs to a different installation.' =>
-        l10n.licenseDifferentInstallation,
-      'The license type is not supported.' => l10n.licenseTypeUnsupported,
-      _ => message,
-    };
-
 String localizedStatus(AppLocalizations l10n, String key) => switch (key) {
   'assigned' => l10n.assigned,
   'in_progress' || 'inProgress' => l10n.inProgress,

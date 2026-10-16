@@ -81,7 +81,6 @@ class GarmentCatalogRepository {
     String? displayNameUrdu,
     bool updateUrduName = false,
   }) async {
-    database.requireBusinessWrite();
     if (defaultPricePaisa != null && defaultPricePaisa < 0) {
       throw ArgumentError('Default price cannot be negative');
     }
@@ -112,7 +111,6 @@ class GarmentCatalogRepository {
   }
 
   Future<void> reorder(List<String> garmentIds) async {
-    database.requireBusinessWrite();
     await database.transaction(() async {
       for (final indexed in garmentIds.indexed) {
         await updateEntry(garmentId: indexed.$2, displayOrder: indexed.$1);
@@ -127,7 +125,6 @@ class GarmentCatalogRepository {
     required List<GarmentTemplateField> fields,
     int defaultPricePaisa = 0,
   }) async {
-    database.requireBusinessWrite();
     _validate(name: name, convention: convention, fields: fields);
     final normalized = name
         .trim()
@@ -170,7 +167,6 @@ class GarmentCatalogRepository {
     required String convention,
     required List<GarmentTemplateField> fields,
   }) async {
-    database.requireBusinessWrite();
     final current = await getById(garmentId);
     if (current == null) throw StateError('Garment not found');
     final revisedName = name ?? current.entry.displayName;

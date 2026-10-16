@@ -1,4 +1,3 @@
-import java.util.Base64
 import java.util.Properties
 
 plugins {
@@ -7,25 +6,11 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-fun decodedDartDefines(): Map<String, String> {
-    val encoded = providers.gradleProperty("dart-defines").orNull ?: return emptyMap()
-    return encoded.split(',').mapNotNull { value ->
-        runCatching {
-            String(Base64.getDecoder().decode(value), Charsets.UTF_8)
-        }.getOrNull()?.let { decoded ->
-            val separator = decoded.indexOf('=')
-            if (separator <= 0) null else decoded.substring(0, separator) to decoded.substring(separator + 1)
-        }
-    }.toMap()
-}
-
 val releaseRequested = gradle.startParameter.taskNames.any {
     it.contains("release", ignoreCase = true)
 }
-val dartDefines = decodedDartDefines()
-val trustMode = dartDefines["TAILORDESK_LICENSE_TRUST_MODE"]
-val trustedLicenseKeys = dartDefines["TAILORDESK_LICENSE_PUBLIC_KEYS"]
 val configuredApplicationId = providers.gradleProperty("tailordeskApplicationId").orNull
+val configuredAppLabel = providers.gradleProperty("tailordeskAppLabel").orNull
 val signingPropertiesPath = providers.gradleProperty("tailordeskSigningProperties").orNull
 val signingProperties = Properties()
 
@@ -48,23 +33,9 @@ if (releaseRequested) {
     require(!configuredApplicationId.isNullOrBlank() && !configuredApplicationId.startsWith("com.example.")) {
         "A non-placeholder release application ID is required via -PtailordeskApplicationId."
     }
-    require(trustMode == "production" || trustMode == "test") {
-        "Release builds require TAILORDESK_LICENSE_TRUST_MODE=production (or test for a clearly non-production verification build)."
-    }
-    require(!trustedLicenseKeys.isNullOrBlank() && trustedLicenseKeys != "{}") {
-        "Release builds require explicit TAILORDESK_LICENSE_PUBLIC_KEYS."
-    }
-    if (trustMode == "production") {
-        require(
-            !trustedLicenseKeys.contains("\"dev-") &&
-                !trustedLicenseKeys.contains("\"stage11-test")
-        ) {
-            "Production builds must not contain development or Stage 11 test license key IDs."
-        }
-    }
-    if (trustMode == "test") {
-        require(providers.gradleProperty("tailordeskNonProductionRelease").orNull == "true") {
-            "Test trust roots require -PtailordeskNonProductionRelease=true. Never distribute this APK."
+    if (providers.gradleProperty("tailordeskNonProductionRelease").orNull == "true") {
+        require(!configuredAppLabel.isNullOrBlank() && configuredAppLabel.contains("Preview")) {
+            "Non-production releases require a visible Preview app label."
         }
     }
 }
@@ -94,11 +65,7 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        manifestPlaceholders["appLabel"] = if (trustMode == "test") {
-            "TailorDesk TEST — NOT FOR DISTRIBUTION"
-        } else {
-            "TailorDesk"
-        }
+        manifestPlaceholders["appLabel"] = configuredAppLabel ?: "TailorDesk"
     }
 
     signingConfigs {

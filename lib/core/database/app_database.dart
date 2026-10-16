@@ -274,25 +274,11 @@ class MeasurementTemplateFields extends Table {
 class AppDatabase extends _$AppDatabase {
   static const currentSchemaVersion = 7;
 
-  AppDatabase(super.e, {bool businessWritesAllowed = true})
-    : _businessWritesAllowed = businessWritesAllowed;
-
-  bool _businessWritesAllowed;
-
-  bool get businessWritesAllowed => _businessWritesAllowed;
-
-  void setBusinessWritesAllowed(bool value) {
-    _businessWritesAllowed = value;
-  }
-
-  void requireBusinessWrite() {
-    // Business writes are always allowed.
-  }
+  AppDatabase(super.e);
 
   /// Open the default on-device database.
   AppDatabase.defaults()
-    : _businessWritesAllowed = true,
-      super(
+    : super(
         driftDatabase(
           name: 'tailor_db',
           native: const DriftNativeOptions(shareAcrossIsolates: true),
@@ -597,12 +583,4 @@ class AppDatabase extends _$AppDatabase {
       );
     }
   }
-}
-
-class ActivationRequiredException implements Exception {
-  const ActivationRequiredException();
-
-  @override
-  String toString() =>
-      'A valid license for this installation is required to change business data.';
 }

@@ -256,8 +256,8 @@ void main() {
     expect(receiptDoc.auditText, contains('Net paid PKR 6,000'));
     expect(receiptDoc.auditText, contains('Balance PKR 0'));
     expect(receiptDoc.auditText, contains('Chaudhry Tariq'));
-    expect(receiptDoc.auditText, contains('Shalwar Qameez x 1'));
-    expect(receiptDoc.auditText, contains('Waistcoat x 1'));
+    expect(receiptDoc.auditText, contains('Shalwar Qameez × 1'));
+    expect(receiptDoc.auditText, contains('Waistcoat × 1'));
 
     // Generate Karigar Work Slip for Shalwar Qameez
     final sqAssignmentRecord = (await karigarsDao.getAssignments(
@@ -274,7 +274,7 @@ void main() {
     expect(karigarDoc.bytes, isNotEmpty);
     expect(karigarDoc.auditText, contains('KARIGAR WORK SLIP'));
     expect(karigarDoc.auditText, contains('Master Rasheed'));
-    expect(karigarDoc.auditText, contains('Shalwar Qameez x 1'));
+    expect(karigarDoc.auditText, contains('Shalwar Qameez × 1'));
     expect(karigarDoc.auditText, contains('Kameez length 40.0 in'));
     // Must NOT contain financial information!
     expect(karigarDoc.auditText, isNot(contains('PKR')));
